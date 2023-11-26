@@ -54,17 +54,17 @@ const Home: NextPage = () => {
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent maxW="xl" p={8} my="auto" mx={8}>
-          <Text fontSize="lg" mb={4} fontWeight={600}>
+          <Text fontSize={{ base: "md", md: "lg" }} mb={4} fontWeight={600}>
             By clicking &quot;I Understand&quot;, I affirm the following:
           </Text>
           <VStack spacing={5} mb={4}>
             <Checkbox
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               name="checkbox1"
               isChecked={checkboxStates.checkbox1}
               onChange={handleCheckboxChange}
             >
-              <Box ml={2}>
+              <Box ml={[0, 0, 2]}>
                 I understand that this website is{" "}
                 <Link
                   isExternal
@@ -78,23 +78,23 @@ const Home: NextPage = () => {
               </Box>
             </Checkbox>
             <Checkbox
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               name="checkbox2"
               isChecked={checkboxStates.checkbox2}
               onChange={handleCheckboxChange}
             >
-              <Box ml={2}>
+              <Box ml={[0, 0, 2]}>
                 I understand that if I do or don’t do anything related to money
                 after looking at this website, I take responsibility.
               </Box>
             </Checkbox>
             <Checkbox
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               name="checkbox3"
               isChecked={checkboxStates.checkbox3}
               onChange={handleCheckboxChange}
             >
-              <Box ml={2}>
+              <Box ml={[0, 0, 2]}>
                 I understand that a lawyer didn’t review any of this. I don’t
                 understand if clicking these checkboxes makes a difference in
                 the eyes of the law, but I get the idea.
@@ -114,14 +114,21 @@ const Home: NextPage = () => {
         </ModalContent>
       </Modal>
 
-      <Box textAlign="center" bg="blue.500" py={2}>
-        🎨 This website is a parody. It’s art.{" "}
+      <Box textAlign="center" bg="#0152ff" py={2}>
+        🎨 This website is{" "}
+        <Link
+          isExternal
+          href="https://www.coinbase.com/advanced-trade/perpetuals"
+        >
+          a parody
+        </Link>
+        . It’s art.{" "}
         <Link fontWeight={600} isExternal href="https://zora.co/">
           Mint a commemorative NFT
         </Link>
       </Box>
 
-      <Box borderBottom="1px solid" borderColor="#8a919e20">
+      <Box borderBottom={{ md: "1px solid" }} borderColor={{ md: "#8a919e20" }}>
         <Container maxW="container.xl">
           <Flex
             py={[12, 12, 32]}
@@ -493,9 +500,11 @@ const Home: NextPage = () => {
             <Lp />
           </Box>
 
-          <Flex background="#33353d" borderRadius="md" p={4}>
-            <Box mr={3}>⚠️</Box>
-            <Text letterSpacing="0.15px">
+          <Flex background="#33353d" borderRadius="md" p={3}>
+            <Box mr={2} marginTop="1px">
+              ⚠️
+            </Box>
+            <Text>
               <strong>Don’t use money you can’t afford to lose.</strong> Nothing
               comes without risk. There could be a bug in{" "}
               <Link
@@ -508,11 +517,11 @@ const Home: NextPage = () => {
               <Link isExternal href="https://immunefi.com/bounty/synthetix/">
                 report it
               </Link>
-              .) You could have issues completing transactions on{" "}
+              .) You could have issues executing transactions on{" "}
               <Link isExternal href="https://base.org/">
                 Base
-              </Link>
-              . Using blockchains could become illegal.
+              </Link>{" "}
+              with this app. Using blockchains could become illegal.
             </Text>
           </Flex>
         </Container>

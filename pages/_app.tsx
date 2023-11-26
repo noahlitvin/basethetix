@@ -6,7 +6,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import type { AppProps } from "next/app";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { goerli, base } from "wagmi/chains";
+import { goerli, baseGoerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "../theme";
@@ -14,14 +14,14 @@ import { Analytics } from "@vercel/analytics/react";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    base,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
+    baseGoerli,
+    //...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "RainbowKit App",
+  appName: "Basethetix",
   projectId: "YOUR_PROJECT_ID",
   chains,
 });
