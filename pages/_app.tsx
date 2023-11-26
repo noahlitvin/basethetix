@@ -10,6 +10,7 @@ import { goerli, base } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "../theme";
+import { Analytics } from "@vercel/analytics/react";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -51,6 +52,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </RainbowKitProvider>
         </WagmiConfig>
       </ChakraProvider>
+      <Analytics />
     </>
   );
 }
