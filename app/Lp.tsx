@@ -20,6 +20,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextComponentType } from "next";
 import { useAccount } from "wagmi";
 import Modify from "./Modify";
+import CreateAccount from "./CreateAccount";
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -49,6 +50,7 @@ const Lp: NextComponentType = () => {
             </Text>
             <Button
               mr={3}
+              mb={3}
               colorScheme="blue"
               size="xs"
               fontFamily="monospace"
@@ -59,6 +61,7 @@ const Lp: NextComponentType = () => {
             </Button>
             <Button
               mr={3}
+              mb={3}
               colorScheme="white"
               size="xs"
               fontFamily="monospace"
@@ -67,19 +70,7 @@ const Lp: NextComponentType = () => {
             >
               #1234...4321
             </Button>
-            <Button
-              mr={3}
-              colorScheme="blue"
-              size="xs"
-              variant="outline"
-              fontFamily="monospace"
-              lineHeight="1"
-              borderColor="blue.500"
-              color="white"
-              _hover={{ background: "transparent" }}
-            >
-              CREATE ACCOUNT
-            </Button>
+            <CreateAccount />
           </Box>
 
           <Box mb={6} borderLeft="1px solid #ffffff" pl={6} py={1.5}>
