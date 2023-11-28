@@ -110,13 +110,13 @@ const Lp: NextComponentType = () => {
                   <ModalHeader pb={0}>Modify Collateral</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <Text mb={4} fontSize="sm">
+                    <Text mb={3} fontSize="sm">
                       The collateral you’ve provided to the protocol is used to
                       back the markets. You can’t initiate a withdrawal if you
                       have a negative PnL and, as a temporary security measure,
                       you must wait 24 hours to finalize a withdrawal.
                     </Text>
-                    <Modify />
+                    <Modify isCollateral />
                   </ModalBody>
                 </ModalContent>
               </Modal>
@@ -142,12 +142,12 @@ const Lp: NextComponentType = () => {
                   <ModalHeader pb={0}>Modify PnL</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <Text fontSize="sm" mb={4}>
+                    <Text fontSize="sm" mb={3}>
                       Your PnL represents the profit or loss you’ve accrued from
                       backing the markets. This can increase and decrease over
                       time based on market performance.
                     </Text>
-                    <Modify />
+                    <Modify isCollateral={false} />
                   </ModalBody>
                 </ModalContent>
               </Modal>

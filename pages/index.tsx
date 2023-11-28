@@ -51,9 +51,14 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        isCentered
+      >
         <ModalOverlay />
-        <ModalContent maxW="xl" p={8} my="auto" mx={8}>
+        <ModalContent maxW="xl" p={[4, 4, 8]} m={8}>
           <Text fontSize={{ base: "md", md: "lg" }} mb={4} fontWeight={600}>
             By clicking &quot;I Understand&quot;, I affirm the following:
           </Text>
