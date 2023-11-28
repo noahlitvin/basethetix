@@ -11,6 +11,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "../theme";
 import { Analytics } from "@vercel/analytics/react";
+import { useEffect, useState } from "react";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -34,6 +35,16 @@ const wagmiConfig = createConfig({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
