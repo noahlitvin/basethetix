@@ -14,12 +14,12 @@ import {
 } from "@chakra-ui/react";
 import type { NextComponentType } from "next";
 import { useState } from "react";
-import { useAccount } from "wagmi";
 
-const Modify: NextComponentType<{}, {}, { isCollateral: boolean }> = ({
-  isCollateral,
-}) => {
-  const { isConnected } = useAccount();
+const Modify: NextComponentType<
+  {},
+  {},
+  { isCollateral: boolean; account: string }
+> = ({ isCollateral, account }) => {
   const [isAdding, setIsAdding] = useState(true);
   const [isWithdrawalPending, setIsWithdrawalPending] = useState(true); // this is if there's collateral in the collateral that isn't delegated
   const [isWithdrawable, setIsWithdrawble] = useState(false); // this is if the above is true and the account timeout has passed

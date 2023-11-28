@@ -1,60 +1,28 @@
-import { Box, Button, useToast, Text } from '@chakra-ui/react';
-import type { NextComponentType } from 'next';
-import {
-  usePrepareContractWrite,
-  useContractWrite,
-  useWaitForTransaction,
-} from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
-import { useEffect } from 'react';
-import { filter } from 'lodash';
-import CreateAccount from './CreateAccount';
-import { useGetAccounts } from '../hooks/useGetAccounts';
-import { prettyString } from '../utils/format';
+import { Box, Button, Text } from "@chakra-ui/react";
+import CreateAccount from "./CreateAccount";
+import { useGetAccounts } from "../hooks/useGetAccounts";
+import { prettyString } from "../utils/format";
+import { useEffect } from "react";
 
-const Accounts: NextComponentType = () => {
-  const toast = useToast();
+interface AccountsProps {
+  selectedAccount: string | undefined;
+  setSelectedAccount: (accountId: string | undefined) => void;
+}
 
-  const createAccountAbi = {
-    address: synthetix.address as `0x${string}`,
-    functionName: 'createAccount',
-    abi: filter(synthetix.abi, {
-      name: 'createAccount',
-      outputs: [
-        {
-          internalType: 'uint128',
-          name: 'accountId',
-          type: 'uint128',
-        },
-      ],
-    }),
-  };
-
+const Accounts: React.FC<AccountsProps> = ({
+  selectedAccount,
+  setSelectedAccount,
+}) => {
   const { accounts, refetch } = useGetAccounts();
 
-  const { config } = usePrepareContractWrite(createAccountAbi);
-
-  const { data, write } = useContractWrite(config);
-
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  });
-
   useEffect(() => {
-    if (isSuccess) {
-      toast({
-        title: 'Success',
-        description: `Successfully created account ${data?.hash}`,
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
+    if (!selectedAccount && accounts.length > 0) {
+      setSelectedAccount(accounts[0].id);
     }
-  }, [isSuccess, data?.hash, toast]);
-
+  }, [accounts, setSelectedAccount]);
   return (
     <Box mb={10}>
-      <Text fontSize='sm' mb={1}>
+      <Text fontSize="sm" mb={1}>
         LP Accounts
       </Text>
       {accounts.map((account) => (
@@ -62,13 +30,17 @@ const Accounts: NextComponentType = () => {
           key={account.id}
           mr={3}
           mb={3}
-          colorScheme='blue'
-          size='xs'
-          fontFamily='monospace'
-          lineHeight='1'
-          _hover={{ background: 'blue.500' }}
+          colorScheme="blue"
+          size="xs"
+          fontFamily="monospace"
+          lineHeight="1"
+          border="1px solid"
+          borderColor="blue.500"
+          background={account.id === selectedAccount ? "blue.500" : "black"}
+          _hover={{ background: "blue.500" }}
+          onClick={() => setSelectedAccount(account.id)}
         >
-          #{prettyString(account.accountId || '')}
+          #{prettyString(account.accountId || "")}
         </Button>
       ))}
 
