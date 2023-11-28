@@ -1,4 +1,4 @@
-import { Button, useToast } from '@chakra-ui/react';
+import { Box, Button, useToast, Text } from '@chakra-ui/react';
 import type { NextComponentType } from 'next';
 import {
   usePrepareContractWrite,
@@ -8,8 +8,11 @@ import {
 import synthetix from '../deployments/system/CoreProxy.json';
 import { useEffect } from 'react';
 import { filter } from 'lodash';
+import CreateAccount from './CreateAccount';
+import { useGetAccounts } from '../hooks/useGetAccounts';
+import { prettyString } from '../utils/format';
 
-const CreateAccount: NextComponentType = () => {
+const Accounts: NextComponentType = () => {
   const toast = useToast();
 
   const createAccountAbi = {
@@ -26,6 +29,8 @@ const CreateAccount: NextComponentType = () => {
       ],
     }),
   };
+
+  const { accounts, refetch } = useGetAccounts();
 
   const { config } = usePrepareContractWrite(createAccountAbi);
 
@@ -48,23 +53,28 @@ const CreateAccount: NextComponentType = () => {
   }, [isSuccess, data?.hash, toast]);
 
   return (
-    <Button
-      colorScheme='blue'
-      mb={3}
-      size='xs'
-      variant='outline'
-      fontFamily='monospace'
-      lineHeight='1'
-      borderColor='blue.500'
-      color='white'
-      _hover={{ background: 'transparent' }}
-      isLoading={isLoading}
-      disabled={!write || isLoading}
-      onClick={() => write && write()}
-    >
-      {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
-    </Button>
+    <Box mb={10}>
+      <Text fontSize='sm' mb={1}>
+        LP Accounts
+      </Text>
+      {accounts.map((account) => (
+        <Button
+          key={account.id}
+          mr={3}
+          mb={3}
+          colorScheme='blue'
+          size='xs'
+          fontFamily='monospace'
+          lineHeight='1'
+          _hover={{ background: 'blue.500' }}
+        >
+          #{prettyString(account.accountId || '')}
+        </Button>
+      ))}
+
+      <CreateAccount />
+    </Box>
   );
 };
 
-export default CreateAccount;
+export default Accounts;

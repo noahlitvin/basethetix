@@ -1,4 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons";
+import { EditIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -15,12 +15,13 @@ import {
   StatNumber,
   Text,
   useDisclosure,
-} from "@chakra-ui/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import type { NextComponentType } from "next";
-import { useAccount } from "wagmi";
-import Modify from "./Modify";
-import CreateAccount from "./CreateAccount";
+} from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import type { NextComponentType } from 'next';
+import { useAccount } from 'wagmi';
+import Modify from './Modify';
+import CreateAccount from './CreateAccount';
+import Accounts from './Accounts';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -44,50 +45,23 @@ const Lp: NextComponentType = () => {
       </Box>
       {isConnected && (
         <Box>
-          <Box mb={10}>
-            <Text fontSize="sm" mb={1}>
-              LP Accounts
-            </Text>
-            <Button
-              mr={3}
-              mb={3}
-              colorScheme="blue"
-              size="xs"
-              fontFamily="monospace"
-              lineHeight="1"
-              _hover={{ background: "blue.500" }}
-            >
-              #1234...4321
-            </Button>
-            <Button
-              mr={3}
-              mb={3}
-              colorScheme="white"
-              size="xs"
-              fontFamily="monospace"
-              lineHeight="1"
-              variant="outline"
-            >
-              #1234...4321
-            </Button>
-            <CreateAccount />
-          </Box>
+          <Accounts />
 
-          <Box mb={6} borderLeft="1px solid #ffffff" pl={6} py={1.5}>
-            <Text fontSize="sm">Account</Text>
-            <Text fontSize="2xl" fontFamily="monospace">
+          <Box mb={6} borderLeft='1px solid #ffffff' pl={6} py={1.5}>
+            <Text fontSize='sm'>Account</Text>
+            <Text fontSize='2xl' fontFamily='monospace'>
               #123123123123123123123123123123123123
             </Text>
           </Box>
           <StatGroup>
-            <Stat borderLeft="1px solid #ffffff" pl={6} py={3}>
+            <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
               <StatLabel>Collateral</StatLabel>
-              <StatNumber fontFamily="monospace" fontWeight={500}>
+              <StatNumber fontFamily='monospace' fontWeight={500}>
                 0.00 USDC
               </StatNumber>
-              <StatHelpText onClick={onModifyCollateralOpen} cursor="pointer">
-                <EditIcon />{" "}
-                <Text as="span" borderBottom="1px dotted">
+              <StatHelpText onClick={onModifyCollateralOpen} cursor='pointer'>
+                <EditIcon />{' '}
+                <Text as='span' borderBottom='1px dotted'>
                   Modify
                 </Text>
               </StatHelpText>
@@ -101,7 +75,7 @@ const Lp: NextComponentType = () => {
                   <ModalHeader pb={0}>Modify Collateral</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <Text mb={3} fontSize="sm">
+                    <Text mb={3} fontSize='sm'>
                       The collateral you’ve provided to the protocol is used to
                       back the markets. You can’t initiate a withdrawal if you
                       have a negative PnL and, as a temporary security measure,
@@ -112,14 +86,14 @@ const Lp: NextComponentType = () => {
                 </ModalContent>
               </Modal>
             </Stat>
-            <Stat borderLeft="1px solid #ffffff" pl={6} py={3}>
+            <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
               <StatLabel>PnL</StatLabel>
-              <StatNumber fontFamily="monospace" fontWeight={500}>
+              <StatNumber fontFamily='monospace' fontWeight={500}>
                 0.00 USDC
               </StatNumber>
-              <StatHelpText onClick={onModifyPnlOpen} cursor="pointer">
-                <EditIcon />{" "}
-                <Text as="span" borderBottom="1px dotted">
+              <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
+                <EditIcon />{' '}
+                <Text as='span' borderBottom='1px dotted'>
                   Modify
                 </Text>
               </StatHelpText>
@@ -133,7 +107,7 @@ const Lp: NextComponentType = () => {
                   <ModalHeader pb={0}>Modify PnL</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <Text fontSize="sm" mb={3}>
+                    <Text fontSize='sm' mb={3}>
                       Your PnL represents the profit or loss you’ve accrued from
                       backing the markets. This can increase and decrease over
                       time based on market performance.
