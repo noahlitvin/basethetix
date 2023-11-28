@@ -1,7 +1,7 @@
-import { useAccount, useContractRead } from "wagmi";
-import synthetix from "../deployments/system/CoreProxy.json";
-import usdc from "../deployments/usdc_mock_collateral/MintableToken.json";
-import { parseUnits } from "../utils/format";
+import { useAccount, useContractRead } from 'wagmi';
+import synthetix from '../deployments/system/CoreProxy.json';
+import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
+import { parseUnits } from '../utils/format';
 
 export const useGetCollateral = (account: string | undefined) => {
   const { address, isConnected } = useAccount();
@@ -9,7 +9,7 @@ export const useGetCollateral = (account: string | undefined) => {
   const { data, isLoading, refetch } = useContractRead({
     address: synthetix.address as `0x${string}`,
     abi: synthetix?.abi,
-    functionName: "getAccountCollateral",
+    functionName: 'getAccountCollateral',
     args: [account, usdc.address],
     enabled: isConnected && !!address,
     watch: true,
@@ -17,7 +17,7 @@ export const useGetCollateral = (account: string | undefined) => {
 
   let delegatedCollateral;
   if (Array.isArray(data) && data.length > 1) {
-    delegatedCollateral = parseUnits(data[1]);
+    delegatedCollateral = parseUnits(data[1]?.toString() || '0');
   }
 
   return {
