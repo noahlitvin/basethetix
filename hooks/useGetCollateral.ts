@@ -17,7 +17,7 @@ export const useGetCollateral = (account: string | undefined) => {
 
   let delegatedCollateral;
   if (Array.isArray(data) && data.length > 1) {
-    delegatedCollateral = parseUnits(data[1], 6);
+    delegatedCollateral = parseUnits(data[1]);
   }
 
   return {
