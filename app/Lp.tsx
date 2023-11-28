@@ -20,9 +20,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextComponentType } from "next";
 import { useAccount } from "wagmi";
 import Modify from "./Modify";
-import CreateAccount from "./CreateAccount";
 import Accounts from "./Accounts";
 import { useState } from "react";
+import { useGetCollateral } from "../hooks/useGetCollateral";
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -40,6 +40,8 @@ const Lp: NextComponentType = () => {
   } = useDisclosure();
 
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
+
+  const { collateral } = useGetCollateral(selectedAccount);
 
   return (
     <>
@@ -64,7 +66,7 @@ const Lp: NextComponentType = () => {
                 <Stat borderLeft="1px solid #ffffff" pl={6} py={3}>
                   <StatLabel>Collateral</StatLabel>
                   <StatNumber fontFamily="monospace" fontWeight={500}>
-                    0.00 USDC
+                    {collateral?.toLocaleString()} USDC
                   </StatNumber>
                   <StatHelpText
                     onClick={onModifyCollateralOpen}
