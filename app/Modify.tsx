@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import type { NextComponentType } from "next";
 import { useState } from "react";
+import { useGetWithdrawable } from "../hooks/useGetWithdrawable";
 
 const Modify: NextComponentType<
   {},
@@ -25,6 +26,8 @@ const Modify: NextComponentType<
   const [isWithdrawable, setIsWithdrawble] = useState(false); // this is if the above is true and the account timeout has passed
 
   const [amount, setAmount] = useState(0);
+
+  const { withdrawable } = useGetWithdrawable(account);
 
   /*
   Modify Collateral
@@ -117,11 +120,11 @@ const Modify: NextComponentType<
           </Text>
           {isWithdrawable ? (
             <Button colorScheme="blue" borderRadius="full" w="100%">
-              Withdraw 0.00 USDC
+              Withdraw {withdrawable?.toLocaleString()} USDC
             </Button>
           ) : (
             <Button isDisabled colorScheme="blue" borderRadius="full" w="100%">
-              0.00 USDC Pending Withdrawal
+              {withdrawable?.toLocaleString()} USDC Pending Withdrawal
             </Button>
           )}
         </Box>

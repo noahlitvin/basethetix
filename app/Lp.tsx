@@ -1,7 +1,6 @@
 import { EditIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,6 +22,7 @@ import Modify from "./Modify";
 import Accounts from "./Accounts";
 import { useState } from "react";
 import { useGetCollateral } from "../hooks/useGetCollateral";
+import { useGetWithdrawable } from "../hooks/useGetWithdrawable";
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
