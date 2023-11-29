@@ -16,12 +16,17 @@ import type { NextComponentType } from 'next';
 import { useState } from 'react';
 import { useGetWithdrawable } from '../hooks/useGetWithdrawable';
 import { useGetCollateral } from '../hooks/useGetCollateral';
+import { useAccount, useBalance } from 'wagmi';
+import USD from '../deployments/system/USDProxy.json';
+import { Amount } from '../components/Amount';
+import { wei } from '@synthetixio/wei';
 
 const Modify: NextComponentType<
   {},
   {},
   { isCollateral: boolean; account: string }
 > = ({ isCollateral, account }) => {
+  const { address } = useAccount();
   const { collateral } = useGetCollateral(account);
 
   const [isAdding, setIsAdding] = useState(true);
@@ -29,6 +34,12 @@ const Modify: NextComponentType<
   const [isWithdrawable, setIsWithdrawble] = useState(false); // this is if the above is true and the account timeout has passed
 
   const [amount, setAmount] = useState(0);
+
+  const { data: USDBalance, refetch: refetchUSD } = useBalance({
+    address,
+    token: USD.address as `0x${string}`,
+    watch: true,
+  });
 
   const { withdrawable } = useGetWithdrawable(account);
 
@@ -65,7 +76,16 @@ const Modify: NextComponentType<
             border='none'
           />
           <FormHelperText whiteSpace='nowrap' position='absolute'>
-            Wallet Balance: 0.00 USDC
+            <Flex
+              alignItems='center'
+              fontWeight='normal'
+              fontSize='sm'
+              opacity='0.5'
+              gap={1}
+            >
+              Wallet Balance:
+              <Amount value={wei(USDBalance?.formatted || '0')} suffix='USDC' />
+            </Flex>
           </FormHelperText>
         </FormControl>
 
