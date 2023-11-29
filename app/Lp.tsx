@@ -1,6 +1,7 @@
 import { EditIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,6 +15,7 @@ import {
   StatNumber,
   Text,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextComponentType } from "next";
@@ -22,7 +24,6 @@ import Modify from "./Modify";
 import Accounts from "./Accounts";
 import { useState } from "react";
 import { useGetCollateral } from "../hooks/useGetCollateral";
-import { useGetWithdrawable } from "../hooks/useGetWithdrawable";
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -45,9 +46,18 @@ const Lp: NextComponentType = () => {
 
   return (
     <>
-      <Box mb={3}>
+      <Flex mb={3} alignItems="center">
         <ConnectButton />
-      </Box>
+        <Link
+          isExternal
+          fontSize="xs"
+          href="http://bridge.base.org/"
+          ml="auto"
+          borderStyle="dotted"
+        >
+          Bridge ETH + USDC to Base
+        </Link>
+      </Flex>
       {isConnected && (
         <Box>
           <Accounts
