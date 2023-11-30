@@ -1,5 +1,5 @@
 {
-  "address": "0x62dEACaeF7579c831E5995f2d1Ff2040f38c8956",
+  "address": "0x54F75bbE2f4058fa5109eD1d7a19594816AF8cD8",
   "abi": [
     {
       "inputs": [
@@ -414,10 +414,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x07c3b9d65fd9d1221c06e087172c627aa0870c8b10231ff80d353622dd4a0da4",
+  "deployTxnHash": "0xde94313a59e9876d8b22392e2c6879d111096d9e6e5dce39d27cf76daa71239e",
   "sourceName": "contracts/modules/core/LiquidationModule.sol",
   "contractName": "LiquidationModule",
   "deployedOn": "contract.LiquidationModule",
   "gasUsed": 2889602,
-  "gasCost": "1500000256"
+  "gasCost": "1500000255"
 }

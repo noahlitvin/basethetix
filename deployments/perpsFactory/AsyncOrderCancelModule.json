@@ -1,5 +1,5 @@
 {
-  "address": "0x99281f69EfE34b6e8d4518629b4Bfc439cCa6291",
+  "address": "0x2aEe5eDbBf8C091076f5a0CC3204415B336e262a",
   "abi": [
     {
       "inputs": [
@@ -284,7 +284,7 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0xca9eb6160233d4a079c6d838e98d901acb534bae9b1fd8398d17c79f4f430fa2",
+  "deployTxnHash": "0x8a0dd98b33bfddacce336a2cf1446e2e5e1c2749ca2211c5fef8da597c4afbd0",
   "sourceName": "contracts/modules/AsyncOrderCancelModule.sol",
   "contractName": "AsyncOrderCancelModule",
   "deployedOn": "contract.AsyncOrderCancelModule",

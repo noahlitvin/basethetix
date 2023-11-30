@@ -1,5 +1,5 @@
 {
-  "address": "0x208b65b1520F1B7356f3f752C637d56CeE268815",
+  "address": "0xF80f610B9B324aa6A50F938690cb4F211c02206f",
   "abi": [
     {
       "inputs": [
@@ -5290,9 +5290,9 @@
     }
   ],
   "deployedOn": "router.CoreRouter",
-  "deployTxnHash": "0x737ef605635778e81057c93ea6f2cad47428b0e7ffecd9cf96acea123f37fdaf",
+  "deployTxnHash": "0x197a79731321080adcfa94ae1a96fb9767e59c816e88152aa0ae1197ad2b5165",
   "contractName": "CoreRouter",
   "sourceName": "CoreRouter.sol",
-  "gasUsed": 1293024,
+  "gasUsed": 1293012,
   "gasCost": "1500000254"
 }

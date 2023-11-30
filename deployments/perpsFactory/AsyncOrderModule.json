@@ -1,5 +1,5 @@
 {
-  "address": "0xA035a912d9C43748c2515f4B9B3Ebb6CE4126F82",
+  "address": "0xA7BB2e6785fc80C686fF72A3de174bF2f085CD40",
   "abi": [
     {
       "inputs": [
@@ -546,7 +546,7 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x89fe045dfc6d4395cc8d41dee0a09446ca4c5b8e3340310b41652d55026d9482",
+  "deployTxnHash": "0x7351805413ad7fbb5afafc29e39af8d580d26cd765028d89759a263ca2b9dfdc",
   "sourceName": "contracts/modules/AsyncOrderModule.sol",
   "contractName": "AsyncOrderModule",
   "deployedOn": "contract.AsyncOrderModule",

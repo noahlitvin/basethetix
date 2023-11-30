@@ -1,5 +1,5 @@
 {
-  "address": "0x92424427291C2EB68af3CE67EA67ca42EcB438c5",
+  "address": "0xbc175e7441A93adFf9EFa3573ed6C514cc43583d",
   "abi": [
     {
       "inputs": [
@@ -408,10 +408,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x8bc7707ee01ef506f8485c034208a0b92691f40505526c1892bcefc6ab1f678a",
+  "deployTxnHash": "0xaf2c2315639457f0f5fed7829315650cc4575b99d2614932aa1061aa62887de2",
   "sourceName": "contracts/modules/AsyncOrderSettlementPythModule.sol",
   "contractName": "AsyncOrderSettlementPythModule",
   "deployedOn": "contract.AsyncOrderSettlementPythModule",
-  "gasUsed": 3290282,
-  "gasCost": "1500000255"
+  "gasUsed": 3290270,
+  "gasCost": "1500000254"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0x7524cd1E5b4D946148d91EAC477958E06d1Ebd4e",
+  "address": "0xd5b592b0206D30d4e139e961e5579b69FacAE215",
   "abi": [
     {
       "inputs": [
@@ -140,10 +140,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x347b95678c1240edd86b11883eab44f55d32bc179227d44838d2fb9f3061980d",
+  "deployTxnHash": "0xd4d4f07267db25fb139543320eaa3b2a4784da2e96329dc523d1d2df8ff4902e",
   "sourceName": "contracts/modules/core/PoolConfigurationModule.sol",
   "contractName": "PoolConfigurationModule",
   "deployedOn": "contract.PoolConfigurationModule",
   "gasUsed": 446271,
-  "gasCost": "1500000255"
+  "gasCost": "1500000256"
 }

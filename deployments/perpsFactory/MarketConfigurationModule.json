@@ -1,5 +1,5 @@
 {
-  "address": "0x25566ddA0bFd676CEB3e19df6a19930CC9f274E0",
+  "address": "0x358082265d5e38992a24C3a322f66c7A1db5106F",
   "abi": [
     {
       "inputs": [
@@ -264,11 +264,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -337,11 +332,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -394,11 +384,6 @@
               "internalType": "bytes32",
               "name": "feedId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
             },
             {
               "internalType": "uint256",
@@ -653,11 +638,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -869,11 +849,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -943,10 +918,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0xd88735d14ecb4c7cd72e13cb1ef6abd2ee5b3dc63aec7afb8d22c07274103b3c",
+  "deployTxnHash": "0x39304087d69d6184b9ed6176682b2db4e35cbacfc0dafb9b6b65115f300c5819",
   "sourceName": "contracts/modules/MarketConfigurationModule.sol",
   "contractName": "MarketConfigurationModule",
   "deployedOn": "contract.MarketConfigurationModule",
-  "gasUsed": 1241414,
-  "gasCost": "1500000255"
+  "gasUsed": 1011258,
+  "gasCost": "1500000254"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0x0D895eaDfAD4429F079E089D6C64a92A24490E6C",
+  "address": "0xE02d1640dcaB494327DbE4B63fBcD441b92c8205",
   "abi": [
     {
       "inputs": [
@@ -3146,11 +3146,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -3219,11 +3214,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -3276,11 +3266,6 @@
               "internalType": "bytes32",
               "name": "feedId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
             },
             {
               "internalType": "uint256",
@@ -3535,11 +3520,6 @@
               "type": "bytes32"
             },
             {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
-            },
-            {
               "internalType": "uint256",
               "name": "settlementReward",
               "type": "uint256"
@@ -3749,11 +3729,6 @@
               "internalType": "bytes32",
               "name": "feedId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "string",
-              "name": "url",
-              "type": "string"
             },
             {
               "internalType": "uint256",
@@ -4256,9 +4231,9 @@
     }
   ],
   "deployedOn": "router.PerpsMarketRouter",
-  "deployTxnHash": "0xb3a6efa84ce0997af75c60381d11f81b7daf652898ce237c1987d8503ab02215",
+  "deployTxnHash": "0xd245778fe35385db36ed94b8b3c2778f6e6f928dde58fc60fd6a797f314aec9e",
   "contractName": "PerpsMarketRouter",
   "sourceName": "PerpsMarketRouter.sol",
-  "gasUsed": 1098850,
+  "gasUsed": 1098898,
   "gasCost": "1500000254"
 }
