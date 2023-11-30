@@ -1,5 +1,5 @@
 {
-  "address": "0x8bF8FdC959a9fAacC8351bB7A9c429a2c458F1De",
+  "address": "0xccff2A7675847EEC261d32aa1C616c21332CdcA4",
   "abi": [
     {
       "inputs": [
@@ -744,10 +744,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x91103903c1588a0d78c3f10f51d83aff8448deec99ee751d07f203907203b8ee",
+  "deployTxnHash": "0xf14d752a744262f0f7aa2149537cea3b102b7b1ba7d3e3b9149a8c11e0d3e1ca",
   "sourceName": "contracts/modules/SpotMarketFactoryModule.sol",
   "contractName": "SpotMarketFactoryModule",
   "deployedOn": "contract.SpotMarketFactoryModule",
   "gasUsed": 2236277,
-  "gasCost": "1500000255"
+  "gasCost": "1500000254"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0x79F4501a0C188Ba462C608048808135453db08b4",
+  "address": "0x6221900606cd60634570D5062Fa4d71E242267b2",
   "abi": [
     {
       "inputs": [],
@@ -94,10 +94,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x04878d538e62c0c9ab440a2915e6323bcf3af55310d23909ed9ec97ba23c745b",
+  "deployTxnHash": "0x1cffec3227353247bee6f074232fd9d10ff65c057eb69604150e0cdd3fa4aa5e",
   "sourceName": "contracts/modules/core/CcipReceiverModule.sol",
   "contractName": "CcipReceiverModule",
   "deployedOn": "contract.CcipReceiverModule",
   "gasUsed": 469464,
-  "gasCost": "1500000255"
+  "gasCost": "1500000254"
 }

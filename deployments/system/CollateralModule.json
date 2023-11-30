@@ -1,5 +1,5 @@
 {
-  "address": "0xafc875A0d378840aAbbDD96F8617EC988d60b6a4",
+  "address": "0x81553192F4121BbA532f1c9079C878d1b677BeAB",
   "abi": [
     {
       "inputs": [
@@ -536,10 +536,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x64124a1ddf7c141a2d138d86e37d9ab52eff60e9a077d97001ebe0c9801c6d83",
+  "deployTxnHash": "0xcdc569da95875a64ef0fe74d6b46f2cc42420f01a5ad08e039a46cfe09d7dc21",
   "sourceName": "contracts/modules/core/CollateralModule.sol",
   "contractName": "CollateralModule",
   "deployedOn": "contract.CollateralModule",
   "gasUsed": 1730008,
-  "gasCost": "1500000255"
+  "gasCost": "1500000254"
 }

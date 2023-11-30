@@ -1,5 +1,5 @@
 {
-  "address": "0x497b4D2CcDd26a1b40e68e40e717eC37Ff0Ea317",
+  "address": "0xEa7a8f0fDD16Ccd46BA541Fb657a0A7FD7E36261",
   "abi": [
     {
       "inputs": [
@@ -160,10 +160,10 @@
     "0xEbe57e8045F2F230872523bbff7374986E45C486"
   ],
   "linkedLibraries": {},
-  "deployTxnHash": "",
+  "deployTxnHash": "0xbb1694fe8e321cdc8dc16ca9706a01d5bab670feed6a8396d76616329c45bf23",
   "sourceName": "contracts/PythERC7412Wrapper.sol",
   "contractName": "PythERC7412Wrapper",
   "deployedOn": "contract.PythERC7412Wrapper",
-  "gasUsed": 0,
-  "gasCost": "0"
+  "gasUsed": 1109617,
+  "gasCost": "1500000254"
 }

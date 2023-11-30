@@ -1,5 +1,5 @@
 {
-  "address": "0x7297e7544F1f8a507BA3e5e325FBb969C154EECf",
+  "address": "0x238aB31f0EDf804e4a47854FA8a03a3DaCbFe2f8",
   "abi": [
     {
       "inputs": [
@@ -825,9 +825,9 @@
     }
   ],
   "deployedOn": "router.USDRouter",
-  "deployTxnHash": "0xf3cfda610ee425b0587f510bcea96457c90d97d979a0aee235bb071fd4bec295",
+  "deployTxnHash": "0xdbb31d682a289239e17b2bd7b4046bbb8249b76e01ccaabd59493587e96de9d8",
   "contractName": "USDRouter",
   "sourceName": "USDRouter.sol",
-  "gasUsed": 398033,
+  "gasUsed": 397817,
   "gasCost": "1500000254"
 }
