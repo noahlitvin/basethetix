@@ -58,9 +58,9 @@ const CreateAccount: NextComponentType = () => {
     if (isSuccess) {
       toast({
         title: "Success",
-        description: `Successfully created account ${data?.hash}`,
+        description: `Account created with transaction ${data?.hash}`,
         status: "success",
-        duration: 9000,
+        duration: 10000,
         isClosable: true,
       });
     }
