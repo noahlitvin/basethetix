@@ -427,7 +427,7 @@ const Home: NextPage = () => {
                 </Button>
                 <Button
                   as="a"
-                  href="https://usecannon.com"
+                  href="https://usecannon.com/packages/synthetix-omnibus/latest/8453-andromeda/interact"
                   colorScheme="black"
                   variant="outline"
                   size="lg"
