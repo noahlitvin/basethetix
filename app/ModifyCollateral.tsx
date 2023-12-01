@@ -22,41 +22,6 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
           console.log("amount:", amount);
         }}
       />
-      {withdrawable.gt(0) && (
-        <Box
-          mb={4}
-          mt={2}
-          pt={4}
-          borderTop="1px solid"
-          borderTopColor="gray.200"
-        >
-          <Heading size="sm" mb={1}>
-            Withdraw USDC
-          </Heading>
-          <Text mb={3} fontSize="sm">
-            As a temporary security precaution, you must wait 24 hours after
-            interacting with your account to withdraw USDC.{" "}
-            {accountTimeout.gt(0) && (
-              <em>
-                You have{" "}
-                {formatDuration(
-                  intervalToDuration({ start: 0, end: accountTimeout })
-                )}{" "}
-                remaining.
-              </em>
-            )}
-          </Text>
-          {accountTimeout.gt(0) ? (
-            <Button isDisabled colorScheme="blue" borderRadius="full" w="100%">
-              {withdrawable?.toLocaleString()} USDC Pending Withdrawal
-            </Button>
-          ) : (
-            <Button colorScheme="blue" borderRadius="full" w="100%">
-              Withdraw {withdrawable?.toLocaleString()} USDC
-            </Button>
-          )}
-        </Box>
-      )}
     </>
   );
 };
