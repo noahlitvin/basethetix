@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useGetWithdrawable } from "../hooks/useGetWithdrawable";
 import { useGetCollateral } from "../hooks/useGetCollateral";
 import { useAccount, useBalance } from "wagmi";
-import USD from "../deployments/system/USDProxy.json";
+import USD from "../deployments/usdc_mock_collateral/MintableToken.json";
 import { Amount } from "../components/Amount";
 import { wei } from "@synthetixio/wei";
 import { formatDuration, intervalToDuration } from "date-fns";
@@ -34,11 +34,16 @@ const Modify: NextComponentType<
 
   const [amount, setAmount] = useState(0);
 
-  const { data: USDBalance, refetch: refetchUSD } = useBalance({
+  // Remember decimals are 18 on mock but 6 on real
+  const { data: USDCBalance, refetch: refetchUSD } = useBalance({
     address,
     token: USD.address as `0x${string}`,
     watch: true,
   });
+
+  const resultingWalletBalance = isAdding
+    ? (USDCBalance?.value || 0n) - BigInt(amount)
+    : (USDCBalance?.value || 0n) + BigInt(amount);
 
   const { withdrawable } = useGetWithdrawable(account);
 
@@ -77,15 +82,12 @@ const Modify: NextComponentType<
             border="none"
           />
           <FormHelperText whiteSpace="nowrap" position="absolute">
-            <Flex
-              alignItems="center"
-              fontWeight="normal"
-              fontSize="sm"
-              opacity="0.5"
-              gap={1}
-            >
+            <Flex alignItems="center" fontWeight="normal" fontSize="sm" gap={1}>
               Wallet Balance:
-              <Amount value={wei(USDBalance?.formatted || "0")} suffix="USDC" />
+              <Amount
+                value={wei(USDCBalance?.formatted || "0")}
+                suffix="USDC"
+              />
             </Flex>
           </FormHelperText>
         </FormControl>
@@ -103,7 +105,7 @@ const Modify: NextComponentType<
             </InputLeftElement>
             <Input
               type="number"
-              onChange={(e: any) => setAmount(e.target.value)}
+              onChange={(e: any) => setAmount(e.target.value || 0)}
             />
           </InputGroup>
         </FormControl>
@@ -119,7 +121,9 @@ const Modify: NextComponentType<
             border="none"
             px={0}
           />
-          <FormHelperText>0.00 USDC</FormHelperText>
+          <FormHelperText>
+            <Amount value={wei(resultingWalletBalance)} suffix="USDC" />
+          </FormHelperText>
         </FormControl>
       </Flex>
       <Button
@@ -131,7 +135,6 @@ const Modify: NextComponentType<
       >
         {isAdding ? "Add" : "Remove"} {Math.abs(amount)} USDC
       </Button>
-
       {isCollateral && withdrawable.gt(0) && (
         <Box
           mb={4}
