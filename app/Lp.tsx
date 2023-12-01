@@ -1,4 +1,4 @@
-import { EditIcon } from "@chakra-ui/icons";
+import { EditIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
@@ -16,14 +16,15 @@ import {
   Text,
   useDisclosure,
   Link,
-} from "@chakra-ui/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import type { NextComponentType } from "next";
-import { useAccount } from "wagmi";
-import Modify from "./Modify";
-import Accounts from "./Accounts";
-import { useState } from "react";
-import { useGetCollateral } from "../hooks/useGetCollateral";
+} from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import type { NextComponentType } from 'next';
+import { useAccount } from 'wagmi';
+import Modify from './Modify';
+import Accounts from './Accounts';
+import { useState } from 'react';
+import { useGetCollateral } from '../hooks/useGetCollateral';
+import { ModifyCollateral } from './ModifyCollateral';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -46,14 +47,14 @@ const Lp: NextComponentType = () => {
 
   return (
     <>
-      <Flex mb={3} alignItems="center">
+      <Flex mb={3} alignItems='center'>
         <ConnectButton />
         <Link
           isExternal
-          fontSize="xs"
-          href="http://bridge.base.org/"
-          ml="auto"
-          borderStyle="dotted"
+          fontSize='xs'
+          href='http://bridge.base.org/'
+          ml='auto'
+          borderStyle='dotted'
         >
           Bridge ETH + USDC to Base
         </Link>
@@ -66,24 +67,24 @@ const Lp: NextComponentType = () => {
           />
           {selectedAccount && (
             <>
-              <Box mb={6} borderLeft="1px solid #ffffff" pl={6} py={1.5}>
-                <Text fontSize="sm">Account</Text>
-                <Text fontSize="2xl" fontFamily="monospace">
+              <Box mb={6} borderLeft='1px solid #ffffff' pl={6} py={1.5}>
+                <Text fontSize='sm'>Account</Text>
+                <Text fontSize='2xl' fontFamily='monospace'>
                   #{selectedAccount}
                 </Text>
               </Box>
               <StatGroup>
-                <Stat borderLeft="1px solid #ffffff" pl={6} py={3}>
+                <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>Collateral</StatLabel>
-                  <StatNumber fontFamily="monospace" fontWeight={500}>
+                  <StatNumber fontFamily='monospace' fontWeight={500}>
                     {collateral?.toLocaleString()} USDC
                   </StatNumber>
                   <StatHelpText
                     onClick={onModifyCollateralOpen}
-                    cursor="pointer"
+                    cursor='pointer'
                   >
-                    <EditIcon />{" "}
-                    <Text as="span" borderBottom="1px dotted">
+                    <EditIcon />{' '}
+                    <Text as='span' borderBottom='1px dotted'>
                       Modify
                     </Text>
                   </StatHelpText>
@@ -97,28 +98,26 @@ const Lp: NextComponentType = () => {
                       <ModalHeader pb={0}>Modify Collateral</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
-                        <Text mb={3} fontSize="sm">
+                        <Text mb={3} fontSize='sm'>
                           The collateral you’ve provided to the protocol is used
                           to back the markets. You can’t initiate a withdrawal
                           if you have a negative PnL and, as a temporary
                           security measure, you must wait 24 hours to finalize a
                           withdrawal.
                         </Text>
-                        <Modify account={selectedAccount} isCollateral />
-                        <Button />
-                        Withdrawal form
+                        <ModifyCollateral account={selectedAccount} />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
                 </Stat>
-                <Stat borderLeft="1px solid #ffffff" pl={6} py={3}>
+                <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>PnL</StatLabel>
-                  <StatNumber fontFamily="monospace" fontWeight={500}>
+                  <StatNumber fontFamily='monospace' fontWeight={500}>
                     0.00 USDC
                   </StatNumber>
-                  <StatHelpText onClick={onModifyPnlOpen} cursor="pointer">
-                    <EditIcon />{" "}
-                    <Text as="span" borderBottom="1px dotted">
+                  <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
+                    <EditIcon />{' '}
+                    <Text as='span' borderBottom='1px dotted'>
                       Modify
                     </Text>
                   </StatHelpText>
@@ -132,16 +131,12 @@ const Lp: NextComponentType = () => {
                       <ModalHeader pb={0}>Modify PnL</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody>
-                        <Text fontSize="sm" mb={3}>
+                        <Text fontSize='sm' mb={3}>
                           Your PnL represents the profit or loss you’ve accrued
                           from backing the markets. This can increase and
                           decrease over time based on market performance.
                         </Text>
-                        <Modify
-                          account={selectedAccount}
-                          isCollateral={false}
-                        />
-                        <Button />
+                        <ModifyCollateral account={selectedAccount} />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
