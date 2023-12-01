@@ -105,6 +105,8 @@ const Lp: NextComponentType = () => {
                           withdrawal.
                         </Text>
                         <Modify account={selectedAccount} isCollateral />
+                        <Button />
+                        Withdrawal form
                       </ModalBody>
                     </ModalContent>
                   </Modal>
@@ -139,6 +141,7 @@ const Lp: NextComponentType = () => {
                           account={selectedAccount}
                           isCollateral={false}
                         />
+                        <Button />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
