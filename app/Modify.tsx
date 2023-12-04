@@ -94,7 +94,7 @@ export const Modify: FC<ModifyProps> = ({ account, onSubmit }) => {
         colorScheme="blue"
         borderRadius="full"
         w="100%"
-        mb="4"
+        my="4"
         onClick={() => onSubmit(amount)}
       >
         {isAdding ? "Add" : "Remove"} {Math.abs(amount)} USDC
