@@ -4,7 +4,6 @@ import { useProvider, useSigner, useAccount, Address } from 'wagmi';
 import { EIP7412 } from 'erc7412';
 import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
-import Multicall from '../constants/TrustedMulticallForwarder.json';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -56,8 +55,6 @@ export async function generate7412CompatibleCall(
   adapters.push(new PythAdapter('https://xc-testnet.pyth.network/'));
 
   const converter = new EIP7412(adapters, multicallFunc);
-
-  console.log(txn);
   return await converter.enableERC7412(client as any, txn);
 }
 

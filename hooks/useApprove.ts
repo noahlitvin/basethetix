@@ -32,10 +32,14 @@ export const useApprove = (
     return allowance && allowance.gte(amount);
   }, [allowance, amount]);
 
+  const contract = useMemo(
+    () => new Contract(contractAddress, erc20ABI, signer!),
+    [contractAddress, signer]
+  );
+
   const approve = useCallback(
     async (customAmount?: BigNumberish) => {
       if (!sufficientAllowance && !!contractAddress && !!signer) {
-        const contract = new Contract(contractAddress, erc20ABI, signer);
         await transact(contract, 'approve', [
           spender,
           BigNumber.from(customAmount || amount),
@@ -44,13 +48,14 @@ export const useApprove = (
       }
     },
     [
-      refetchAllowance,
       sufficientAllowance,
       contractAddress,
       signer,
+      transact,
+      contract,
       spender,
       amount,
-      transact,
+      refetchAllowance,
     ]
   );
 
@@ -60,5 +65,6 @@ export const useApprove = (
     refetchAllowance,
     requireApproval: !sufficientAllowance,
     allowance,
+    contract,
   };
 };
