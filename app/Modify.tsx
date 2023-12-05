@@ -23,7 +23,7 @@ interface ModifyProps {
 
 export const Modify: FC<ModifyProps> = ({ account, onSubmit }) => {
   const { address } = useAccount();
-  const { collateral } = useGetCollateral(account);
+  const { totalAssigned: collateral } = useGetCollateral(account);
 
   const [isAdding, setIsAdding] = useState(true);
 

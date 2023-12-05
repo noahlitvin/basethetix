@@ -1,4 +1,13 @@
-export const useModifyCollateral = (account: string | undefined) => {
+import { Address, useContractWrite } from 'wagmi';
+import synthetix from '../deployments/system/CoreProxy.json';
+import { useGetCollateral } from './useGetCollateral';
+import { useGetPreferredPool } from './useGetPreferredPool';
+
+export const useModifyCollateral = (
+  account: string | undefined,
+  marketId: string,
+  amount: string,
+) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
     need to think on it....
@@ -14,4 +23,14 @@ export const useModifyCollateral = (account: string | undefined) => {
 
   delegateCollateral(uint128 accountId, uint128 poolId, address sUsdcAddress, uint256 newCollateral, 1) CORE SYSTEM  https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/VaultModule.sol#L43
   */
+
+  const { totalAssigned: collateral } = useGetCollateral(account);
+
+  const poolId = useGetPreferredPool();
+
+  const { data, isLoading, isSuccess, write } = useContractWrite({
+    address: synthetix.address as Address,
+    abi: synthetix.abi,
+    functionName: 'feed',
+  });
 };

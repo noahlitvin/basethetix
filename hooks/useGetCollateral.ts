@@ -2,6 +2,7 @@ import { useAccount, useContractRead } from 'wagmi';
 import synthetix from '../deployments/system/CoreProxy.json';
 import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { parseUnits } from '../utils/format';
+import { useMemo } from 'react';
 
 export const useGetCollateral = (account: string | undefined) => {
   const { address, isConnected } = useAccount();
@@ -15,13 +16,20 @@ export const useGetCollateral = (account: string | undefined) => {
     watch: true,
   });
 
-  let delegatedCollateral;
-  if (Array.isArray(data) && data.length > 1) {
-    delegatedCollateral = parseUnits(data[1]?.toString() || '0');
-  }
+  console.log({
+    data,
+  });
+
+  const [totalDeposited, totalAssigned, totalLocked] = useMemo(() => {
+    return ((data as bigint[]) || [0n, 0n, 0n]).map((n) =>
+      parseUnits(n.toString() || '0')
+    );
+  }, [data]);
 
   return {
-    collateral: delegatedCollateral,
+    totalDeposited,
+    totalAssigned,
+    totalLocked,
     isLoading,
     refetch,
   };

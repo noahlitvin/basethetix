@@ -1,6 +1,7 @@
 import { useContractRead } from 'wagmi';
 import synthetix from '../deployments/system/CoreProxy.json';
 import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
+import { useGetPreferredPool } from './useGetPreferredPool';
 
 export const useGetPnl = (accountId: string | undefined) => {
   /*
@@ -15,13 +16,8 @@ export const useGetPnl = (accountId: string | undefined) => {
   return this value, after multiplying by -1
 */
 
-  const { data: poolId } = useContractRead({
-    address: synthetix.address as `0x${string}`,
-    abi: synthetix?.abi,
-    functionName: 'getPreferredPool',
-    args: [],
-    watch: true,
-  });
+  const poolId = useGetPreferredPool();
+
   const { data: debtD18 } = useContractRead({
     address: synthetix.address as `0x${string}`,
     abi: synthetix?.abi,
