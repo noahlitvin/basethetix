@@ -1,5 +1,5 @@
-import { useAccount, useContractRead, useContractReads } from "wagmi";
-import accountProxy from "../deployments/system/AccountProxy.json";
+import { useAccount, useContractRead, useContractReads } from 'wagmi';
+import accountProxy from '../deployments/system/AccountProxy.json';
 
 export const useGetAccounts = () => {
   const { address, isConnected } = useAccount();
@@ -11,8 +11,8 @@ export const useGetAccounts = () => {
   } = useContractRead({
     address: accountProxy.address as `0x${string}`,
     abi: accountProxy?.abi,
-    functionName: "balanceOf",
-    args: [address || "0x"],
+    functionName: 'balanceOf',
+    args: [address || '0x'],
     enabled: isConnected && !!address,
     watch: true,
   });
@@ -28,7 +28,7 @@ export const useGetAccounts = () => {
                 return {
                   address: accountProxy?.address as `0x${string}`,
                   abi: accountProxy?.abi,
-                  functionName: "tokenOfOwnerByIndex",
+                  functionName: 'tokenOfOwnerByIndex',
                   args: [address, index],
                 };
               }
@@ -41,8 +41,8 @@ export const useGetAccounts = () => {
     acccountCount: acccountCount as bigint,
     accounts: (accountIds || []).map((item) => ({
       owner: address?.toString()!,
-      accountId: item.result?.toString(),
-      id: item.result?.toString(),
+      accountId: item?.toString(),
+      id: item?.toString(),
     })),
     isLoading: accountIdsIsLoading || acccountCountisLoading,
     refetch,

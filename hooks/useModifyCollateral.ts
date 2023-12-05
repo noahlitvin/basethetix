@@ -5,8 +5,7 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 
 export const useModifyCollateral = (
   account: string | undefined,
-  marketId: string,
-  amount: string,
+  marketId: string
 ) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
@@ -28,9 +27,9 @@ export const useModifyCollateral = (
 
   const poolId = useGetPreferredPool();
 
-  const { data, isLoading, isSuccess, write } = useContractWrite({
-    address: synthetix.address as Address,
-    abi: synthetix.abi,
-    functionName: 'feed',
-  });
+  // const { data, isLoading, isSuccess, writeAsync } = useContractWrite({
+  //   address: synthetix.address as Address,
+  //   abi: synthetix.abi,
+  //   functionName: 'feed',
+  // });
 };

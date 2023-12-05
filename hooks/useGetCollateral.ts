@@ -16,13 +16,9 @@ export const useGetCollateral = (account: string | undefined) => {
     watch: true,
   });
 
-  console.log({
-    data,
-  });
-
   const [totalDeposited, totalAssigned, totalLocked] = useMemo(() => {
     return ((data as bigint[]) || [0n, 0n, 0n]).map((n) =>
-      parseUnits(n.toString() || '0')
+      parseUnits(n?.toString() || '0')
     );
   }, [data]);
 

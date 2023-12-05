@@ -26,6 +26,7 @@ import { useState } from 'react';
 import { useGetCollateral } from '../hooks/useGetCollateral';
 import { ModifyCollateral } from './ModifyCollateral';
 import { Withdrawals } from './Withdrawals';
+import { useModifyCollateral } from '../hooks/useModifyCollateral';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -45,6 +46,8 @@ const Lp: NextComponentType = () => {
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
+
+  useModifyCollateral(selectedAccount, '0');
 
   return (
     <>
