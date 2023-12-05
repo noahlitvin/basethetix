@@ -39,9 +39,9 @@ const Home: NextPage = () => {
 
   const allChecked = Object.values(checkboxStates).every(Boolean);
 
-  useEffect(() => {
-    onOpen();
-  }, [onOpen]);
+  // useEffect(() => {
+  //   onOpen();
+  // }, [onOpen]);
 
   return (
     <>

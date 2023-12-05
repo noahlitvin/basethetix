@@ -32,21 +32,27 @@ export const useApprove = (
     return allowance && allowance.gte(amount);
   }, [allowance, amount]);
 
-  const approve = useCallback(async () => {
-    if (!sufficientAllowance && !!contractAddress && !!signer) {
-      const contract = new Contract(contractAddress, erc20ABI, signer);
-      await transact(contract, 'approve', [spender, BigNumber.from(amount)]);
-      refetchAllowance();
-    }
-  }, [
-    refetchAllowance,
-    sufficientAllowance,
-    contractAddress,
-    signer,
-    spender,
-    amount,
-    transact,
-  ]);
+  const approve = useCallback(
+    async (customAmount?: BigNumberish) => {
+      if (!sufficientAllowance && !!contractAddress && !!signer) {
+        const contract = new Contract(contractAddress, erc20ABI, signer);
+        await transact(contract, 'approve', [
+          spender,
+          BigNumber.from(customAmount || amount),
+        ]);
+        refetchAllowance();
+      }
+    },
+    [
+      refetchAllowance,
+      sufficientAllowance,
+      contractAddress,
+      signer,
+      spender,
+      amount,
+      transact,
+    ]
+  );
 
   return {
     isLoading,

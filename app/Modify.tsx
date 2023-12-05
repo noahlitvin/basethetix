@@ -9,30 +9,44 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useGetCollateral } from '../hooks/useGetCollateral';
-import { useAccount, useBalance } from 'wagmi';
+import { Address, useAccount, useBalance } from 'wagmi';
 import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
+import { useContract } from '../hooks/useContract';
+import { sUSDC_address } from '../constants/markets';
 
 interface ModifyProps {
   account: string;
-  onSubmit: (amount: number) => void;
+  amount: number;
+  setAmount: (amount: number) => void;
+  onSubmit: (isAdding: boolean) => void;
 }
 
-export const Modify: FC<ModifyProps> = ({ account, onSubmit }) => {
+export const Modify: FC<ModifyProps> = ({
+  account,
+  amount,
+  setAmount,
+  onSubmit,
+}) => {
   const { address } = useAccount();
   const { totalAssigned: collateral } = useGetCollateral(account);
 
   const [isAdding, setIsAdding] = useState(true);
 
-  const [amount, setAmount] = useState(0);
-
   // Remember decimals are 18 on mock but 6 on real
   const { data: USDCBalance, refetch: refetchUSD } = useBalance({
     address,
-    token: USD.address as `0x${string}`,
+    token: USD.address as Address,
+    watch: true,
+  });
+  const sUSD = useContract('USD');
+
+  const { data: sUSDCBalance } = useBalance({
+    address,
+    token: sUSDC_address as Address,
     watch: true,
   });
 
@@ -75,7 +89,9 @@ export const Modify: FC<ModifyProps> = ({ account, onSubmit }) => {
             </InputLeftElement>
             <Input
               type='number'
-              onChange={(e: any) => setAmount(e.target.value || 0)}
+              value={amount}
+              onChange={(e: any) => setAmount(Math.abs(e.target.value || 0))}
+              min={0}
             />
           </InputGroup>
         </FormControl>
@@ -99,7 +115,7 @@ export const Modify: FC<ModifyProps> = ({ account, onSubmit }) => {
         borderRadius='full'
         w='100%'
         my='4'
-        onClick={() => onSubmit(amount)}
+        onClick={() => onSubmit(isAdding)}
       >
         {isAdding ? 'Add' : 'Remove'} {Math.abs(amount)} USDC
       </Button>

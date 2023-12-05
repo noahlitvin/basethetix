@@ -1,8 +1,9 @@
 import { useAccount, useContractRead } from 'wagmi';
 import synthetix from '../deployments/system/CoreProxy.json';
-import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { parseUnits } from '../utils/format';
 import { useMemo } from 'react';
+import { sUSDC_address } from '../constants/markets';
+import { formatUnits } from 'viem';
 
 export const useGetCollateral = (account: string | undefined) => {
   const { address, isConnected } = useAccount();
@@ -11,14 +12,14 @@ export const useGetCollateral = (account: string | undefined) => {
     address: synthetix.address as `0x${string}`,
     abi: synthetix?.abi,
     functionName: 'getAccountCollateral',
-    args: [account, usdc.address],
+    args: [account, sUSDC_address],
     enabled: isConnected && !!address,
     watch: true,
   });
 
   const [totalDeposited, totalAssigned, totalLocked] = useMemo(() => {
     return ((data as bigint[]) || [0n, 0n, 0n]).map((n) =>
-      parseUnits(n?.toString() || '0')
+      formatUnits(n, 18).toString()
     );
   }, [data]);
 

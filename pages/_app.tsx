@@ -14,6 +14,7 @@ import theme from '../theme';
 import { Analytics } from '@vercel/analytics/react';
 import { useEffect, useState } from 'react';
 
+import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 const { chains, provider } = configureChains(
@@ -23,12 +24,12 @@ const { chains, provider } = configureChains(
      * Tells wagmi to use the default RPC URL for each chain
      * for some dapps the higher rate limits of Alchemy may be required
      */
+    infuraProvider({ apiKey: '4791c1745a1f44ce831e94be7f9e8bd7' }),
     jsonRpcProvider({
       rpc: (chain) => {
         return { http: chain.rpcUrls.default.http[0] };
       },
     }),
-    publicProvider(),
   ]
 );
 

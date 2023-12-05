@@ -10,5 +10,5 @@ export const useGetPreferredPool = () => {
     watch: true,
   });
 
-  return poolId as bigint;
+  return poolId?.toString();
 };

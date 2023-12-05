@@ -27,6 +27,8 @@ import { useGetCollateral } from '../hooks/useGetCollateral';
 import { ModifyCollateral } from './ModifyCollateral';
 import { Withdrawals } from './Withdrawals';
 import { useModifyCollateral } from '../hooks/useModifyCollateral';
+import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
+import { USD_MarketId } from '../constants/markets';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -46,8 +48,6 @@ const Lp: NextComponentType = () => {
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
-
-  useModifyCollateral(selectedAccount, '0');
 
   return (
     <>
