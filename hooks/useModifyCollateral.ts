@@ -53,7 +53,8 @@ export const useModifyCollateral = (
   const {
     approve: approve_sUSDC,
     requireApproval: requireApproval_sUSDC,
-    contract: sUSDC_Contract,
+    // contract: sUSDC_Contract,
+    // allowance: sUSDC_allowance,
   } = useApprove(sUSDC_address, amountD18, SYNTHETIX.address);
 
   // const { data, isLoading, isSuccess, writeAsync } = useContractWrite({
@@ -103,7 +104,6 @@ export const useModifyCollateral = (
           const newCollateralAmountD18 = parseEther(
             String(amount + Number(currentCollateral))
           ).toString();
-
           tx = await SYNTHETIX.contract.delegateCollateral(
             account,
             poolId,
@@ -127,13 +127,14 @@ export const useModifyCollateral = (
           // ];
 
           // if (requireApproval_sUSDC) {
-          //   const approve_sUSDC =
-          //     await sUSDC_Contract.populateTransaction.approve(
-          //       SYNTHETIX.address,
-          //       amountD18
-          //     );
+          // console.log('adding approval!');
 
-          //   txs.push(approve_sUSDC);
+          // txs.push(
+          //   await sUSDC_Contract.populateTransaction.approve(
+          //     SYNTHETIX.address,
+          //     amountD18
+          //   )
+          // );
           // }
 
           // const newCollateralAmountD18 = parseEther(

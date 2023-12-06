@@ -29,6 +29,8 @@ import { Withdrawals } from './Withdrawals';
 import { useModifyCollateral } from '../hooks/useModifyCollateral';
 import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
 import { USD_MarketId } from '../constants/markets';
+import { useGetPnl } from '../hooks/useGetPnl';
+import { formatUnits } from 'ethers/lib/utils.js';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -48,6 +50,8 @@ const Lp: NextComponentType = () => {
   const [selectedAccount, setSelectedAccount] = useState<string | undefined>();
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
+
+  const { data: pnl } = useGetPnl(selectedAccount);
 
   return (
     <>
@@ -117,7 +121,7 @@ const Lp: NextComponentType = () => {
                 <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>PnL</StatLabel>
                   <StatNumber fontFamily='monospace' fontWeight={500}>
-                    0.00 USDC
+                    {Number(pnl) > 0 ? `-${formatUnits(pnl)}` : 0} USDC
                   </StatNumber>
                   <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
                     <EditIcon />{' '}

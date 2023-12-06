@@ -1,7 +1,8 @@
-import { useContractRead } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
-import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
+import { useContractRead, useQuery } from 'wagmi';
 import { useGetPreferredPool } from './useGetPreferredPool';
+import { sUSDC_address } from '../constants/markets';
+import { useEffect } from 'react';
+import { useContract } from './useContract';
 
 export const useGetPnl = (accountId: string | undefined) => {
   /*
@@ -15,17 +16,27 @@ export const useGetPnl = (accountId: string | undefined) => {
 
   return this value, after multiplying by -1
 */
-
+  const synthetix = useContract('SYNTHETIX');
   const poolId = useGetPreferredPool();
 
-  const { data: debtD18 } = useContractRead({
-    address: synthetix.address as `0x${string}`,
-    abi: synthetix?.abi,
-    functionName: 'getPositionDebt',
-    args: [accountId, poolId, usdc.address],
-    enabled: !!poolId,
-    watch: true,
-  });
+  return useQuery(
+    ['getPositionDebt', accountId, poolId, sUSDC_address],
+    async () => {
+      try {
+        const debt = await synthetix.contract.callStatic.getPositionDebt(
+          accountId,
+          poolId,
+          sUSDC_address
+        );
 
-  return debtD18;
+        return debt.toString();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    {
+      enabled: !!poolId,
+      initialData: '0',
+    }
+  );
 };
