@@ -29,6 +29,10 @@ export const useGetPnl = (accountId: string | undefined) => {
           sUSDC_address
         );
 
+        console.log({
+          debt: debt.toString(),
+        });
+
         return debt.toString();
       } catch (error) {
         console.log(error);
