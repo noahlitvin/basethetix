@@ -829,5 +829,6 @@
   "contractName": "",
   "deployedOn": "invoke.init_usd",
   "gasUsed": 0,
-  "gasCost": "0"
+  "gasCost": "0",
+  "highlight": true
 }

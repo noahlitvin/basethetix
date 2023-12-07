@@ -1,5 +1,5 @@
 {
-  "address": "0x7d321B0926709eC243326da5983bB35051337C74",
+  "address": "0x3410215D8A0BD57dAc5911785F2A832402D5c828",
   "abi": [
     {
       "inputs": [
@@ -556,10 +556,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x9d87f1ed8b51e6325178ff12cc602b3227cb96e1037a64eed930c3b64f5b5699",
+  "deployTxnHash": "0xdf292dd64ccd82c56573a7b0cffaf152a767fc7e901ade98bac3ab2d8dc1644f",
   "sourceName": "contracts/modules/core/VaultModule.sol",
   "contractName": "VaultModule",
   "deployedOn": "contract.VaultModule",
-  "gasUsed": 3527463,
-  "gasCost": "1500000255"
+  "gasUsed": 3527475,
+  "gasCost": "34150296"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0xFe0f9558a5B526074E8ec92a1fCFadAe8D7809cA",
+  "address": "0x377dFE6f4A08C3158A02fb32aA75100EA9296956",
   "abi": [
     {
       "inputs": [
@@ -202,10 +202,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0xf606a2800d3a6af27c3a10e97985be0d5e7463894f4b5e1a0d75e9e969b9a730",
+  "deployTxnHash": "0x7ae3ceea3e4e9db47036b9de0e7532fd5f740bede1556c2034f911ca5e58355f",
   "sourceName": "contracts/modules/core/AssociateDebtModule.sol",
   "contractName": "AssociateDebtModule",
   "deployedOn": "contract.AssociateDebtModule",
-  "gasUsed": 2267094,
-  "gasCost": "1500000254"
+  "gasUsed": 2267106,
+  "gasCost": "350700280"
 }

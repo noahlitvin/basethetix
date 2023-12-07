@@ -1,5 +1,5 @@
 {
-  "address": "0x513f09223543193296B1F19ef7F9D02B816015c7",
+  "address": "0x09fAa539B6AD1aD130286Eb9c30052D1a9b4a02b",
   "abi": [
     {
       "inputs": [
@@ -488,10 +488,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x69c227e150f5ea35d2fe313b1421469de5a3f703175a8944d1428cd59aaad93b",
+  "deployTxnHash": "0x3e2c5d499cff163ef4dabddfffe9756c504223fc28e1f3442361511e25927b11",
   "sourceName": "contracts/modules/GlobalPerpsMarketModule.sol",
   "contractName": "GlobalPerpsMarketModule",
   "deployedOn": "contract.GlobalPerpsMarketModule",
   "gasUsed": 1189034,
-  "gasCost": "1500000254"
+  "gasCost": "340550195"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0xD0787b12091dF882AF084cF9C2196A8053B85518",
+  "address": "0xA412812e43b52B8e1a373406fF019bFF5D622Fc2",
   "abi": [
     {
       "inputs": [],
@@ -624,10 +624,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x00ffeac3d1bb75ef4d53d2b8d4bfefc70439430bf366071145d9fd9455672e39",
+  "deployTxnHash": "0xefc91d4850a00bfbfb0172543b2b620262301f42f3f55b4a7b314fd97ce77d55",
   "sourceName": "contracts/modules/account/AccountTokenModule.sol",
   "contractName": "AccountTokenModule",
   "deployedOn": "contract.AccountTokenModule",
-  "gasUsed": 1787656,
-  "gasCost": "1500000254"
+  "gasUsed": 1787668,
+  "gasCost": "350700279"
 }

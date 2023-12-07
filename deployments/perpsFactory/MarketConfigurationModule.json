@@ -1,5 +1,5 @@
 {
-  "address": "0x358082265d5e38992a24C3a322f66c7A1db5106F",
+  "address": "0x833fb2D8dC68d2DC15becf619C0F2F4150aA1Aa7",
   "abi": [
     {
       "inputs": [
@@ -272,6 +272,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "indexed": false,
@@ -340,6 +345,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "indexed": false,
@@ -394,6 +404,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -646,6 +661,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -857,6 +877,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -918,10 +943,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x39304087d69d6184b9ed6176682b2db4e35cbacfc0dafb9b6b65115f300c5819",
+  "deployTxnHash": "0xd8a032d5bd301a391a1026259f9cd07c0a8b7a92b6106500623ce8a86ba72d15",
   "sourceName": "contracts/modules/MarketConfigurationModule.sol",
   "contractName": "MarketConfigurationModule",
   "deployedOn": "contract.MarketConfigurationModule",
-  "gasUsed": 1011258,
-  "gasCost": "1500000254"
+  "gasUsed": 1027259,
+  "gasCost": "1000000001"
 }

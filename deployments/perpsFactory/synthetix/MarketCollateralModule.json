@@ -1,5 +1,5 @@
 {
-  "address": "0x897dB3Bd4d0397FA1F144717078fa226c488d9ec",
+  "address": "0xec7cde7610685C98A405c3d5d0C9e4630B969402",
   "abi": [
     {
       "inputs": [],
@@ -397,10 +397,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0xebc75488f0fdb6794a0d0f7084e7d0ba9553bbb1b802ac9cf61425e94344b860",
+  "deployTxnHash": "0x61933b6ed3b25a31c905de6c34f9130cb1d52f96eeb257bf70d4750a70bc83bf",
   "sourceName": "contracts/modules/core/MarketCollateralModule.sol",
   "contractName": "MarketCollateralModule",
   "deployedOn": "contract.MarketCollateralModule",
-  "gasUsed": 1222497,
-  "gasCost": "1500000254"
+  "gasUsed": 1222509,
+  "gasCost": "100000256"
 }

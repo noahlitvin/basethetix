@@ -1,5 +1,5 @@
 {
-  "address": "0xEd473984cD9e67aA7b61C773664A7C402A75852F",
+  "address": "0x0BD34AaBeDB76B55471E2ecFE9664B33740273Ec",
   "abi": [
     {
       "inputs": [
@@ -798,10 +798,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x898b8a984327abf35b239ecb11b9493b65f7c79132ae440172a391ccd415d2eb",
+  "deployTxnHash": "0x377826c6ed6929cf7eb48592c1f17612ce1627cb68d4ad317657ca0810b01f3d",
   "sourceName": "contracts/modules/AtomicOrderModule.sol",
   "contractName": "AtomicOrderModule",
   "deployedOn": "contract.AtomicOrderModule",
   "gasUsed": 2108662,
-  "gasCost": "1500000254"
+  "gasCost": "100000255"
 }

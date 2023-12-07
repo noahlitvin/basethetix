@@ -1,5 +1,5 @@
 {
-  "address": "0x3c216164A2Adf051E18b7bb6e2781ea558A1849c",
+  "address": "0x5b0d46565453400418065FFA0C071aAb8d86995e",
   "abi": [
     {
       "inputs": [],
@@ -747,10 +747,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0xa415689000da0bd96ddb6d276c82dd3b4b2a8ae251d0c51a0651fbc9f93251d0",
+  "deployTxnHash": "0xaff8300b268a5534ddb7b1778dced36925b7953c38933426cc521d9bd432b265",
   "sourceName": "contracts/modules/core/MarketManagerModule.sol",
   "contractName": "MarketManagerModule",
   "deployedOn": "contract.MarketManagerModule",
-  "gasUsed": 2756365,
-  "gasCost": "1500000255"
+  "gasUsed": 2756377,
+  "gasCost": "100000256"
 }

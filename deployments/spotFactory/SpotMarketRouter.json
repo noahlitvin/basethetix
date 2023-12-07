@@ -1,5 +1,5 @@
 {
-  "address": "0x3457847545FD5A3A92798Bf3A9D22Ce87aB2d030",
+  "address": "0x97f67Aa15721FcA52Faf6641C15cfAE020972ceF",
   "abi": [
     {
       "inputs": [
@@ -3844,9 +3844,9 @@
     }
   ],
   "deployedOn": "router.SpotMarketRouter",
-  "deployTxnHash": "0x13a8597e328382521217f475f6ee6b5b083ba63fe1997c4aae06fa3cf64c6d5f",
+  "deployTxnHash": "0x2a0d769ad9c932e49da2f270b71ca55ae86560535c5314870592326d46b3ef49",
   "contractName": "SpotMarketRouter",
   "sourceName": "SpotMarketRouter.sol",
-  "gasUsed": 820529,
-  "gasCost": "1500000254"
+  "gasUsed": 820577,
+  "gasCost": "100000254"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0xE02d1640dcaB494327DbE4B63fBcD441b92c8205",
+  "address": "0x45be3564e966cD01EF48e1005aAA19C502f72033",
   "abi": [
     {
       "inputs": [
@@ -1801,6 +1801,12 @@
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "expectedPriceTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "settlementTime",
           "type": "uint256"
         },
@@ -3154,6 +3160,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "indexed": false,
@@ -3222,6 +3233,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "indexed": false,
@@ -3276,6 +3292,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -3528,6 +3549,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -3739,6 +3765,11 @@
               "internalType": "bool",
               "name": "disabled",
               "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "commitmentPriceDelay",
+              "type": "uint256"
             }
           ],
           "internalType": "struct SettlementStrategy.Data",
@@ -4231,9 +4262,9 @@
     }
   ],
   "deployedOn": "router.PerpsMarketRouter",
-  "deployTxnHash": "0xd245778fe35385db36ed94b8b3c2778f6e6f928dde58fc60fd6a797f314aec9e",
+  "deployTxnHash": "0x826b91c168fea47fecee96942a70fe8f37baf765fee070ced18afb80b908136d",
   "contractName": "PerpsMarketRouter",
   "sourceName": "PerpsMarketRouter.sol",
-  "gasUsed": 1098898,
-  "gasCost": "1500000254"
+  "gasUsed": 1098958,
+  "gasCost": "1000000001"
 }

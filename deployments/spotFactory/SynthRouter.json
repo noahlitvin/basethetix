@@ -1,5 +1,5 @@
 {
-  "address": "0x1DeDb45517d62875754B398802480c1bc1Ae4D5D",
+  "address": "0x42759656302863af2F188409dE84732803784F58",
   "abi": [
     {
       "inputs": [
@@ -680,9 +680,9 @@
     }
   ],
   "deployedOn": "router.SynthRouter",
-  "deployTxnHash": "0xf98b9bc0d8153adeb339478e081d0b758b99d84d783b511aa40bfd353720d6d9",
+  "deployTxnHash": "0x1f06590035a922504df60d97a25dcaa66f492e9a0d5cee63377d0445581d6705",
   "contractName": "SynthRouter",
   "sourceName": "SynthRouter.sol",
   "gasUsed": 381169,
-  "gasCost": "1500000254"
+  "gasCost": "100000254"
 }

@@ -1,5 +1,5 @@
 {
-  "address": "0xA7BB2e6785fc80C686fF72A3de174bF2f085CD40",
+  "address": "0x0ade5f9C1873499413EBbA870E6a465771821180",
   "abi": [
     {
       "inputs": [
@@ -234,6 +234,12 @@
           "indexed": false,
           "internalType": "uint256",
           "name": "commitmentTime",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "expectedPriceTime",
           "type": "uint256"
         },
         {
@@ -546,10 +552,10 @@
   ],
   "constructorArgs": [],
   "linkedLibraries": {},
-  "deployTxnHash": "0x7351805413ad7fbb5afafc29e39af8d580d26cd765028d89759a263ca2b9dfdc",
+  "deployTxnHash": "0xe14566a09432f935bc24840620a7382f50468f6efa4eb66077d2ec6879c247c4",
   "sourceName": "contracts/modules/AsyncOrderModule.sol",
   "contractName": "AsyncOrderModule",
   "deployedOn": "contract.AsyncOrderModule",
-  "gasUsed": 2629296,
-  "gasCost": "1500000254"
+  "gasUsed": 2635162,
+  "gasCost": "10825290"
 }
