@@ -61,52 +61,6 @@ export const useModifyCollateral = (
             console.log('approve USDC done!');
           }
 
-          // let tx = await SPOT_MARKET.contract.wrap(
-          //   USD_MarketId,
-          //   amountD18,
-          //   amountD18,
-          //   {
-          //     gasLimit: 1000000,
-          //   }
-          // );
-
-          // await tx.wait();
-          // console.log('wrapping done!');
-
-          // if (requireApproval_sUSDC) {
-          //   await approve_sUSDC();
-          //   console.log('approve sUSDC done!');
-          // }
-
-          // tx = await SYNTHETIX.contract.deposit(
-          //   account,
-          //   sUSDC_address,
-          //   amountD18,
-          //   {
-          //     gasLimit: 1000000,
-          //   }
-          // );
-
-          // await tx.wait();
-          // console.log('deposit done!');
-
-          // const newCollateralAmountD18 = parseEther(
-          //   String(amount + Number(currentCollateral))
-          // ).toString();
-          // tx = await SYNTHETIX.contract.delegateCollateral(
-          //   account,
-          //   poolId,
-          //   sUSDC_address,
-          //   newCollateralAmountD18,
-          //   parseEther('1'),
-          //   {
-          //     gasLimit: 1000000,
-          //   }
-          // );
-
-          // console.log('delegateCollateral done!');
-          // await tx.wait();
-
           const txs: PopulatedTransaction[] = [
             await SPOT_MARKET.contract.populateTransaction.wrap(
               USD_MarketId,
@@ -166,12 +120,50 @@ export const useModifyCollateral = (
             data: txn.data,
             value: txn.value,
             gasLimit: 1000000,
-            /*
-            maxFeePerGas: feeData.maxFeePerGas || undefined,
-            maxPriorityFeePerGas: feeData.maxPriorityFeePerGas || undefined,
-            type: 2,
-            */
           });
+
+          await tx?.wait();
+        } else {
+          const newCollateralAmountD18 = parseEther(
+            String(Number(currentCollateral) - amount)
+          ).toString();
+
+          const txs: PopulatedTransaction[] = [
+            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+              account,
+              poolId,
+              sUSDC_address,
+              newCollateralAmountD18,
+              parseEther('1'),
+              {
+                gasLimit: 1000000,
+              }
+            ),
+            await SPOT_MARKET.contract.populateTransaction.unwrap(
+              USD_MarketId,
+              amountD18,
+              0
+            ),
+          ];
+
+          console.log({ txs });
+          const txn = await makeMulticall(
+            txs as TransactionRequest[],
+            address as Address
+          );
+
+          console.log({
+            txn,
+          });
+
+          const tx = await signer?.sendTransaction({
+            to: txn.to as Address,
+            data: txn.data,
+            value: txn.value,
+            gasLimit: 1000000,
+          });
+
+          await tx?.wait();
         }
       } catch (error) {
         console.log(error);
@@ -180,7 +172,7 @@ export const useModifyCollateral = (
     [
       SPOT_MARKET.contract.populateTransaction,
       SYNTHETIX.address,
-      SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.contract,
       USDCrequireApproval,
       account,
       address,

@@ -150,7 +150,7 @@ const Lp: NextComponentType = () => {
                   </Modal>
                 </Stat>
               </StatGroup>
-              <Withdrawals />
+              <Withdrawals account={selectedAccount} />
             </>
           )}
         </Box>

@@ -9,50 +9,38 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { useGetCollateral } from '../hooks/useGetCollateral';
+import { FC, useMemo, useState } from 'react';
 import { Address, useAccount, useBalance } from 'wagmi';
 import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
-import { useContract } from '../hooks/useContract';
-import { sUSDC_address } from '../constants/markets';
 
 interface ModifyProps {
-  account: string;
   amount: number;
   setAmount: (amount: number) => void;
   onSubmit: (isAdding: boolean) => void;
+  balance: string | undefined;
 }
 
 export const Modify: FC<ModifyProps> = ({
-  account,
   amount,
   setAmount,
   onSubmit,
+  balance,
 }) => {
   const { address } = useAccount();
-  const { totalAssigned: collateral } = useGetCollateral(account);
 
   const [isAdding, setIsAdding] = useState(true);
 
-  // Remember decimals are 18 on mock but 6 on real
+  const newAmount = useMemo(() => {
+    return Number(balance) + (isAdding ? amount : -amount);
+  }, [balance, amount, isAdding]);
+
   const { data: USDCBalance, refetch: refetchUSD } = useBalance({
     address,
     token: USD.address as Address,
     watch: true,
   });
-  const sUSD = useContract('USD');
-
-  const { data: sUSDCBalance } = useBalance({
-    address,
-    token: sUSDC_address as Address,
-    watch: true,
-  });
-
-  const newAmount = useMemo(() => {
-    return Number(USDCBalance?.formatted) + (isAdding ? amount : -amount);
-  }, [USDCBalance?.formatted, amount, isAdding]);
 
   return (
     <>
@@ -62,7 +50,7 @@ export const Modify: FC<ModifyProps> = ({
             px={0}
             readOnly
             type='text'
-            value={collateral?.toLocaleString() + ' USDC'}
+            value={balance?.toLocaleString() + ' USDC'}
             border='none'
           />
           <FormHelperText whiteSpace='nowrap' position='absolute'>

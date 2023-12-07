@@ -1,8 +1,7 @@
 import { Address, useAccount, useContractRead } from 'wagmi';
 import synthetix from '../deployments/system/CoreProxy.json';
-import usdc from '../deployments/usdc_mock_collateral/MintableToken.json';
-import { parseUnits } from '../utils/format';
 import { sUSDC_address } from '../constants/markets';
+import { formatUnits } from 'ethers/lib/utils.js';
 
 export const useGetWithdrawable = (account: string | undefined) => {
   const { address, isConnected } = useAccount();
@@ -16,10 +15,10 @@ export const useGetWithdrawable = (account: string | undefined) => {
     watch: true,
   });
 
-  let withdrawableCollateral = parseUnits(data?.toString() || '0');
+  let withdrawableCollateral = formatUnits(data?.toString() || '0');
 
   return {
-    withdrawable: withdrawableCollateral,
+    withdrawable: withdrawableCollateral?.toString(),
     isLoading,
     refetch,
   };
