@@ -1,7 +1,6 @@
 import { useGetCollateral } from './useGetCollateral';
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo } from 'react';
-import { useTransact } from './useTransact';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
@@ -38,7 +37,6 @@ export const useModifyCollateral = (
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
   const USDC = useContract('USDC');
-  const sUSD = useContract('USD');
   const poolId = useGetPreferredPool();
 
   const amountD18 = useMemo(

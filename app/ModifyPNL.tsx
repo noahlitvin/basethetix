@@ -4,6 +4,7 @@ import { Box, Button, Heading, Text } from '@chakra-ui/react';
 import Modify from './Modify';
 import { useGetPnl } from '../hooks/useGetPnl';
 import { formatUnits } from 'ethers/lib/utils.js';
+import { useModifyPnL } from '../hooks/useModifyPnL';
 
 interface ModifyPNLProps {
   account: string;
@@ -12,12 +13,11 @@ interface ModifyPNLProps {
 export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
   const [amount, setAmount] = useState(0);
   const { data: pnl } = useGetPnl(account);
+  const submit = useModifyPnL(account, amount);
 
   return (
     <Modify
-      onSubmit={(isAdding) => {
-        console.log('isAdding:', isAdding);
-      }}
+      onSubmit={submit}
       amount={amount}
       setAmount={setAmount}
       balance={formatUnits(pnl)}
