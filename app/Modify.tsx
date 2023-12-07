@@ -44,16 +44,10 @@ export const Modify: FC<ModifyProps> = ({
 
   return (
     <>
-      <Flex mb={4} flex={1}>
+      <Flex mb={4} flex={1} alignItems='center'>
         <FormControl>
-          <Input
-            px={0}
-            readOnly
-            type='text'
-            value={balance?.toLocaleString() + ' USDC'}
-            border='none'
-          />
-          <FormHelperText whiteSpace='nowrap' position='absolute'>
+          <Amount value={wei(balance || '0')} suffix='USDC' />
+          <FormHelperText  top={7} whiteSpace='nowrap' position='absolute'>
             <Flex alignItems='center' fontWeight='normal' fontSize='sm' gap={1}>
               Wallet Balance:
               <Amount
@@ -88,13 +82,7 @@ export const Modify: FC<ModifyProps> = ({
           <Input readOnly type='text' value='=' border='none' py={0} />
         </FormControl>
         <FormControl>
-          <Input
-            readOnly
-            type='text'
-            value={newAmount + ' USDC'}
-            border='none'
-            px={0}
-          />
+          <Amount value={wei(newAmount || '0')} suffix='USDC' />
         </FormControl>
       </Flex>
       <Button

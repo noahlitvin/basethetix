@@ -20,17 +20,16 @@ import {
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextComponentType } from 'next';
 import { useAccount } from 'wagmi';
-import Modify from './Modify';
 import Accounts from './Accounts';
 import { useState } from 'react';
 import { useGetCollateral } from '../hooks/useGetCollateral';
 import { ModifyCollateral } from './ModifyCollateral';
 import { Withdrawals } from './Withdrawals';
-import { useModifyCollateral } from '../hooks/useModifyCollateral';
-import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
-import { USD_MarketId } from '../constants/markets';
 import { useGetPnl } from '../hooks/useGetPnl';
 import { formatUnits } from 'ethers/lib/utils.js';
+import { ModifyPNL } from './ModifyPNL';
+import { Amount } from '../components/Amount';
+import { wei } from '@synthetixio/wei';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -121,7 +120,11 @@ const Lp: NextComponentType = () => {
                 <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>PnL</StatLabel>
                   <StatNumber fontFamily='monospace' fontWeight={500}>
-                    {Number(pnl) > 0 ? `-${formatUnits(pnl)}` : 0} USDC
+                    <Amount
+                      value={wei(formatUnits(pnl) || '0')}
+                      suffix='USDC'
+                      prefix={Number(pnl) > 0 ? '-' : ''}
+                    />
                   </StatNumber>
                   <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
                     <EditIcon />{' '}
@@ -144,7 +147,7 @@ const Lp: NextComponentType = () => {
                           from backing the markets. This can increase and
                           decrease over time based on market performance.
                         </Text>
-                        <ModifyCollateral account={selectedAccount} />
+                        <ModifyPNL account={selectedAccount} />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
