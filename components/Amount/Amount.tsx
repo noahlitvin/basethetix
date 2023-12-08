@@ -1,12 +1,12 @@
-import { Text, Tooltip } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { Wei, wei } from '@synthetixio/wei';
-import { currency } from '../../utils/currency';
+import { Text, Tooltip } from "@chakra-ui/react";
+import { useMemo } from "react";
+import { Wei, wei } from "@synthetixio/wei";
+import { currency } from "../../utils/currency";
 
 export function Amount({
   value,
-  prefix = '',
-  suffix = '',
+  prefix = "",
+  suffix = "",
   onClick = () => {},
 }: {
   prefix?: string;
@@ -16,10 +16,10 @@ export function Amount({
 }) {
   const { formattedValue, preciseValue } = useMemo(() => {
     if (!value) {
-      return { formattedValue: '-', preciseValue: '-' };
+      return { formattedValue: "-", preciseValue: "-" };
     }
     const formattedValue = currency(value);
-    const cleanNumber = wei(formattedValue.replaceAll(',', ''));
+    const cleanNumber = wei(formattedValue.replaceAll(",", ""));
 
     return {
       formattedValue,
@@ -38,19 +38,8 @@ export function Amount({
       }
       isDisabled={formattedValue === preciseValue}
     >
-      <Text
-        _hover={
-          !!onClick
-            ? {
-                cursor: 'pointer',
-                color: 'cyan',
-                textDecoration: 'underline',
-              }
-            : {}
-        }
-        onClick={() => onClick(value?.toString() || '0')}
-      >
-        {prefix ? `${prefix} ` : ''}
+      <Text onClick={() => onClick(value?.toString() || "0")}>
+        {prefix ? `${prefix} ` : ""}
         {formattedValue}&nbsp;
         {suffix}
       </Text>
