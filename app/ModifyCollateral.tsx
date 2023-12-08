@@ -1,14 +1,16 @@
-import { FC, useState } from 'react';
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { FC, useState } from "react";
+import { Box, Button, Heading, Text } from "@chakra-ui/react";
 
-import Modify from './Modify';
-import { formatDuration, intervalToDuration } from 'date-fns';
-import { useGetWithdrawable } from '../hooks/useGetWithdrawable';
-import { useModifyCollateral } from '../hooks/useModifyCollateral';
-import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
-import { Address, useAccount, useBalance } from 'wagmi';
-import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
-import { useGetCollateral } from '../hooks/useGetCollateral';
+import Modify from "./Modify";
+import { formatDuration, intervalToDuration } from "date-fns";
+import { useGetWithdrawable } from "../hooks/useGetWithdrawable";
+import { useModifyCollateral } from "../hooks/useModifyCollateral";
+import { useGetMarketInfo } from "../hooks/useGetMarketInfo";
+import { Address, useAccount, useBalance } from "wagmi";
+import USD from "../deployments/usdc_mock_collateral/MintableToken.json";
+import { useGetCollateral } from "../hooks/useGetCollateral";
+import { useGetPnl } from "../hooks/useGetPnl";
+import WithdrawAll from "./WithdrawAll";
 
 interface ModifyCollateralProps {
   account: string;
@@ -24,14 +26,22 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
 
   const submit = useModifyCollateral(account, amount);
 
+  const { data: pnl } = useGetPnl(account);
+
   const { totalAssigned: collateral } = useGetCollateral(account);
 
-  return (
-    <Modify
-      onSubmit={submit}
-      amount={amount}
-      setAmount={setAmount}
-      balance={collateral}
-    />
+  return pnl < 0 ? (
+    <Box mb={2}>
+      <WithdrawAll />
+    </Box>
+  ) : (
+    <Box mb={2}>
+      <Modify
+        onSubmit={submit}
+        amount={amount}
+        setAmount={setAmount}
+        balance={collateral}
+      />
+    </Box>
   );
 };
