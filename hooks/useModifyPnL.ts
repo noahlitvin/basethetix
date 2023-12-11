@@ -36,7 +36,6 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
   const USDC = useContract('USDC');
   const sUSD = useContract('snxUSD');
   const poolId = useGetPreferredPool();
-  const { data: pnl } = useGetPnl(account);
 
   const amountD18 = useMemo(
     () => parseEther(String(amount || 0)).toString(),
@@ -62,6 +61,7 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     async (isAdding: boolean) => {
       try {
         if (isAdding) {
+          //5% slippage
           if (USDCrequireApproval) {
             await approveUSDC();
             console.log('approve USDC done!');
@@ -118,6 +118,19 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
               poolId,
               sUSDC_Contract.address,
               amountD18
+            )
+          );
+
+          txs.push(
+            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+              account,
+              poolId,
+              sUSDC_address,
+              0,
+              parseEther('1'),
+              {
+                gasLimit: 1000000,
+              }
             )
           );
 
