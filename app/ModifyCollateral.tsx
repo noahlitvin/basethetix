@@ -24,7 +24,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
   const accountTimeout = 0; //todo
   const [amount, setAmount] = useState(0);
 
-  const submit = useModifyCollateral(account, amount);
+  const { submit, isLoading } = useModifyCollateral(account, amount);
 
   const { data: pnl } = useGetPnl(account);
 
@@ -41,6 +41,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
         amount={amount}
         setAmount={setAmount}
         balance={collateral}
+        isLoading={isLoading}
       />
     </Box>
   );
