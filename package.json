@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup": "cannon inspect synthetix-omnibus:latest@andromeda --chain-id 84531 --write-deployments ./deployments "
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -14,14 +15,19 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@rainbow-me/rainbowkit": "^1.3.0",
+    "@rainbow-me/rainbowkit": "^0.12.13",
+    "@usecannon/cli": "^2.10.1",
     "@vercel/analytics": "^1.1.1",
+    "date-fns": "^2.30.0",
+    "erc7412": "^0.2.1",
+    "ethers": "^5.7.2",
     "framer-motion": "^10.16.5",
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "viem": "~1.19.4",
-    "wagmi": "~1.4.7"
+    "react-timer-hook": "^3.0.7",
+    "viem": "^1.5.3",
+    "wagmi": "^0.12.12"
   },
   "devDependencies": {
     "@types/node": "^18.18.10",

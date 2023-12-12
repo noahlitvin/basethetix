@@ -1,51 +1,73 @@
-import "@rainbow-me/rainbowkit/styles.css";
+import '@rainbow-me/rainbowkit/styles.css';
 import {
-  getDefaultWallets,
   RainbowKitProvider,
   darkTheme,
-} from "@rainbow-me/rainbowkit";
-import type { AppProps } from "next/app";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { goerli, baseGoerli } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
-import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
-import theme from "../theme";
-import { Analytics } from "@vercel/analytics/react";
+  getDefaultWallets,
+} from '@rainbow-me/rainbowkit';
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(
+import type { AppProps } from 'next/app';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { goerli, baseGoerli } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
+import theme from '../theme';
+import { Analytics } from '@vercel/analytics/react';
+import { useEffect, useState } from 'react';
+
+import { infuraProvider } from 'wagmi/providers/infura';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+
+const { chains, provider } = configureChains(
+  [baseGoerli],
   [
-    baseGoerli,
-    //...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
-  ],
-  [publicProvider()]
+    /**
+     * Tells wagmi to use the default RPC URL for each chain
+     * for some dapps the higher rate limits of Alchemy may be required
+     */
+    infuraProvider({ apiKey: '4791c1745a1f44ce831e94be7f9e8bd7' }),
+    jsonRpcProvider({
+      rpc: (chain) => {
+        return { http: chain.rpcUrls.default.http[0] };
+      },
+    }),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "Basethetix",
-  projectId: "YOUR_PROJECT_ID",
+  appName: 'Basethetix',
   chains,
+  projectId: '5075a2da602e17eec34aa77b40b321be',
 });
 
-const wagmiConfig = createConfig({
+const client = createClient({
   autoConnect: true,
-  connectors,
-  publicClient,
-  webSocketPublicClient,
+  connectors: connectors,
+  provider,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <ChakraProvider theme={theme}>
-        <WagmiConfig config={wagmiConfig}>
+        <WagmiConfig client={client}>
           <RainbowKitProvider
             chains={chains}
             theme={darkTheme({
-              accentColor: "#0152ff",
-              accentColorForeground: "white",
-              borderRadius: "large",
-              fontStack: "system",
+              accentColor: '#0152ff',
+              accentColorForeground: 'white',
+              borderRadius: 'large',
+              fontStack: 'system',
             })}
           >
             <Component {...pageProps} />
