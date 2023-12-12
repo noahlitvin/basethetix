@@ -1,13 +1,13 @@
-import { Button, Text, useToast } from "@chakra-ui/react";
-import type { NextComponentType } from "next";
+import { Button, Text, useToast } from '@chakra-ui/react';
+import type { NextComponentType } from 'next';
 import {
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
-} from "wagmi";
-import synthetix from "../deployments/system/CoreProxy.json";
-import { useEffect, useState, useRef } from "react";
-import { filter } from "lodash";
+} from 'wagmi';
+import synthetix from '../deployments/system/CoreProxy.json';
+import { useEffect, useState, useRef } from 'react';
+import { filter } from 'lodash';
 
 const CreateAccount: NextComponentType = () => {
   const toast = useToast();
@@ -17,14 +17,14 @@ const CreateAccount: NextComponentType = () => {
 
   const createAccountAbi = {
     address: synthetix.address as `0x${string}`,
-    functionName: "createAccount",
+    functionName: 'createAccount',
     abi: filter(synthetix.abi, {
-      name: "createAccount",
+      name: 'createAccount',
       outputs: [
         {
-          internalType: "uint128",
-          name: "accountId",
-          type: "uint128",
+          internalType: 'uint128',
+          name: 'accountId',
+          type: 'uint128',
         },
       ],
     }),
@@ -38,7 +38,7 @@ const CreateAccount: NextComponentType = () => {
     hash: data?.hash,
   });
 
-  const buttonText = isLoading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT";
+  const buttonText = isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT';
 
   useEffect(() => {
     if (hovered && !isLoading) {
@@ -49,7 +49,7 @@ const CreateAccount: NextComponentType = () => {
 
     return () => {
       if (hoverIntervalRef.current) {
-        clearInterval(hoverIntervalRef.current);
+        clearInterval(hoverIntervalRef?.current as unknown as number);
       }
     };
   }, [hovered, isLoading, buttonText.length]);
@@ -57,9 +57,9 @@ const CreateAccount: NextComponentType = () => {
   useEffect(() => {
     if (isSuccess) {
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Account created with transaction ${data?.hash}`,
-        status: "success",
+        status: 'success',
         duration: 10000,
         isClosable: true,
       });
@@ -69,26 +69,26 @@ const CreateAccount: NextComponentType = () => {
   const renderButtonText = () => {
     return [...buttonText].map((char, index) => (
       <Text
-        as="span"
+        as='span'
         key={index}
-        color={index === highlightedCharIndex ? "blue.500" : "inherit"}
+        color={index === highlightedCharIndex ? 'blue.500' : 'inherit'}
       >
-        {char === " " ? "\u00A0" : char}
+        {char === ' ' ? '\u00A0' : char}
       </Text>
     ));
   };
 
   return (
     <Button
-      colorScheme="blue"
+      colorScheme='blue'
       mb={3}
-      size="xs"
-      variant="outline"
-      fontFamily="monospace"
-      lineHeight="1"
-      borderColor="blue.500"
-      color="white"
-      _hover={{ background: "transparent" }}
+      size='xs'
+      variant='outline'
+      fontFamily='monospace'
+      lineHeight='1'
+      borderColor='blue.500'
+      color='white'
+      _hover={{ background: 'transparent' }}
       disabled={!write || isLoading}
       onClick={() => write && write()}
       onMouseEnter={() => setHovered(true)}

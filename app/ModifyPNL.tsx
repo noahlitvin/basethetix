@@ -14,7 +14,7 @@ interface ModifyPNLProps {
 export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
   const [amount, setAmount] = useState(0);
   const { data: pnl } = useGetPnl(account);
-  const submit = useModifyPnL(account, pnl);
+  const { submit, isLoading } = useModifyPnL(account, amount);
 
   return pnl < 0 ? (
     <Box mb={2}>
@@ -27,8 +27,10 @@ export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
         withdrawal.
       </Text>
       <Modify
-        subtractOnly
+        subtractOnly={pnl < 0}
+        balance={formatUnits(pnl.toString())}
         amount={amount}
+        isLoading={isLoading}
         setAmount={setAmount}
         onSubmit={submit}
       />

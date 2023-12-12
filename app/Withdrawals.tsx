@@ -1,17 +1,17 @@
 import { Box, Heading, Text, Button } from '@chakra-ui/react';
-import { formatDuration, intervalToDuration } from 'date-fns';
 import { FC } from 'react';
 import { useGetWithdrawable } from '../hooks/useGetWithdrawable';
 import { useWithdraw } from '../hooks/useWithdraw';
+import { useAccountTimeout } from '../hooks/useGetAccountTimeout';
 
 interface WithdrawalsProps {
   account?: string;
 }
 
 export const Withdrawals: FC<WithdrawalsProps> = ({ account }) => {
-  const accountTimeout = 0; //useGetAccountTimeout
-
   const { withdrawable } = useGetWithdrawable(account);
+
+  const { accountTimeout, timerLabel } = useAccountTimeout(account);
 
   const withdraw = useWithdraw(account);
   return (
@@ -25,11 +25,7 @@ export const Withdrawals: FC<WithdrawalsProps> = ({ account }) => {
           with your account to withdraw USDC.{' '}
           {accountTimeout > 0 && (
             <em>
-              You have{' '}
-              {formatDuration(
-                intervalToDuration({ start: 0, end: accountTimeout })
-              )}{' '}
-              remaining.
+              You have <b>{timerLabel}</b> remaining.
             </em>
           )}
         </Text>

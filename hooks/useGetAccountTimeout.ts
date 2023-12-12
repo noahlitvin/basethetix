@@ -1,6 +1,8 @@
 import { useContractRead } from 'wagmi';
 import synthetix from '../deployments/system/CoreProxy.json';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { ethers } from 'ethers';
+import { useTimer } from 'react-timer-hook';
 
 export const useAccountTimeout = (accountId: string | undefined) => {
   /*
@@ -28,21 +30,54 @@ export const useAccountTimeout = (accountId: string | undefined) => {
     args: [accountId],
     watch: true,
   });
-  const { data: accountTimeoutWithdraw } = useContractRead({
+  const { data: accountTimeoutWithdraw, refetch } = useContractRead({
     address: synthetix.address as `0x${string}`,
     abi: synthetix?.abi,
     functionName: 'getConfigUint',
-    args: [accountLastInteraction],
+    args: [ethers.utils.formatBytes32String('accountTimeoutWithdraw')],
     watch: true,
-    enabled: !!accountLastInteraction,
   });
 
-  return useMemo(() => {
-    const timeSinceInteraction = Date.now() - Number(accountLastInteraction);
+  const expiryTimestamp = useMemo(
+    () =>
+      new Date(
+        (Number(accountLastInteraction?.toString()) +
+          Number(accountTimeoutWithdraw?.toString())) *
+          1000
+      ),
+    [accountLastInteraction, accountTimeoutWithdraw]
+  );
 
-    const timeUntilWithdrawal =
-      Number(accountTimeoutWithdraw) - timeSinceInteraction;
+  const {
+    days,
+    hours,
+    minutes,
+    seconds,
+    totalSeconds: accountTimeout,
+  } = useTimer({
+    expiryTimestamp,
+  });
 
-    return Math.max(0, timeUntilWithdrawal);
-  }, [accountLastInteraction, accountTimeoutWithdraw]);
+  const timerLabel = useMemo(() => {
+    const timeArray = [days, hours, minutes, seconds];
+
+    if (!days) {
+      timeArray.shift();
+    }
+
+    if (!hours) {
+      timeArray.shift();
+    }
+
+    if (!minutes) {
+      timeArray.shift();
+    }
+
+    return timeArray.map((time) => String(time).padStart(2, '0')).join(':');
+  }, [days, hours, minutes, seconds]);
+
+  return {
+    accountTimeout,
+    timerLabel,
+  };
 };

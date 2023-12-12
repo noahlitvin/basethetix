@@ -15,7 +15,7 @@ interface WithdrawAllProps {
 
 export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
   const { data: pnl } = useGetPnl(account);
-  const submit = useModifyPnL(account, pnl);
+  const { submit, isLoading } = useModifyPnL(account, pnl);
 
   return (
     <>
@@ -25,6 +25,7 @@ export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
       </Text>
       <Button
         onClick={() => submit(true)}
+        isLoading={isLoading}
         colorScheme='blue'
         borderRadius='full'
         w='100%'
