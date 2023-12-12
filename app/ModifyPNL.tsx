@@ -27,7 +27,7 @@ export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
         withdrawal.
       </Text>
       <Modify
-        subtractOnly={pnl < 0}
+        subtractOnly={pnl > 0}
         balance={formatUnits(pnl.toString())}
         amount={amount}
         isLoading={isLoading}
