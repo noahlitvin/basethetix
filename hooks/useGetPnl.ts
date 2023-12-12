@@ -1,7 +1,6 @@
-import { useContractRead, useQuery } from 'wagmi';
+import { useQuery } from 'wagmi';
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { sUSDC_address } from '../constants/markets';
-import { useEffect } from 'react';
 import { useContract } from './useContract';
 
 export const useGetPnl = (accountId: string | undefined) => {
@@ -29,18 +28,15 @@ export const useGetPnl = (accountId: string | undefined) => {
           sUSDC_address
         );
 
-        console.log({
-          debt: debt.toString(),
-        });
-
-        return debt.toString();
+        return -Number(debt.toString());
       } catch (error) {
         console.log(error);
+        return 0;
       }
     },
     {
       enabled: !!poolId,
-      initialData: '0',
+      initialData: 0,
     }
   );
 };

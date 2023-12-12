@@ -20,6 +20,8 @@ interface ModifyProps {
   setAmount: (amount: number) => void;
   onSubmit: (isAdding: boolean) => void;
   balance: string | undefined;
+  subtractOnly?: boolean;
+  isLoading?: boolean;
 }
 
 export const Modify: FC<ModifyProps> = ({
@@ -27,10 +29,12 @@ export const Modify: FC<ModifyProps> = ({
   setAmount,
   onSubmit,
   balance,
+  subtractOnly,
+  isLoading,
 }) => {
   const { address } = useAccount();
 
-  const [isAdding, setIsAdding] = useState(true);
+  const [isAdding, setIsAdding] = useState(!subtractOnly);
 
   const newAmount = useMemo(() => {
     return Number(balance) + (isAdding ? amount : -amount);
@@ -47,7 +51,7 @@ export const Modify: FC<ModifyProps> = ({
       <Flex mb={4} flex={1} alignItems='center'>
         <FormControl>
           <Amount value={wei(balance || '0')} suffix='USDC' />
-          <FormHelperText  top={7} whiteSpace='nowrap' position='absolute'>
+          <FormHelperText top={7} whiteSpace='nowrap' position='absolute'>
             <Flex alignItems='center' fontWeight='normal' fontSize='sm' gap={1}>
               Wallet Balance:
               <Amount
@@ -63,6 +67,7 @@ export const Modify: FC<ModifyProps> = ({
             <InputLeftElement>
               <IconButton
                 size='xs'
+                isDisabled={subtractOnly}
                 colorScheme='blue'
                 aria-label='Add/Subtract'
                 icon={isAdding ? <AddIcon /> : <MinusIcon />}
@@ -92,6 +97,7 @@ export const Modify: FC<ModifyProps> = ({
         w='100%'
         my='4'
         onClick={() => onSubmit(isAdding)}
+        isLoading={isLoading}
       >
         {isAdding ? 'Add' : 'Remove'} {Math.abs(amount)} USDC
       </Button>

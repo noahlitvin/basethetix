@@ -33,6 +33,15 @@ export const useWithdraw = (account: string | undefined) => {
 
   return useCallback(async () => {
     try {
+      await SYNTHETIX.contract.withdraw(
+        account,
+        sUSDC_address,
+        parseUnits(withdrawable),
+        {
+          gasLimit: 1000000,
+        }
+      );
+
       const txs: PopulatedTransaction[] = [
         await SYNTHETIX.contract.populateTransaction.withdraw(
           account,

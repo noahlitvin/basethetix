@@ -9,6 +9,8 @@ import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
 import { Address, useAccount, useBalance } from 'wagmi';
 import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { useGetCollateral } from '../hooks/useGetCollateral';
+import { useGetPnl } from '../hooks/useGetPnl';
+import WithdrawAll from './WithdrawAll';
 
 interface ModifyCollateralProps {
   account: string;
@@ -22,16 +24,25 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
   const accountTimeout = 0; //todo
   const [amount, setAmount] = useState(0);
 
-  const submit = useModifyCollateral(account, amount);
+  const { submit, isLoading } = useModifyCollateral(account, amount);
+
+  const { data: pnl } = useGetPnl(account);
 
   const { totalAssigned: collateral } = useGetCollateral(account);
 
-  return (
-    <Modify
-      onSubmit={submit}
-      amount={amount}
-      setAmount={setAmount}
-      balance={collateral}
-    />
+  return pnl < 0 ? (
+    <Box mb={2}>
+      <WithdrawAll account={account} />
+    </Box>
+  ) : (
+    <Box mb={2}>
+      <Modify
+        onSubmit={submit}
+        amount={amount}
+        setAmount={setAmount}
+        balance={collateral}
+        isLoading={isLoading}
+      />
+    </Box>
   );
 };

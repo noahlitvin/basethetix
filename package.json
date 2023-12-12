@@ -20,13 +20,14 @@
     "@vercel/analytics": "^1.1.1",
     "date-fns": "^2.30.0",
     "erc7412": "^0.2.1",
+    "ethers": "^5.7.2",
     "framer-motion": "^10.16.5",
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-timer-hook": "^3.0.7",
     "viem": "^1.5.3",
-    "wagmi": "^0.12.12",
-    "ethers": "^5.7.2"
+    "wagmi": "^0.12.12"
   },
   "devDependencies": {
     "@types/node": "^18.18.10",

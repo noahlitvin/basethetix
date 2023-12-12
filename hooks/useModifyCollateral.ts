@@ -1,6 +1,6 @@
 import { useGetCollateral } from './useGetCollateral';
 import { useGetPreferredPool } from './useGetPreferredPool';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
@@ -39,6 +39,8 @@ export const useModifyCollateral = (
   const USDC = useContract('USDC');
   const poolId = useGetPreferredPool();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const amountD18 = useMemo(
     () => parseEther(String(amount || 0)).toString(),
     [amount]
@@ -50,9 +52,14 @@ export const useModifyCollateral = (
   const { requireApproval: requireApproval_sUSDC, contract: sUSDC_Contract } =
     useApprove(sUSDC_address, amountD18, SYNTHETIX.address);
 
-  return useCallback(
+  const submit = useCallback(
     async (isAdding: boolean) => {
+      if (!signer) {
+        console.log('no singer');
+        return;
+      }
       try {
+        setIsLoading(true);
         if (isAdding) {
           if (USDCrequireApproval) {
             await approveUSDC();
@@ -103,15 +110,10 @@ export const useModifyCollateral = (
             )
           );
 
-          console.log({ txs });
           const txn = await makeMulticall(
             txs as TransactionRequest[],
             address as Address
           );
-
-          console.log({
-            txn,
-          });
 
           const tx = await signer?.sendTransaction({
             to: txn.to as Address,
@@ -144,15 +146,10 @@ export const useModifyCollateral = (
             ),
           ];
 
-          console.log({ txs });
           const txn = await makeMulticall(
             txs as TransactionRequest[],
             address as Address
           );
-
-          console.log({
-            txn,
-          });
 
           const tx = await signer?.sendTransaction({
             to: txn.to as Address,
@@ -166,6 +163,7 @@ export const useModifyCollateral = (
       } catch (error) {
         console.log(error);
       }
+      setIsLoading(false);
     },
     [
       SPOT_MARKET.contract.populateTransaction,
@@ -184,4 +182,8 @@ export const useModifyCollateral = (
       signer,
     ]
   );
+  return {
+    submit,
+    isLoading,
+  };
 };
