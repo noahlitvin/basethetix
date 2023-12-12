@@ -4,6 +4,7 @@ import { useProvider, useSigner, useAccount, Address } from 'wagmi';
 import { EIP7412 } from 'erc7412';
 import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
+import TrustedMulticallForwarder from '../deployments/system/trusted_multicall_forwarder/TrustedMulticallForwarder.json';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -87,7 +88,7 @@ export const useTransact = () => {
           calls: TransactionRequest[]
         ): TransactionRequest {
           const multicallData = viem.encodeFunctionData({
-            abi: Multicall.abi,
+            abi: TrustedMulticallForwarder.abi,
             functionName: 'aggregate3Value',
             args: [
               calls.map((c) => ({
@@ -106,7 +107,7 @@ export const useTransact = () => {
 
           return {
             account: account.address,
-            to: Multicall.address as Address,
+            to: TrustedMulticallForwarder.address as Address,
             data: multicallData,
             value: totalValue,
           };

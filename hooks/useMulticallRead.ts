@@ -24,7 +24,7 @@ export const useMulticallRead = <T = any>(
         args,
         provider,
         account.address,
-        value
+        BigInt(value?.toString() || '')
       )) as T;
     },
     {
