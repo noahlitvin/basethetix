@@ -2,11 +2,11 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, parseEther, zeroAddress } from 'viem';
+import { TransactionRequest, parseEther } from 'viem';
 import { useApprove } from './useApprove';
-import { makeMulticall } from '../utils/multicall';
 import { Address, useAccount, useSigner } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
+import { useMulticall } from './useMulticall';
 
 export const useModifyPnL = (account: string | undefined, amount: number) => {
   /*
@@ -35,6 +35,8 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
   const USDC = useContract('USDC');
   const sUSD = useContract('snxUSD');
   const poolId = useGetPreferredPool();
+
+  const { makeMulticall } = useMulticall();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -175,21 +177,14 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
       setIsLoading(false);
     },
     [
-      USDCrequireApproval,
-      SPOT_MARKET.contract.populateTransaction,
-      SPOT_MARKET.address,
-      amountD18,
-      sUSDC_Contract.populateTransaction,
-      sUSDC_Contract.address,
-      sUSD_Contract.populateTransaction,
-      sUSD_Contract.address,
-      SYNTHETIX.address,
       SYNTHETIX.contract,
       account,
       poolId,
+      sUSDC_Contract.address,
+      amountD18,
+      makeMulticall,
       address,
       signer,
-      approveUSDC,
     ]
   );
 

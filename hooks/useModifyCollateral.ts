@@ -5,9 +5,9 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
 import { useApprove } from './useApprove';
-import { makeMulticall } from '../utils/multicall';
 import { Address, useAccount, useSigner } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
+import { useMulticall } from './useMulticall';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -31,6 +31,7 @@ export const useModifyCollateral = (
   delegateCollateral(uint128 accountId, uint128 poolId, address sUsdcAddress, uint256 newCollateral, 1) CORE SYSTEM  https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/VaultModule.sol#L43
   */
   const { totalAssigned: currentCollateral } = useGetCollateral(account);
+  const { makeMulticall } = useMulticall();
 
   const { data: signer } = useSigner();
   const { address } = useAccount();
@@ -168,7 +169,7 @@ export const useModifyCollateral = (
     [
       SPOT_MARKET.contract.populateTransaction,
       SYNTHETIX.address,
-      SYNTHETIX.contract,
+      SYNTHETIX.contract.populateTransaction,
       USDCrequireApproval,
       account,
       address,
@@ -176,6 +177,7 @@ export const useModifyCollateral = (
       amountD18,
       approveUSDC,
       currentCollateral,
+      makeMulticall,
       poolId,
       requireApproval_sUSDC,
       sUSDC_Contract.populateTransaction,

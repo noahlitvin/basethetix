@@ -11,9 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { FC, useMemo, useState } from 'react';
 import { Address, useAccount, useBalance } from 'wagmi';
-import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
+import { useContract } from '../hooks/useContract';
 
 interface ModifyProps {
   amount: number;
@@ -36,13 +36,15 @@ export const Modify: FC<ModifyProps> = ({
 
   const [isAdding, setIsAdding] = useState(!subtractOnly);
 
+  const USDC = useContract('USDC');
+
   const newAmount = useMemo(() => {
     return Number(balance) + (isAdding ? amount : -amount);
   }, [balance, amount, isAdding]);
 
   const { data: USDCBalance, refetch: refetchUSD } = useBalance({
     address,
-    token: USD.address as Address,
+    token: USDC.address as Address,
     watch: true,
   });
 

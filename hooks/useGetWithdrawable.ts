@@ -1,9 +1,10 @@
 import { Address, useAccount, useContractRead } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
 import { sUSDC_address } from '../constants/markets';
 import { formatUnits } from 'ethers/lib/utils.js';
+import { useContract } from './useContract';
 
 export const useGetWithdrawable = (account: string | undefined) => {
+  const synthetix = useContract('SYNTHETIX');
   const { address, isConnected } = useAccount();
 
   const { data, isLoading, refetch } = useContractRead({

@@ -1,13 +1,10 @@
 import { FC, useState } from 'react';
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 
 import Modify from './Modify';
-import { formatDuration, intervalToDuration } from 'date-fns';
 import { useGetWithdrawable } from '../hooks/useGetWithdrawable';
 import { useModifyCollateral } from '../hooks/useModifyCollateral';
-import { useGetMarketInfo } from '../hooks/useGetMarketInfo';
-import { Address, useAccount, useBalance } from 'wagmi';
-import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
+import { useAccount } from 'wagmi';
 import { useGetCollateral } from '../hooks/useGetCollateral';
 import { useGetPnl } from '../hooks/useGetPnl';
 import WithdrawAll from './WithdrawAll';

@@ -1,12 +1,13 @@
 import { useAccount, useContractRead } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
 import { parseUnits } from '../utils/format';
 import { useMemo } from 'react';
 import { sUSDC_address } from '../constants/markets';
 import { formatUnits } from 'viem';
+import { useContract } from './useContract';
 
 export const useGetCollateral = (account: string | undefined) => {
   const { address, isConnected } = useAccount();
+  const synthetix = useContract('SYNTHETIX');
 
   const { data, isLoading, refetch } = useContractRead({
     address: synthetix.address as `0x${string}`,

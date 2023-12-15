@@ -1,8 +1,8 @@
 import { useContractRead } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ethers } from 'ethers';
 import { useTimer } from 'react-timer-hook';
+import { useContract } from './useContract';
 
 export const useAccountTimeout = (accountId: string | undefined) => {
   /*
@@ -22,6 +22,7 @@ export const useAccountTimeout = (accountId: string | undefined) => {
     // For context, this is the relevant code. It's a countdown to when we could avoid this revert
     // https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/storage/Account.sol#L193
   */
+  const synthetix = useContract('SYNTHETIX');
 
   const { data: accountLastInteraction } = useContractRead({
     address: synthetix.address as `0x${string}`,

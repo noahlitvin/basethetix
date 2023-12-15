@@ -1,13 +1,10 @@
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { Button, Text } from '@chakra-ui/react';
-import { FC, useMemo, useState } from 'react';
-import { Address, useAccount, useBalance } from 'wagmi';
-import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
+import { FC } from 'react';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 import { useModifyPnL } from '../hooks/useModifyPnL';
 import { useGetPnl } from '../hooks/useGetPnl';
-import { formatEther, formatUnits } from 'ethers/lib/utils.js';
+import { formatUnits } from 'ethers/lib/utils.js';
 
 interface WithdrawAllProps {
   account: string;

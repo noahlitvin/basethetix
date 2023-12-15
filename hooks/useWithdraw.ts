@@ -5,8 +5,8 @@ import { useContract } from './useContract';
 import { Address, useAccount, useSigner } from 'wagmi';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { parseUnits } from 'ethers/lib/utils.js';
-import { makeMulticall } from '../utils/multicall';
 import { TransactionRequest } from 'viem';
+import { useMulticall } from './useMulticall';
 
 export const useWithdraw = (account: string | undefined) => {
   /*
@@ -30,6 +30,7 @@ export const useWithdraw = (account: string | undefined) => {
   const SYNTHETIX = useContract('SYNTHETIX');
 
   const { withdrawable } = useGetWithdrawable(account);
+  const { makeMulticall } = useMulticall();
 
   return useCallback(async () => {
     try {
@@ -78,9 +79,10 @@ export const useWithdraw = (account: string | undefined) => {
       await tx?.wait();
     } catch (error) {}
   }, [
-    SYNTHETIX.contract.populateTransaction,
+    SYNTHETIX.contract,
     account,
     address,
+    makeMulticall,
     signer,
     withdrawable,
   ]);

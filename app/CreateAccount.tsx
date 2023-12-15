@@ -5,15 +5,17 @@ import {
   useContractWrite,
   useWaitForTransaction,
 } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
 import { useEffect, useState, useRef } from 'react';
 import { filter } from 'lodash';
+import { useContract } from '../hooks/useContract';
 
 const CreateAccount: NextComponentType = () => {
   const toast = useToast();
   const [hovered, setHovered] = useState(false);
   const [highlightedCharIndex, setHighlightedCharIndex] = useState(-1);
   const hoverIntervalRef = useRef<NodeJS.Timer | null>(null);
+
+  const synthetix = useContract('SYNTHETIX');
 
   const createAccountAbi = {
     address: synthetix.address as `0x${string}`,

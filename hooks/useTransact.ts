@@ -4,7 +4,7 @@ import { useProvider, useSigner, useAccount, Address } from 'wagmi';
 import { EIP7412 } from 'erc7412';
 import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
-import TrustedMulticallForwarder from '../deployments/system/trusted_multicall_forwarder/TrustedMulticallForwarder.json';
+import { useContract } from './useContract';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -64,6 +64,7 @@ export const useTransact = () => {
   const provider = useProvider();
   const { data: signer } = useSigner();
   const account = useAccount();
+  const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
   const transact = useCallback(
     async (
