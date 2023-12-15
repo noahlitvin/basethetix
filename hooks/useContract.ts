@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { useProvider, useSigner } from 'wagmi';
 import { contracts } from '../constants/contracts';
+import { useSigner } from './useSigner';
 
 type ContractName = keyof (typeof contracts)['base-goerli'];
 
@@ -10,7 +10,6 @@ export const useContract = (name: ContractName) => {
   if (name === 'chainId') {
     throw new Error('Cannot use "chainId" as a contract name');
   }
-  const provider = useProvider();
   const { data: signer } = useSigner();
 
   const contract = contracts[network][name];
@@ -22,11 +21,7 @@ export const useContract = (name: ContractName) => {
   return {
     address: contract.address as `0x${string}`,
     abi: contract.abi,
-    contract: new ethers.Contract(
-      contract.address,
-      contract.abi,
-      signer || provider
-    ),
+    contract: new ethers.Contract(contract.address, contract.abi, signer),
     chainId: contracts[network].chainId,
   };
 };

@@ -2,11 +2,13 @@ import { useCallback } from 'react';
 import { useGetWithdrawable } from './useGetWithdrawable';
 import { PopulatedTransaction } from 'ethers';
 import { useContract } from './useContract';
-import { Address, useAccount, useSigner } from 'wagmi';
-import { USD_MarketId, sUSDC_address } from '../constants/markets';
+import { Address } from 'wagmi';
+import { sUSDC_address } from '../constants/markets';
 import { parseUnits } from 'ethers/lib/utils.js';
 import { TransactionRequest } from 'viem';
 import { useMulticall } from './useMulticall';
+import { useSigner } from './useSigner';
+import { useAccount } from './useAccount';
 
 export const useWithdraw = (account: string | undefined) => {
   /*

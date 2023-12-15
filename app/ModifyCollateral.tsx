@@ -4,10 +4,10 @@ import { Box } from '@chakra-ui/react';
 import Modify from './Modify';
 import { useGetWithdrawable } from '../hooks/useGetWithdrawable';
 import { useModifyCollateral } from '../hooks/useModifyCollateral';
-import { useAccount } from 'wagmi';
 import { useGetCollateral } from '../hooks/useGetCollateral';
 import { useGetPnl } from '../hooks/useGetPnl';
 import WithdrawAll from './WithdrawAll';
+import { useAccount } from '../hooks/useAccount';
 
 interface ModifyCollateralProps {
   account: string;

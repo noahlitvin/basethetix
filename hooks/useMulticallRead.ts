@@ -1,6 +1,7 @@
 import { BigNumberish, Contract } from 'ethers';
-import { useProvider, useAccount, useQuery } from 'wagmi';
+import { useProvider, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
+import { useAccount } from './useAccount';
 
 export const useMulticallRead = <T = any>(
   contract: Contract,

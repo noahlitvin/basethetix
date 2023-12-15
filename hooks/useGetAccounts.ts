@@ -1,5 +1,6 @@
-import { useAccount, useContractRead, useContractReads } from 'wagmi';
+import { useContractRead, useContractReads } from 'wagmi';
 import { useContract } from './useContract';
+import { useAccount } from './useAccount';
 
 export const useGetAccounts = () => {
   const { address, isConnected } = useAccount();
