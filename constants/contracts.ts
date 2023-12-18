@@ -69,3 +69,5 @@ export const contracts: Contracts = {
     },
   },
 } as const;
+
+export const networkList = Object.entries(contracts).map(([key]) => key);

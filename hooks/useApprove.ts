@@ -55,6 +55,7 @@ export const useApprove = (
 
         await waitForTransaction({
           hash,
+          confirmations: 2,
         });
         refetchAllowance();
         setIsLoading(false);

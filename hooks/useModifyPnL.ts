@@ -2,12 +2,13 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, parseEther, zeroAddress } from 'viem';
+import { TransactionRequest, parseEther, parseUnits, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
 import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useModifyPnL = (account: string | undefined, amount: number) => {
   /*
@@ -46,11 +47,21 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     [amount]
   );
 
+  const { network } = useDefaultNetwork();
+
+  const usdcAmount = useMemo(
+    () =>
+      parseUnits(
+        String(amount || 0),
+        network === 'base-goerli' ? 18 : 6
+      ).toString(),
+    [amount, network]
+  );
   const { approve: approveUSDC, requireApproval: USDCrequireApproval } =
-    useApprove(USDC.address, amountD18, SPOT_MARKET.address);
+    useApprove(USDC.address, usdcAmount, SPOT_MARKET.address);
 
   const { contract: sUSDC_Contract } = useApprove(
-    sUSDC_address,
+    sUSDC_address[network],
     amountD18,
     SYNTHETIX.address
   );
@@ -95,7 +106,7 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
           const txs: PopulatedTransaction[] = [
             await SPOT_MARKET.contract.populateTransaction.wrap(
               USD_MarketId,
-              amountD18,
+              usdcAmount,
               amountD18
             ),
           ];
@@ -180,18 +191,19 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     },
     [
       walletClient,
+      SYNTHETIX.contract,
+      SYNTHETIX.address,
+      account,
+      poolId,
+      sUSD_Contract.address,
+      sUSD_Contract.populateTransaction,
+      amountD18,
       USDCrequireApproval,
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
-      amountD18,
+      usdcAmount,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
-      sUSD_Contract.populateTransaction,
-      sUSD_Contract.address,
-      SYNTHETIX.address,
-      SYNTHETIX.contract,
-      account,
-      poolId,
       makeMulticall,
       address,
       approveUSDC,

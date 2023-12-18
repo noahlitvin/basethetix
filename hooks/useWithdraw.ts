@@ -8,6 +8,7 @@ import { parseUnits } from 'ethers/lib/utils.js';
 import { TransactionRequest } from 'viem';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useWithdraw = (account: string | undefined) => {
   /*
@@ -33,6 +34,8 @@ export const useWithdraw = (account: string | undefined) => {
   const { withdrawable } = useGetWithdrawable(account);
   const { makeMulticall } = useMulticall();
 
+  const { network } = useDefaultNetwork();
+
   return useCallback(async () => {
     if (!walletClient) {
       return;
@@ -41,7 +44,7 @@ export const useWithdraw = (account: string | undefined) => {
       const txs: PopulatedTransaction[] = [
         await SYNTHETIX.contract.populateTransaction.withdraw(
           account,
-          sUSDC_address,
+          sUSDC_address[network],
           parseUnits(withdrawable),
           {
             gasLimit: 1000000,
@@ -76,6 +79,7 @@ export const useWithdraw = (account: string | undefined) => {
     account,
     address,
     makeMulticall,
+    network,
     walletClient,
     withdrawable,
   ]);

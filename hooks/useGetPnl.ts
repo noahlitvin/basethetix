@@ -2,6 +2,7 @@ import { useQuery } from 'wagmi';
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { sUSDC_address } from '../constants/markets';
 import { useContract } from './useContract';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useGetPnl = (accountId: string | undefined) => {
   /*
@@ -17,15 +18,16 @@ export const useGetPnl = (accountId: string | undefined) => {
 */
   const synthetix = useContract('SYNTHETIX');
   const poolId = useGetPreferredPool();
+  const { network } = useDefaultNetwork();
 
   return useQuery(
-    ['getPositionDebt', accountId, poolId, sUSDC_address],
+    ['getPositionDebt', accountId, poolId, sUSDC_address[network]],
     async () => {
       try {
         const debt = await synthetix.contract.callStatic.getPositionDebt(
           accountId,
           poolId,
-          sUSDC_address
+          sUSDC_address[network]
         );
 
         return -Number(debt.toString());
