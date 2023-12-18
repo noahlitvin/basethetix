@@ -1,5 +1,5 @@
 import { useNetwork } from 'wagmi';
-import { optimismGoerli } from 'wagmi/chains';
+import { baseGoerli } from 'wagmi/chains';
 import { networkList } from '../constants/contracts';
 
 export const isChainSupported = (chain: string | undefined) =>
@@ -10,7 +10,7 @@ export const useDefaultNetwork = () => {
 
   const network = isChainSupported(chain?.network) ? chain : null;
 
-  return network || optimismGoerli;
+  return network || baseGoerli;
 };
 
 export const useChainId = () => {
