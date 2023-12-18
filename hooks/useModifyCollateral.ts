@@ -5,11 +5,9 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
 import { useApprove } from './useApprove';
-import { Address } from 'wagmi';
+import { Address, useAccount, useSigner } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
-import { useSigner } from './useSigner';
-import { useAccount } from './useAccount';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -70,7 +68,11 @@ export const useModifyCollateral = (
           }
 
           const txs: PopulatedTransaction[] = [
-            await SPOT_MARKET.contract.wrap(USD_MarketId, amountD18, amountD18),
+            await SPOT_MARKET.contract.populateTransaction.wrap(
+              USD_MarketId,
+              amountD18,
+              amountD18
+            ),
           ];
 
           if (requireApproval_sUSDC) {
@@ -165,7 +167,7 @@ export const useModifyCollateral = (
       setIsLoading(false);
     },
     [
-      SPOT_MARKET.contract,
+      SPOT_MARKET.contract.populateTransaction,
       SYNTHETIX.address,
       SYNTHETIX.contract.populateTransaction,
       USDCrequireApproval,

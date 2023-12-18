@@ -10,11 +10,11 @@ import {
   InputLeftElement,
 } from '@chakra-ui/react';
 import { FC, useMemo, useState } from 'react';
-import { Address, useBalance } from 'wagmi';
+import { Address, useAccount, useBalance } from 'wagmi';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 import { useContract } from '../hooks/useContract';
-import { useAccount } from '../hooks/useAccount';
+
 interface ModifyProps {
   amount: number;
   setAmount: (amount: number) => void;

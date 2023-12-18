@@ -1,9 +1,9 @@
-import { useContractRead } from 'wagmi';
+import { useAccount, useContractRead } from 'wagmi';
+import { parseUnits } from '../utils/format';
 import { useMemo } from 'react';
 import { sUSDC_address } from '../constants/markets';
 import { formatUnits } from 'viem';
 import { useContract } from './useContract';
-import { useAccount } from './useAccount';
 
 export const useGetCollateral = (account: string | undefined) => {
   const { address, isConnected } = useAccount();

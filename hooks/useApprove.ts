@@ -1,9 +1,13 @@
 import { BigNumber, BigNumberish, Contract } from 'ethers';
 import { useCallback, useMemo } from 'react';
-import { Address, erc20ABI, useContractRead, useNetwork } from 'wagmi';
+import {
+  erc20ABI,
+  useAccount,
+  useContractRead,
+  useNetwork,
+  useSigner,
+} from 'wagmi';
 import { useTransact } from './useTransact';
-import { useSigner } from './useSigner';
-import { useAccount } from './useAccount';
 
 export const useApprove = (
   contractAddress: string,
@@ -20,7 +24,7 @@ export const useApprove = (
     address: contractAddress as `0x${string}`,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [accountAddress as Address, spender as `0x${string}`],
+    args: [accountAddress!, spender as `0x${string}`],
     enabled: hasWalletConnected && !!contractAddress,
   });
 

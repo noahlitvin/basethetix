@@ -18,7 +18,9 @@ import {
   Link,
   Image,
 } from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextComponentType } from 'next';
+import { useAccount } from 'wagmi';
 import Accounts from './Accounts';
 import { useState } from 'react';
 import { useGetCollateral } from '../hooks/useGetCollateral';
@@ -29,8 +31,6 @@ import { formatUnits } from 'ethers/lib/utils.js';
 import { ModifyPNL } from './ModifyPNL';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
-import { ConnectWallet } from '../components/ConnectWallet';
-import { useAccount } from '../hooks/useAccount';
 
 const Lp: NextComponentType = () => {
   const { isConnected } = useAccount();
@@ -56,7 +56,7 @@ const Lp: NextComponentType = () => {
   return (
     <>
       <Flex mb={3} alignItems='center'>
-        <ConnectWallet />
+        <ConnectButton />
         <Flex ml='auto' alignItems='center'>
           <Image
             src='/base.png'

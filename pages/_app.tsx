@@ -16,10 +16,6 @@ import { useEffect, useState } from 'react';
 
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { init } from '@web3-onboard/react';
-import injectedModule from '@web3-onboard/injected-wallets';
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const { chains, provider } = configureChains(
   [baseGoerli],
@@ -49,34 +45,6 @@ const client = createClient({
   provider,
 });
 
-const apiKey = '1730eff0-9d50-4382-a3fe-89f0d34a2070';
-
-const injected = injectedModule();
-
-const infuraKey = '<INFURA_KEY>';
-const rpcUrl = `https://mainnet.infura.io/v3/${infuraKey}`;
-
-init({
-  apiKey,
-  wallets: [injected],
-  chains: [
-    {
-      id: '0x2105',
-      token: 'ETH',
-      label: 'Base',
-      rpcUrl: 'https://mainnet.base.org',
-    },
-    {
-      id: '0x14a33',
-      token: 'ETH',
-      label: 'BaseGoerli',
-      rpcUrl: 'https://goerli.base.org',
-    },
-  ],
-});
-
-const queryClient = new QueryClient();
-
 function MyApp({ Component, pageProps }: AppProps) {
   const [loaded, setLoaded] = useState(false);
 
@@ -89,7 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <ChakraProvider theme={theme}>
         <WagmiConfig client={client}>
@@ -107,7 +75,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </WagmiConfig>
       </ChakraProvider>
       <Analytics />
-    </QueryClientProvider>
+    </>
   );
 }
 

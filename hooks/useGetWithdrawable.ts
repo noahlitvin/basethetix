@@ -1,8 +1,7 @@
-import { Address, useContractRead } from 'wagmi';
+import { Address, useAccount, useContractRead } from 'wagmi';
 import { sUSDC_address } from '../constants/markets';
 import { formatUnits } from 'ethers/lib/utils.js';
 import { useContract } from './useContract';
-import { useAccount } from './useAccount';
 
 export const useGetWithdrawable = (account: string | undefined) => {
   const synthetix = useContract('SYNTHETIX');

@@ -1,12 +1,10 @@
 import { BigNumberish, Contract } from 'ethers';
 import { useCallback, useState } from 'react';
-import { useProvider, Address } from 'wagmi';
+import { useProvider, useSigner, useAccount, Address } from 'wagmi';
 import { EIP7412 } from 'erc7412';
 import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
 import { useContract } from './useContract';
-import { useSigner } from './useSigner';
-import { useAccount } from './useAccount';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;

@@ -1,14 +1,12 @@
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
-import { sUSDC_address } from '../constants/markets';
+import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
 import { useApprove } from './useApprove';
-import { Address } from 'wagmi';
+import { Address, useAccount, useSigner } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
-import { useSigner } from './useSigner';
-import { useAccount } from './useAccount';
 
 export const useModifyPnL = (account: string | undefined, amount: number) => {
   /*
