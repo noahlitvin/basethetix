@@ -33,7 +33,7 @@ import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 
 const Lp: NextComponentType = () => {
-  const { isConnected } = useAccount();
+  const { isConnected, connector } = useAccount();
 
   const {
     isOpen: isModifyCollateralOpen,

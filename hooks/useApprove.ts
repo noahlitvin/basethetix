@@ -1,21 +1,23 @@
-import { BigNumber, BigNumberish, Contract } from 'ethers';
-import { useCallback, useMemo } from 'react';
+import { BigNumberish, Contract } from 'ethers';
+import { useCallback, useMemo, useState } from 'react';
 import {
+  Address,
   erc20ABI,
   useAccount,
   useContractRead,
   useNetwork,
-  useSigner,
+  useWalletClient,
 } from 'wagmi';
-import { useTransact } from './useTransact';
+import { getContract, waitForTransaction } from 'wagmi/actions';
 
 export const useApprove = (
   contractAddress: string,
   amount: BigNumberish,
   spender: string
 ) => {
-  const { transact, isLoading } = useTransact();
-  const { data: signer } = useSigner();
+  const [isLoading, setIsLoading] = useState(false);
+  const { data: walletClient } = useWalletClient();
+
   const { address: accountAddress } = useAccount();
   const { chain: activeChain } = useNetwork();
   const hasWalletConnected = Boolean(activeChain);
@@ -29,30 +31,40 @@ export const useApprove = (
   });
 
   const sufficientAllowance = useMemo(() => {
-    return allowance && allowance.gte(amount);
+    return allowance && allowance >= BigInt(amount.toString() || '0');
   }, [allowance, amount]);
 
   const contract = useMemo(
-    () => new Contract(contractAddress, erc20ABI, signer!),
-    [contractAddress, signer]
+    () => new Contract(contractAddress, erc20ABI),
+    [contractAddress]
   );
 
   const approve = useCallback(
     async (customAmount?: BigNumberish) => {
-      if (!sufficientAllowance && !!contractAddress && !!signer) {
-        await transact(contract, 'approve', [
-          spender,
-          BigNumber.from(customAmount || amount),
+      if (!sufficientAllowance && !!contractAddress && !!contract) {
+        setIsLoading(true);
+        const token = getContract({
+          address: contractAddress as Address,
+          abi: erc20ABI,
+          walletClient: walletClient!,
+        });
+        const hash = await token.write.approve([
+          spender as Address,
+          BigInt(String(customAmount || amount)),
         ]);
+
+        await waitForTransaction({
+          hash,
+        });
         refetchAllowance();
+        setIsLoading(false);
       }
     },
     [
       sufficientAllowance,
       contractAddress,
-      signer,
-      transact,
       contract,
+      walletClient,
       spender,
       amount,
       refetchAllowance,

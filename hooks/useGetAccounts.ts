@@ -42,8 +42,8 @@ export const useGetAccounts = () => {
     acccountCount: acccountCount as unknown as bigint,
     accounts: (accountIds || []).map((item) => ({
       owner: address?.toString()!,
-      accountId: item?.toString(),
-      id: item?.toString(),
+      accountId: item.result?.toString(),
+      id: item.result?.toString(),
     })),
     isLoading: accountIdsIsLoading || acccountCountisLoading,
     refetch,

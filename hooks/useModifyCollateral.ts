@@ -5,9 +5,10 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther } from 'viem';
 import { useApprove } from './useApprove';
-import { Address, useAccount, useSigner } from 'wagmi';
+import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
+import { waitForTransaction } from 'wagmi/actions';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -33,8 +34,9 @@ export const useModifyCollateral = (
   const { totalAssigned: currentCollateral } = useGetCollateral(account);
   const { makeMulticall } = useMulticall();
 
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
+
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
   const USDC = useContract('USDC');
@@ -55,7 +57,7 @@ export const useModifyCollateral = (
 
   const submit = useCallback(
     async (isAdding: boolean) => {
-      if (!signer) {
+      if (!walletClient) {
         console.log('no singer');
         return;
       }
@@ -116,14 +118,14 @@ export const useModifyCollateral = (
             address as Address
           );
 
-          const tx = await signer?.sendTransaction({
+          const hash = await walletClient?.sendTransaction({
             to: txn.to as Address,
             data: txn.data,
             value: txn.value,
-            gasLimit: 1000000,
+            gas: 1000000n,
           });
 
-          await tx?.wait();
+          await waitForTransaction({ hash });
         } else {
           const newCollateralAmountD18 = parseEther(
             String(Number(currentCollateral) - amount)
@@ -152,14 +154,14 @@ export const useModifyCollateral = (
             address as Address
           );
 
-          const tx = await signer?.sendTransaction({
+          const hash = await walletClient?.sendTransaction({
             to: txn.to as Address,
             data: txn.data,
             value: txn.value,
-            gasLimit: 1000000,
+            gas: 1000000n,
           });
 
-          await tx?.wait();
+          await waitForTransaction({ hash });
         }
       } catch (error) {
         console.log(error);
@@ -181,7 +183,7 @@ export const useModifyCollateral = (
       poolId,
       requireApproval_sUSDC,
       sUSDC_Contract.populateTransaction,
-      signer,
+      walletClient,
     ]
   );
   return {

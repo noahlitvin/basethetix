@@ -1,5 +1,5 @@
 import { BigNumberish, Contract } from 'ethers';
-import { useProvider, useAccount, useQuery } from 'wagmi';
+import { usePublicClient, useAccount, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
 
 export const useMulticallRead = <T = any>(
@@ -12,7 +12,7 @@ export const useMulticallRead = <T = any>(
   isLoading: boolean;
   refetch: () => void;
 } => {
-  const provider = useProvider();
+  const provider = usePublicClient();
   const account = useAccount();
 
   const { data, isLoading, refetch } = useQuery(
