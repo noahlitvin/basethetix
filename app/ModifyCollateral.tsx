@@ -23,7 +23,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
 
   const { submit, isLoading } = useModifyCollateral(account, amount);
 
-  const { data: pnl } = useGetPnl(account);
+  const pnl = useGetPnl(account);
 
   const { totalAssigned: collateral } = useGetCollateral(account);
 

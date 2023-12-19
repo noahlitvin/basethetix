@@ -79,24 +79,29 @@ export const useModifyCollateral = (
             console.log('approve USDC done!');
           }
 
-          // const newCollateralAmountD18w = parseEther(
-          //   String(amount + Number(currentCollateral))
-          // ).toString();
+          const newCollateralAmountD18w = parseEther(
+            String(amount + Number(currentCollateral))
+          ).toString();
 
-          // const t =
-          //   await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-          //     account,
-          //     poolId,
-          //     sUSDC_address[network],
-          //     newCollateralAmountD18w,
-          //     parseEther('1')
-          //   );
+          const t =
+            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+              account,
+              poolId,
+              sUSDC_address[network],
+              newCollateralAmountD18w,
+              parseEther('1')
+            );
 
-          // walletClient.sendTransaction({
-          //   to: t.to as Address,
-          //   data: t.data as Address,
-          //   gas: 1000000n,
-          // });
+          walletClient.sendTransaction({
+            to: t.to as Address,
+            data: t.data as Address,
+            gas: 1000000n,
+          });
+
+          const x = true;
+          if (x) {
+            return;
+          }
 
           const txs: PopulatedTransaction[] = [
             await SPOT_MARKET.contract.populateTransaction.wrap(

@@ -11,7 +11,7 @@ interface WithdrawAllProps {
 }
 
 export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
-  const { data: pnl } = useGetPnl(account);
+  const pnl = useGetPnl(account);
   const { submit, isLoading } = useModifyPnL(account, pnl);
 
   return (

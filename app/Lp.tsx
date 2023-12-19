@@ -51,7 +51,7 @@ const Lp: NextComponentType = () => {
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
 
-  const { data: pnl } = useGetPnl(selectedAccount);
+  const pnl = useGetPnl(selectedAccount);
 
   return (
     <>

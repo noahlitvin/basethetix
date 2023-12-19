@@ -13,7 +13,7 @@ interface ModifyPNLProps {
 
 export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
   const [amount, setAmount] = useState(0);
-  const { data: pnl } = useGetPnl(account);
+  const pnl = useGetPnl(account);
   const { submit, isLoading } = useModifyPnL(account, amount);
 
   return pnl < 0 ? (
