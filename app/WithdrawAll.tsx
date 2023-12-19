@@ -12,7 +12,7 @@ interface WithdrawAllProps {
 
 export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
   const pnl = useGetPnl(account);
-  const { submit, isLoading } = useModifyPnL(account, pnl);
+  const { submit, isLoading } = useModifyPnL(account, Math.abs(pnl));
 
   return (
     <>

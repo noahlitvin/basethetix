@@ -5,7 +5,7 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
-import { Address, useAccount, useNetwork, useWalletClient } from 'wagmi';
+import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
@@ -13,7 +13,8 @@ import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useModifyCollateral = (
   account: string | undefined,
-  amount: number
+  amount: number,
+  isAdding: boolean
 ) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
@@ -62,8 +63,10 @@ export const useModifyCollateral = (
 
   const newCollateralAmountD18 = useMemo(
     () =>
-      parseEther(String(amount + Number(currentCollateral || '0'))).toString(),
-    [amount, currentCollateral]
+      parseEther(
+        String((isAdding ? 1 : -1) * amount + Number(currentCollateral || '0'))
+      ).toString(),
+    [amount, currentCollateral, isAdding]
   );
 
   const { approve: approveUSDC, requireApproval: USDCrequireApproval } =
@@ -72,124 +75,122 @@ export const useModifyCollateral = (
   const { requireApproval: requireApproval_sUSDC, contract: sUSDC_Contract } =
     useApprove(sUSDC_address[network], amountD18, SYNTHETIX.address);
 
-  const submit = useCallback(
-    async (isAdding: boolean) => {
-      if (!walletClient) {
-        console.log('no singer');
-        return;
-      }
-      try {
-        setIsLoading(true);
-        if (isAdding) {
-          if (USDCrequireApproval) {
-            await approveUSDC();
-            console.log('approve USDC done!');
-          }
+  const submit = useCallback(async () => {
+    if (!walletClient) {
+      console.log('no singer');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      if (isAdding) {
+        if (USDCrequireApproval) {
+          await approveUSDC();
+          console.log('approve USDC done!');
+        }
 
-          const txs: PopulatedTransaction[] = [
-            await SPOT_MARKET.contract.populateTransaction.wrap(
-              USD_MarketId,
-              usdcAmount,
-              amountD18
-            ),
-          ];
+        const txs: PopulatedTransaction[] = [
+          await SPOT_MARKET.contract.populateTransaction.wrap(
+            USD_MarketId,
+            usdcAmount,
+            amountD18
+          ),
+        ];
 
-          if (requireApproval_sUSDC) {
-            console.log('adding approval!');
-
-            txs.push(
-              await sUSDC_Contract.populateTransaction.approve(
-                SYNTHETIX.address,
-                amountD18
-              )
-            );
-          }
+        if (requireApproval_sUSDC) {
+          console.log('adding approval!');
 
           txs.push(
-            await SYNTHETIX.contract.populateTransaction.deposit(
-              account,
-              sUSDC_address[network],
+            await sUSDC_Contract.populateTransaction.approve(
+              SYNTHETIX.address,
               amountD18
-            ),
-            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-              account,
-              poolId,
-              sUSDC_address[network],
-              newCollateralAmountD18,
-              parseEther('1')
             )
           );
-
-          const txn = await makeMulticall(
-            txs as TransactionRequest[],
-            address as Address
-          );
-
-          const hash = await walletClient?.sendTransaction({
-            to: txn.to as Address,
-            data: txn.data,
-            value: txn.value,
-            gas: 1000000n,
-          });
-
-          await waitForTransaction({ hash });
-        } else {
-          const txs: PopulatedTransaction[] = [
-            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-              account,
-              poolId,
-              sUSDC_address[network],
-              newCollateralAmountD18,
-              parseEther('1'),
-              {
-                gasLimit: 1000000,
-              }
-            ),
-            await SPOT_MARKET.contract.populateTransaction.unwrap(
-              USD_MarketId,
-              amountD18,
-              0
-            ),
-          ];
-
-          const txn = await makeMulticall(
-            txs as TransactionRequest[],
-            address as Address
-          );
-
-          const hash = await walletClient?.sendTransaction({
-            to: txn.to as Address,
-            data: txn.data,
-            value: txn.value,
-            gas: 1000000n,
-          });
-
-          await waitForTransaction({ hash });
         }
-      } catch (error) {
-        console.log(error);
+
+        txs.push(
+          await SYNTHETIX.contract.populateTransaction.deposit(
+            account,
+            sUSDC_address[network],
+            amountD18
+          ),
+          await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+            account,
+            poolId,
+            sUSDC_address[network],
+            newCollateralAmountD18,
+            parseEther('1')
+          )
+        );
+
+        const txn = await makeMulticall(
+          txs as TransactionRequest[],
+          address as Address
+        );
+
+        const hash = await walletClient?.sendTransaction({
+          to: txn.to as Address,
+          data: txn.data,
+          value: txn.value,
+          gas: 1000000n,
+        });
+
+        await waitForTransaction({ hash });
+      } else {
+        const txs: PopulatedTransaction[] = [
+          await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+            account,
+            poolId,
+            sUSDC_address[network],
+            newCollateralAmountD18,
+            parseEther('1'),
+            {
+              gasLimit: 1000000,
+            }
+          ),
+          await SPOT_MARKET.contract.populateTransaction.unwrap(
+            USD_MarketId,
+            amountD18,
+            0
+          ),
+        ];
+
+        const txn = await makeMulticall(
+          txs as TransactionRequest[],
+          address as Address
+        );
+
+        const hash = await walletClient?.sendTransaction({
+          to: txn.to as Address,
+          data: txn.data,
+          value: txn.value,
+          gas: 1000000n,
+        });
+
+        await waitForTransaction({ hash });
       }
-      setIsLoading(false);
-    },
-    [
-      SPOT_MARKET.contract.populateTransaction,
-      SYNTHETIX.address,
-      SYNTHETIX.contract.populateTransaction,
-      USDCrequireApproval,
-      account,
-      address,
-      amountD18,
-      approveUSDC,
-      makeMulticall,
-      network,
-      newCollateralAmountD18,
-      poolId,
-      requireApproval_sUSDC,
-      sUSDC_Contract.populateTransaction,
-      usdcAmount,
-      walletClient,
-    ]
-  );
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  }, [
+    SPOT_MARKET.contract.populateTransaction,
+    SYNTHETIX.address,
+    SYNTHETIX.contract.populateTransaction,
+    USDCrequireApproval,
+    account,
+    address,
+    amountD18,
+    approveUSDC,
+    isAdding,
+    makeMulticall,
+    network,
+    newCollateralAmountD18,
+    poolId,
+    requireApproval_sUSDC,
+    sUSDC_Contract.populateTransaction,
+    usdcAmount,
+    walletClient,
+  ]);
   return {
     submit,
     isLoading,

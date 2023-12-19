@@ -21,11 +21,12 @@ export const useGetPnl = (accountId: string | undefined) => {
   const poolId = useGetPreferredPool();
   const { network } = useDefaultNetwork();
 
-  const { data, isError, isLoading } = useContractRead({
+  const { data } = useContractRead({
     address: synthetix.address,
     abi: synthetix.abi,
     functionName: 'getPositionDebt',
     args: [accountId, poolId, sUSDC_address[network]],
+    watch: true,
   });
 
   return useMemo(() => {
