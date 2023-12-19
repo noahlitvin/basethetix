@@ -81,29 +81,9 @@ export const useModifyCollateral = (
       try {
         setIsLoading(true);
         if (isAdding) {
-          // if (USDCrequireApproval) {
-          //   await approveUSDC();
-          //   console.log('approve USDC done!');
-          // }
-
-          await walletClient.writeContract({
-            abi: SYNTHETIX.abi,
-            address: SYNTHETIX.address,
-            functionName: 'delegateCollateral',
-            args: [
-              account,
-              poolId,
-              sUSDC_address[network],
-              newCollateralAmountD18,
-              parseEther('1'),
-            ],
-            gas: 1000000n,
-          });
-
-          const x = true;
-
-          if (x) {
-            return;
+          if (USDCrequireApproval) {
+            await approveUSDC();
+            console.log('approve USDC done!');
           }
 
           const txs: PopulatedTransaction[] = [
@@ -130,14 +110,14 @@ export const useModifyCollateral = (
               account,
               sUSDC_address[network],
               amountD18
+            ),
+            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+              account,
+              poolId,
+              sUSDC_address[network],
+              newCollateralAmountD18,
+              parseEther('1')
             )
-            // await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-            //   account,
-            //   poolId,
-            //   sUSDC_address[network],
-            //   newCollateralAmountD18,
-            //   parseEther('1')
-            // )
           );
 
           const txn = await makeMulticall(
@@ -193,12 +173,13 @@ export const useModifyCollateral = (
     },
     [
       SPOT_MARKET.contract.populateTransaction,
-      SYNTHETIX.abi,
       SYNTHETIX.address,
       SYNTHETIX.contract.populateTransaction,
+      USDCrequireApproval,
       account,
       address,
       amountD18,
+      approveUSDC,
       makeMulticall,
       network,
       newCollateralAmountD18,
