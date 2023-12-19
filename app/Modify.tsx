@@ -22,6 +22,7 @@ interface ModifyProps {
   balance: string | undefined;
   subtractOnly?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
 }
 
 export const Modify: FC<ModifyProps> = ({
@@ -31,6 +32,7 @@ export const Modify: FC<ModifyProps> = ({
   balance,
   subtractOnly,
   isLoading,
+  isDisabled,
 }) => {
   const { address } = useAccount();
 
@@ -42,7 +44,7 @@ export const Modify: FC<ModifyProps> = ({
     return Number(balance) + (isAdding ? amount : -amount);
   }, [balance, amount, isAdding]);
 
-  const { data: USDCBalance, refetch: refetchUSD } = useBalance({
+  const { data: USDCBalance } = useBalance({
     address,
     token: USDC.address as Address,
     watch: true,
@@ -93,7 +95,7 @@ export const Modify: FC<ModifyProps> = ({
         </FormControl>
       </Flex>
       <Button
-        isDisabled={amount == 0}
+        isDisabled={amount == 0 || isDisabled || newAmount < 0}
         colorScheme='blue'
         borderRadius='full'
         w='100%'

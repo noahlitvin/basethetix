@@ -59,6 +59,13 @@ export const useModifyCollateral = (
       ).toString(),
     [amount, network]
   );
+
+  const newCollateralAmountD18 = useMemo(
+    () =>
+      parseEther(String(amount + Number(currentCollateral || '0'))).toString(),
+    [amount, currentCollateral]
+  );
+
   const { approve: approveUSDC, requireApproval: USDCrequireApproval } =
     useApprove(USDC.address, usdcAmount, SPOT_MARKET.address);
 
@@ -74,9 +81,29 @@ export const useModifyCollateral = (
       try {
         setIsLoading(true);
         if (isAdding) {
-          if (USDCrequireApproval) {
-            await approveUSDC();
-            console.log('approve USDC done!');
+          // if (USDCrequireApproval) {
+          //   await approveUSDC();
+          //   console.log('approve USDC done!');
+          // }
+
+          await walletClient.writeContract({
+            abi: SYNTHETIX.abi,
+            address: SYNTHETIX.address,
+            functionName: 'delegateCollateral',
+            args: [
+              account,
+              poolId,
+              sUSDC_address[network],
+              newCollateralAmountD18,
+              parseEther('1'),
+            ],
+            gas: 1000000n,
+          });
+
+          const x = true;
+
+          if (x) {
+            return;
           }
 
           const txs: PopulatedTransaction[] = [
@@ -98,23 +125,19 @@ export const useModifyCollateral = (
             );
           }
 
-          const newCollateralAmountD18 = parseEther(
-            String(amount + Number(currentCollateral))
-          ).toString();
-
           txs.push(
             await SYNTHETIX.contract.populateTransaction.deposit(
               account,
               sUSDC_address[network],
               amountD18
-            ),
-            await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-              account,
-              poolId,
-              sUSDC_address[network],
-              newCollateralAmountD18,
-              parseEther('1')
             )
+            // await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+            //   account,
+            //   poolId,
+            //   sUSDC_address[network],
+            //   newCollateralAmountD18,
+            //   parseEther('1')
+            // )
           );
 
           const txn = await makeMulticall(
@@ -131,10 +154,6 @@ export const useModifyCollateral = (
 
           await waitForTransaction({ hash });
         } else {
-          const newCollateralAmountD18 = parseEther(
-            String(Number(currentCollateral) - amount)
-          ).toString();
-
           const txs: PopulatedTransaction[] = [
             await SYNTHETIX.contract.populateTransaction.delegateCollateral(
               account,
@@ -174,17 +193,15 @@ export const useModifyCollateral = (
     },
     [
       SPOT_MARKET.contract.populateTransaction,
+      SYNTHETIX.abi,
       SYNTHETIX.address,
       SYNTHETIX.contract.populateTransaction,
-      USDCrequireApproval,
       account,
       address,
-      amount,
       amountD18,
-      approveUSDC,
-      currentCollateral,
       makeMulticall,
       network,
+      newCollateralAmountD18,
       poolId,
       requireApproval_sUSDC,
       sUSDC_Contract.populateTransaction,
@@ -195,5 +212,6 @@ export const useModifyCollateral = (
   return {
     submit,
     isLoading,
+    newCollateralAmountD18,
   };
 };
