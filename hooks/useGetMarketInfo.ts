@@ -17,6 +17,10 @@ export const useGetMarketInfo = (marketId: string | number) => {
     functionName: 'getSynth',
     args: [marketId],
   });
+  console.log({
+    name,
+    synthAddress,
+  });
 
   return {
     name,

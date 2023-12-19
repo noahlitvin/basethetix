@@ -1,7 +1,9 @@
 import { useContractRead } from 'wagmi';
-import synthetix from '../deployments/system/CoreProxy.json';
+import { useContract } from './useContract';
 
 export const useGetPreferredPool = () => {
+  const synthetix = useContract('SYNTHETIX');
+
   const { data: poolId } = useContractRead({
     address: synthetix.address as `0x${string}`,
     abi: synthetix?.abi,

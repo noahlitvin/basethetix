@@ -33,7 +33,7 @@ import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 
 const Lp: NextComponentType = () => {
-  const { isConnected } = useAccount();
+  const { isConnected, connector } = useAccount();
 
   const {
     isOpen: isModifyCollateralOpen,
@@ -51,7 +51,7 @@ const Lp: NextComponentType = () => {
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
 
-  const { data: pnl } = useGetPnl(selectedAccount);
+  const pnl = useGetPnl(selectedAccount);
 
   return (
     <>

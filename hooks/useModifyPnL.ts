@@ -2,11 +2,13 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, parseEther, zeroAddress } from 'viem';
+import { TransactionRequest, parseEther, parseUnits, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
-import { makeMulticall } from '../utils/multicall';
-import { Address, useAccount, useSigner } from 'wagmi';
+import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
+import { useMulticall } from './useMulticall';
+import { waitForTransaction } from 'wagmi/actions';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useModifyPnL = (account: string | undefined, amount: number) => {
   /*
@@ -28,13 +30,15 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     mintUsd(accountId, poolId, sUsdcAddress, currentPnL - newPnL) CORE SYSTEM https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/IssueUSDModule.sol#L52
   }
   */
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
   const USDC = useContract('USDC');
   const sUSD = useContract('snxUSD');
   const poolId = useGetPreferredPool();
+
+  const { makeMulticall } = useMulticall();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,11 +47,21 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     [amount]
   );
 
+  const { network } = useDefaultNetwork();
+
+  const usdcAmount = useMemo(
+    () =>
+      parseUnits(
+        String(amount || 0),
+        network === 'base-goerli' ? 18 : 6
+      ).toString(),
+    [amount, network]
+  );
   const { approve: approveUSDC, requireApproval: USDCrequireApproval } =
-    useApprove(USDC.address, amountD18, SPOT_MARKET.address);
+    useApprove(USDC.address, usdcAmount, SPOT_MARKET.address);
 
   const { contract: sUSDC_Contract } = useApprove(
-    sUSDC_address,
+    sUSDC_address[network],
     amountD18,
     SYNTHETIX.address
   );
@@ -62,88 +76,71 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     async (isAdding: boolean) => {
       try {
         setIsLoading(true);
+
+        if (!walletClient) {
+          return;
+        }
+
         if (isAdding) {
           //5% slippage
-          // if (USDCrequireApproval) {
-          //   await approveUSDC();
-          //   console.log('approve USDC done!');
-          // }
+          if (USDCrequireApproval) {
+            await approveUSDC();
+            console.log('approve USDC done!');
+          }
 
           // USDC => sUSDC
           const txs: PopulatedTransaction[] = [
-            // await SPOT_MARKET.contract.populateTransaction.wrap(
-            //   USD_MarketId,
-            //   amountD18,
-            //   amountD18
-            // ),
+            await SPOT_MARKET.contract.populateTransaction.wrap(
+              USD_MarketId,
+              usdcAmount,
+              amountD18
+            ),
           ];
 
-          // // approve sUSDC => SPOT_MARKET
-          // console.log('sUDSC approval for SPOT');
-          // txs.push(
-          //   await sUSDC_Contract.populateTransaction.approve(
-          //     SPOT_MARKET.address,
-          //     amountD18
-          //   )
-          // );
-
-          // // sell sUSDC => sUSD
-          // txs.push(
-          //   await SPOT_MARKET.contract.populateTransaction.sell(
-          //     USD_MarketId,
-          //     amountD18,
-          //     amountD18,
-          //     zeroAddress
-          //   )
-          // );
-
-          // console.log('snxUSD a`pproval for Core');
-          // txs.push(
-          //   await sUSD_Contract.populateTransaction.approve(
-          //     SYNTHETIX.address,
-          //     amountD18
-          //   )
-          // );
-
-          // // deposit sUSD
-          // txs.push(
-          //   await SYNTHETIX.contract.populateTransaction.deposit(
-          //     account,
-          //     sUSD_Contract.address,
-          //     amountD18
-          //   )
-          // );
-
-          await SYNTHETIX.contract.burnUsd(
-            account,
-            poolId,
-            sUSDC_Contract.address,
-            amountD18,
-            {
-              gasLimit: 1000000,
-            }
-          );
+          // approve sUSDC => SPOT_MARKET
+          console.log('sUDSC approval for SPOT');
           txs.push(
-            await SYNTHETIX.contract.populateTransaction.burnUsd(
-              account,
-              poolId,
-              sUSDC_Contract.address,
+            await sUSDC_Contract.populateTransaction.approve(
+              SPOT_MARKET.address,
               amountD18
             )
           );
 
-          // txs.push(
-          //   await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-          //     account,
-          //     poolId,
-          //     sUSDC_address,
-          //     0,
-          //     parseEther('1'),
-          //     {
-          //       gasLimit: 1000000,
-          //     }
-          //   )
-          // );
+          // sell sUSDC => sUSD
+          txs.push(
+            await SPOT_MARKET.contract.populateTransaction.sell(
+              USD_MarketId,
+              amountD18,
+              amountD18,
+              zeroAddress
+            )
+          );
+
+          // approve sUSD to SYNTHETIX
+          txs.push(
+            await sUSD_Contract.populateTransaction.approve(
+              SYNTHETIX.address,
+              amountD18
+            )
+          );
+
+          // deposit sUSD
+          txs.push(
+            await SYNTHETIX.contract.populateTransaction.deposit(
+              account,
+              sUSD_Contract.address,
+              amountD18
+            )
+          );
+
+          txs.push(
+            await SYNTHETIX.contract.populateTransaction.burnUsd(
+              account,
+              poolId,
+              sUSD_Contract.address,
+              amountD18
+            )
+          );
 
           console.log({ txs });
           const txn = await makeMulticall(
@@ -153,20 +150,27 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
           console.log({
             txn,
           });
-          const tx = await signer?.sendTransaction({
+
+          const hash = await walletClient.sendTransaction({
             to: txn.to as Address,
             data: txn.data,
             value: txn.value,
-            gasLimit: 1000000,
+            gas: 1000000n,
           });
-          await tx?.wait();
+
+          await waitForTransaction({
+            hash,
+          });
         } else {
-          await SYNTHETIX.contract.mintUsd(
-            account,
-            poolId,
-            sUSDC_Contract.address,
-            amountD18
-          );
+          const hash = await walletClient.writeContract({
+            abi: SYNTHETIX.abi,
+            address: SYNTHETIX.address,
+            functionName: 'mintUsd',
+            args: [account, poolId, sUSDC_Contract.address, amountD18],
+          });
+          await waitForTransaction({
+            hash,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -175,20 +179,23 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
       setIsLoading(false);
     },
     [
+      walletClient,
       USDCrequireApproval,
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
+      usdcAmount,
       amountD18,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
       sUSD_Contract.populateTransaction,
       sUSD_Contract.address,
       SYNTHETIX.address,
-      SYNTHETIX.contract,
+      SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.abi,
       account,
       poolId,
+      makeMulticall,
       address,
-      signer,
       approveUSDC,
     ]
   );

@@ -1,7 +1,9 @@
-import { useQuery } from 'wagmi';
+import { useContractRead, useQuery } from 'wagmi';
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { sUSDC_address } from '../constants/markets';
 import { useContract } from './useContract';
+import { useDefaultNetwork } from './useDefaultNetwork';
+import { useMemo } from 'react';
 
 export const useGetPnl = (accountId: string | undefined) => {
   /*
@@ -17,26 +19,21 @@ export const useGetPnl = (accountId: string | undefined) => {
 */
   const synthetix = useContract('SYNTHETIX');
   const poolId = useGetPreferredPool();
+  const { network } = useDefaultNetwork();
 
-  return useQuery(
-    ['getPositionDebt', accountId, poolId, sUSDC_address],
-    async () => {
-      try {
-        const debt = await synthetix.contract.callStatic.getPositionDebt(
-          accountId,
-          poolId,
-          sUSDC_address
-        );
+  const { data } = useContractRead({
+    address: synthetix.address,
+    abi: synthetix.abi,
+    functionName: 'getPositionDebt',
+    args: [accountId, poolId, sUSDC_address[network]],
+    watch: true,
+  });
 
-        return -Number(debt.toString());
-      } catch (error) {
-        console.log(error);
-        return 0;
-      }
-    },
-    {
-      enabled: !!poolId,
-      initialData: 0,
+  return useMemo(() => {
+    if (!data) {
+      return 0;
     }
-  );
+
+    return -Number(data.toString() || '0');
+  }, [data]);
 };

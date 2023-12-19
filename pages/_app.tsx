@@ -6,9 +6,8 @@ import {
 } from '@rainbow-me/rainbowkit';
 
 import type { AppProps } from 'next/app';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { goerli, baseGoerli } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { base, baseGoerli } from 'wagmi/chains';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import theme from '../theme';
 import { Analytics } from '@vercel/analytics/react';
@@ -16,10 +15,12 @@ import { useEffect, useState } from 'react';
 
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { publicProvider } from 'wagmi/providers/public';
 
-const { chains, provider } = configureChains(
-  [baseGoerli],
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [baseGoerli, base],
   [
+    publicProvider(),
     /**
      * Tells wagmi to use the default RPC URL for each chain
      * for some dapps the higher rate limits of Alchemy may be required
@@ -39,10 +40,11 @@ const { connectors } = getDefaultWallets({
   projectId: '5075a2da602e17eec34aa77b40b321be',
 });
 
-const client = createClient({
+const config = createConfig({
   autoConnect: true,
-  connectors: connectors,
-  provider,
+  publicClient,
+  webSocketPublicClient,
+  connectors,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -60,7 +62,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <ChakraProvider theme={theme}>
-        <WagmiConfig client={client}>
+        <WagmiConfig config={config}>
           <RainbowKitProvider
             chains={chains}
             theme={darkTheme({

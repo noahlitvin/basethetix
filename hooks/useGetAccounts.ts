@@ -1,8 +1,9 @@
 import { useAccount, useContractRead, useContractReads } from 'wagmi';
-import accountProxy from '../deployments/system/AccountProxy.json';
+import { useContract } from './useContract';
 
 export const useGetAccounts = () => {
   const { address, isConnected } = useAccount();
+  const accountProxy = useContract('ACCOUNT_PROXY');
 
   const {
     data: acccountCount,
@@ -38,11 +39,11 @@ export const useGetAccounts = () => {
   );
 
   return {
-    acccountCount: acccountCount as bigint,
+    acccountCount: acccountCount as unknown as bigint,
     accounts: (accountIds || []).map((item) => ({
       owner: address?.toString()!,
-      accountId: item?.toString(),
-      id: item?.toString(),
+      accountId: item.result?.toString(),
+      id: item.result?.toString(),
     })),
     isLoading: accountIdsIsLoading || acccountCountisLoading,
     refetch,

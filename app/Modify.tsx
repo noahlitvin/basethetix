@@ -11,9 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { FC, useMemo, useState } from 'react';
 import { Address, useAccount, useBalance } from 'wagmi';
-import USD from '../deployments/usdc_mock_collateral/MintableToken.json';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
+import { useContract } from '../hooks/useContract';
 
 interface ModifyProps {
   amount: number;
@@ -22,6 +22,7 @@ interface ModifyProps {
   balance: string | undefined;
   subtractOnly?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
 }
 
 export const Modify: FC<ModifyProps> = ({
@@ -31,18 +32,21 @@ export const Modify: FC<ModifyProps> = ({
   balance,
   subtractOnly,
   isLoading,
+  isDisabled,
 }) => {
   const { address } = useAccount();
 
   const [isAdding, setIsAdding] = useState(!subtractOnly);
 
+  const USDC = useContract('USDC');
+
   const newAmount = useMemo(() => {
     return Number(balance) + (isAdding ? amount : -amount);
   }, [balance, amount, isAdding]);
 
-  const { data: USDCBalance, refetch: refetchUSD } = useBalance({
+  const { data: USDCBalance } = useBalance({
     address,
-    token: USD.address as Address,
+    token: USDC.address as Address,
     watch: true,
   });
 
@@ -91,7 +95,7 @@ export const Modify: FC<ModifyProps> = ({
         </FormControl>
       </Flex>
       <Button
-        isDisabled={amount == 0}
+        isDisabled={amount == 0 || isDisabled || newAmount < 0}
         colorScheme='blue'
         borderRadius='full'
         w='100%'
