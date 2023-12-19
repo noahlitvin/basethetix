@@ -76,21 +76,7 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     async (isAdding: boolean) => {
       try {
         setIsLoading(true);
-        if (walletClient) {
-          const txn = await SYNTHETIX.contract.populateTransaction.burnUsd(
-            account,
-            poolId,
-            sUSD_Contract.address,
-            amountD18
-          );
 
-          walletClient.sendTransaction({
-            to: txn.to as Address,
-            data: txn.data as Address,
-            value: BigInt(txn.value?.toString() || '0'),
-            gas: 1000000n,
-          });
-        }
         if (!walletClient) {
           return;
         }
@@ -147,14 +133,14 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
             )
           );
 
-          // txs.push(
-          //   await SYNTHETIX.contract.populateTransaction.burnUsd(
-          //     account,
-          //     poolId,
-          //     sUSD_Contract.address,
-          //     amountD18
-          //   )
-          // );
+          txs.push(
+            await SYNTHETIX.contract.populateTransaction.burnUsd(
+              account,
+              poolId,
+              sUSD_Contract.address,
+              amountD18
+            )
+          );
 
           console.log({ txs });
           const txn = await makeMulticall(
@@ -176,12 +162,15 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
             hash,
           });
         } else {
-          await SYNTHETIX.contract.mintUsd(
-            account,
-            poolId,
-            sUSDC_Contract.address,
-            amountD18
-          );
+          const hash = await walletClient.writeContract({
+            abi: SYNTHETIX.abi,
+            address: SYNTHETIX.address,
+            functionName: 'mintUsd',
+            args: [account, poolId, sUSDC_Contract.address, amountD18],
+          });
+          await waitForTransaction({
+            hash,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -191,19 +180,20 @@ export const useModifyPnL = (account: string | undefined, amount: number) => {
     },
     [
       walletClient,
-      SYNTHETIX.contract,
-      SYNTHETIX.address,
-      account,
-      poolId,
-      sUSD_Contract.address,
-      sUSD_Contract.populateTransaction,
-      amountD18,
       USDCrequireApproval,
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
       usdcAmount,
+      amountD18,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
+      sUSD_Contract.populateTransaction,
+      sUSD_Contract.address,
+      SYNTHETIX.address,
+      SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.abi,
+      account,
+      poolId,
       makeMulticall,
       address,
       approveUSDC,
