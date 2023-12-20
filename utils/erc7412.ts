@@ -47,6 +47,5 @@ export async function generate7412CompatibleCall(
 
   const converter = new EIP7412(adapters, multicallFunc);
 
-  console.log(txn);
   return await converter.enableERC7412(client as any, txn);
 }

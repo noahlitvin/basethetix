@@ -74,10 +74,6 @@ export const readMulticall = async (
   try {
     const data = contract.interface.encodeFunctionData(fn, args);
 
-    console.log('readMulticall', {
-      data,
-      address: contract.address,
-    });
     const viemClient = viem.createPublicClient({
       transport: viem.custom({
         request: ({ method, params }) => (provider as any).send(method, params),
@@ -132,17 +128,11 @@ export const readMulticall = async (
       value: txn.value,
     });
 
-    console.log({ result });
-
     const decodedFunctionResult = viem.decodeFunctionResult({
       abi: MulticallABI,
       functionName: 'aggregate3Value',
       data: result.data!,
     }) as any[];
-
-    console.log({
-      decodedFunctionResult,
-    });
 
     const decodedFunctionResult2 = viem.decodeFunctionResult({
       abi: JSON.parse(
@@ -152,10 +142,6 @@ export const readMulticall = async (
       data:
         decodedFunctionResult[decodedFunctionResult.length - 1]?.returnData ||
         '0x0000000000000000000000000000000000000000000000000000000000000000',
-    });
-
-    console.log({
-      decodedFunctionResult2,
     });
 
     return decodedFunctionResult2;
