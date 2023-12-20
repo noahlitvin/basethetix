@@ -13,13 +13,14 @@ const Accounts: React.FC<AccountsProps> = ({
   selectedAccount,
   setSelectedAccount,
 }) => {
-  const { accounts, refetch } = useGetAccounts();
+  const { accounts } = useGetAccounts();
 
   useEffect(() => {
-    if (!selectedAccount && accounts.length > 0) {
-      setSelectedAccount(accounts[0].id);
+    if (!accounts.find((account) => selectedAccount === account.accountId)) {
+      setSelectedAccount(accounts[0]?.accountId);
     }
   }, [accounts, selectedAccount, setSelectedAccount]);
+
   return (
     <Box mb={10}>
       <Text fontSize='sm' mb={1}>
