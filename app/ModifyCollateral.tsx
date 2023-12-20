@@ -44,7 +44,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
     isAdding
   );
 
-  const pnl = useGetPnl(account);
+  const { data: pnl } = useGetPnl(account);
 
   const { totalAssigned: collateral } = useGetCollateral(account);
   const { network } = useDefaultNetwork();

@@ -51,7 +51,7 @@ export const contracts: Contracts = {
     },
   },
   base: {
-    chainId: 84531,
+    chainId: 8453,
     SYNTHETIX: BaseCoreProxy,
     PERPS_MARKET: BasePerpsMarketProxy,
     SPOT_MARKET: BaseSpotMarketProxy,

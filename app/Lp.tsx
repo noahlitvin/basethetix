@@ -17,6 +17,7 @@ import {
   useDisclosure,
   Link,
   Image,
+  Skeleton,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextComponentType } from 'next';
@@ -51,12 +52,13 @@ const Lp: NextComponentType = () => {
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
 
-  const pnl = useGetPnl(selectedAccount);
+  const { data: pnl, isLoading } = useGetPnl(selectedAccount);
 
   return (
     <>
       <Flex mb={3} alignItems='center'>
         <ConnectButton />
+
         <Flex ml='auto' alignItems='center'>
           <Image
             src='/base.png'
@@ -130,10 +132,14 @@ const Lp: NextComponentType = () => {
                 <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>PnL</StatLabel>
                   <StatNumber fontFamily='monospace' fontWeight={500}>
-                    <Amount
-                      value={wei(pnl && formatUnits(pnl.toString()))}
-                      suffix='USDC'
-                    />
+                    {isLoading ? (
+                      <Skeleton width='100px' height='30px' />
+                    ) : (
+                      <Amount
+                        value={wei(pnl && formatUnits(pnl.toString()))}
+                        suffix='USDC'
+                      />
+                    )}
                   </StatNumber>
                   <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
                     <EditIcon />{' '}

@@ -18,7 +18,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [baseGoerli, base],
+  [base, baseGoerli],
   [
     publicProvider(),
     /**

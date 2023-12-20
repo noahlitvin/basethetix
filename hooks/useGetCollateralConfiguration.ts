@@ -1,5 +1,4 @@
 import { Address, useContractRead } from 'wagmi';
-import { ethers } from 'ethers';
 import { useContract } from './useContract';
 
 export const useGetCollateralConfiguration = (collateralType: string) => {

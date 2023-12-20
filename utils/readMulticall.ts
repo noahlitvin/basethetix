@@ -1,15 +1,69 @@
-import { ethers, BigNumberish, Contract } from 'ethers';
+import { ethers, Contract } from 'ethers';
 import * as viem from 'viem';
-import MulticallAbi from '../constants/MulticallABI.json';
 import {
   TransactionRequest,
   generate7412CompatibleCall,
 } from '../hooks/useTransact';
 import { Address } from 'wagmi';
 
-const multiCallAddress = '0xa0266eE94Bff06D8b07e7b672489F21d2E05636e';
+export const MulticallABI = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'target',
+            type: 'address',
+          },
+          {
+            internalType: 'bool',
+            name: 'requireSuccess',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bytes',
+            name: 'callData',
+            type: 'bytes',
+          },
+        ],
+        internalType: 'struct TrustedMulticallForwarder.Call3Value[]',
+        name: 'calls',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'aggregate3Value',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'bool',
+            name: 'success',
+            type: 'bool',
+          },
+          {
+            internalType: 'bytes',
+            name: 'returnData',
+            type: 'bytes',
+          },
+        ],
+        internalType: 'struct TrustedMulticallForwarder.Result[]',
+        name: 'returnData',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+];
 
 export const readMulticall = async (
+  multiCallAddress: string,
   contract: Contract,
   fn: string,
   args: Array<any>,
@@ -26,18 +80,23 @@ export const readMulticall = async (
       }),
     });
 
+    // const viemClient = viem.createPublicClient({
+    //   chain: base,
+    //   transport: viem.http(),
+    // }) as viem.PublicClient;
+
     const multicallFunc = function makeMulticallCall(
       calls: TransactionRequest[]
     ): TransactionRequest {
       const ret = viem.encodeFunctionData({
-        abi: MulticallAbi,
+        abi: MulticallABI,
         functionName: 'aggregate3Value',
         args: [
           calls.map((call) => ({
             target: call.to,
             callData: call.data,
             value: call.value || 0n,
-            allowFailure: false,
+            requireSuccess: true,
           })),
         ],
       });
@@ -48,7 +107,8 @@ export const readMulticall = async (
       }
 
       return {
-        to: multiCallAddress,
+        account: account,
+        to: multiCallAddress as Address,
         data: ret,
         value: totalValue,
       };
@@ -68,10 +128,8 @@ export const readMulticall = async (
       value: txn.value,
     });
 
-    console.log([result]);
-
     const decodedFunctionResult = viem.decodeFunctionResult({
-      abi: MulticallAbi,
+      abi: MulticallABI,
       functionName: 'aggregate3Value',
       data: result.data!,
     }) as any[];
@@ -81,7 +139,9 @@ export const readMulticall = async (
         contract.interface.format(ethers.utils.FormatTypes.json).toString()
       ),
       functionName: fn,
-      data: decodedFunctionResult[decodedFunctionResult.length - 1].returnData,
+      data:
+        decodedFunctionResult[decodedFunctionResult.length - 1]?.returnData ||
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
     });
 
     return decodedFunctionResult2;
