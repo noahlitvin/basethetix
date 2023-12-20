@@ -17,11 +17,11 @@ import {
   useDisclosure,
   Link,
   Image,
-  Button,
+  Skeleton,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextComponentType } from 'next';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount } from 'wagmi';
 import Accounts from './Accounts';
 import { useState } from 'react';
 import { useGetCollateral } from '../hooks/useGetCollateral';
@@ -32,10 +32,6 @@ import { formatUnits } from 'ethers/lib/utils.js';
 import { ModifyPNL } from './ModifyPNL';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
-import { useContract } from '../hooks/useContract';
-import { useGetPreferredPool } from '../hooks/useGetPreferredPool';
-import { useDefaultNetwork } from '../hooks/useDefaultNetwork';
-import { sUSDC_address } from '../constants/markets';
 
 const Lp: NextComponentType = () => {
   const { isConnected, connector } = useAccount();
@@ -56,22 +52,7 @@ const Lp: NextComponentType = () => {
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
 
-  const pnl = useGetPnl(selectedAccount);
-
-  const synthetix = useContract('SYNTHETIX');
-  const poolId = useGetPreferredPool();
-  const { network } = useDefaultNetwork();
-
-  const { data: pnl2 } = useContractRead({
-    address: synthetix.address,
-    abi: synthetix.abi,
-    functionName: 'getPositionDebt',
-    args: [
-      '170141183460469231731687303715884105728',
-      poolId,
-      sUSDC_address[network],
-    ],
-  });
+  const { data: pnl, isLoading } = useGetPnl(selectedAccount);
 
   return (
     <>
@@ -151,10 +132,14 @@ const Lp: NextComponentType = () => {
                 <Stat borderLeft='1px solid #ffffff' pl={6} py={3}>
                   <StatLabel>PnL</StatLabel>
                   <StatNumber fontFamily='monospace' fontWeight={500}>
-                    <Amount
-                      value={wei(pnl && formatUnits(pnl.toString()))}
-                      suffix='USDC'
-                    />
+                    {isLoading ? (
+                      <Skeleton width='100px' height='30px' />
+                    ) : (
+                      <Amount
+                        value={wei(pnl && formatUnits(pnl.toString()))}
+                        suffix='USDC'
+                      />
+                    )}
                   </StatNumber>
                   <StatHelpText onClick={onModifyPnlOpen} cursor='pointer'>
                     <EditIcon />{' '}

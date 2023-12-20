@@ -21,17 +21,22 @@ export const useGetPnl = (accountId: string | undefined) => {
   const poolId = useGetPreferredPool();
   const { network } = useDefaultNetwork();
 
-  const { data } = useMulticallRead<bigint>(
+  const { data, isLoading } = useMulticallRead<bigint>(
     synthetix.contract,
     'getPositionDebt',
     [accountId, poolId, sUSDC_address[network]]
   );
 
-  return useMemo(() => {
+  const result = useMemo(() => {
     if (!data) {
       return 0n;
     }
 
     return -1n * data;
   }, [data]);
+
+  return {
+    data: result,
+    isLoading,
+  };
 };
