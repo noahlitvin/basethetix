@@ -10,7 +10,10 @@ import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
 
-export const useModifyPnL = (account: string | undefined, amount: number) => {
+export const useModifyPnL = (
+  account: string | undefined,
+  amount: number | string
+) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
     need to think on it....

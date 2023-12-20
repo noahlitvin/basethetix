@@ -1,9 +1,9 @@
-import { useContractRead, useQuery } from 'wagmi';
 import { useGetPreferredPool } from './useGetPreferredPool';
 import { sUSDC_address } from '../constants/markets';
 import { useContract } from './useContract';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useMemo } from 'react';
+import { useMulticallRead } from './useMulticallRead';
 
 export const useGetPnl = (accountId: string | undefined) => {
   /*
@@ -21,19 +21,17 @@ export const useGetPnl = (accountId: string | undefined) => {
   const poolId = useGetPreferredPool();
   const { network } = useDefaultNetwork();
 
-  const { data } = useContractRead({
-    address: synthetix.address,
-    abi: synthetix.abi,
-    functionName: 'getPositionDebt',
-    args: [accountId, poolId, sUSDC_address[network]],
-    watch: true,
-  });
+  const { data } = useMulticallRead<bigint>(
+    synthetix.contract,
+    'getPositionDebt',
+    [accountId, poolId, sUSDC_address[network]]
+  );
 
   return useMemo(() => {
     if (!data) {
-      return 0;
+      return 0n;
     }
 
-    return -Number(data.toString() || '0');
+    return -1n * data;
   }, [data]);
 };

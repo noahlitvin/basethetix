@@ -1,6 +1,8 @@
-import { BigNumberish, Contract } from 'ethers';
-import { usePublicClient, useAccount, useQuery } from 'wagmi';
+import { BigNumberish, Contract, ethers } from 'ethers';
+import { useAccount, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
+import { useContract } from './useContract';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useMulticallRead = <T = any>(
   contract: Contract,
@@ -12,30 +14,40 @@ export const useMulticallRead = <T = any>(
   isLoading: boolean;
   refetch: () => void;
 } => {
-  const provider = usePublicClient();
   const account = useAccount();
 
-  const { data, isLoading, refetch } = useQuery(
-    [contract.address, fn, args, value],
+  const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
+
+  const { network } = useDefaultNetwork();
+
+  const provider = new ethers.providers.JsonRpcProvider(
+    network === 'base-goerli'
+      ? 'https://goerli.base.org'
+      : 'https://mainnet.base.org'
+  );
+
+  return useQuery(
+    [contract.address, fn, ...args, TrustedMulticallForwarder.address],
     async () => {
-      return (await readMulticall(
-        contract,
-        fn,
-        args,
-        provider,
-        account.address,
-        BigInt(value?.toString() || '')
-      )) as T;
+      try {
+        return (await readMulticall(
+          TrustedMulticallForwarder.address,
+          contract,
+          fn,
+          args,
+          provider,
+          account.address,
+          BigInt(0)
+        )) as T;
+      } catch (error) {
+        console.log({
+          error,
+        });
+      }
     },
     {
       enabled: !!contract && !!fn && !!provider,
       staleTime: 50,
     }
   );
-
-  return {
-    data,
-    isLoading,
-    refetch,
-  };
 };
