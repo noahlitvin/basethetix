@@ -5,7 +5,8 @@ import { useContract } from './useContract';
 import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useMulticallRead = <T = any>(
-  contract: Contract,
+  abi: any,
+  address: string,
   fn: string,
   args: Array<any>,
   value?: BigNumberish | undefined
@@ -27,12 +28,13 @@ export const useMulticallRead = <T = any>(
   );
 
   return useQuery(
-    [contract.address, fn, ...args, TrustedMulticallForwarder.address],
+    [address, fn, ...args, TrustedMulticallForwarder.address],
     async () => {
       try {
         return (await readMulticall(
           TrustedMulticallForwarder.address,
-          contract,
+          abi,
+          address,
           fn,
           args,
           provider,
@@ -46,7 +48,6 @@ export const useMulticallRead = <T = any>(
       }
     },
     {
-      enabled: !!contract && !!fn && !!provider,
       staleTime: 50,
     }
   );

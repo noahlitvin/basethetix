@@ -64,7 +64,8 @@ export const MulticallABI = [
 
 export const readMulticall = async (
   multiCallAddress: string,
-  contract: Contract,
+  abi: any,
+  address: string,
   fn: string,
   args: Array<any>,
   provider: any,
@@ -72,6 +73,7 @@ export const readMulticall = async (
   value?: bigint | undefined
 ) => {
   try {
+    const contract = new Contract(address, abi);
     const data = contract.interface.encodeFunctionData(fn, args);
 
     const viemClient = viem.createPublicClient({
@@ -128,23 +130,33 @@ export const readMulticall = async (
       value: txn.value,
     });
 
-    const decodedFunctionResult = viem.decodeFunctionResult({
-      abi: MulticallABI,
-      functionName: 'aggregate3Value',
-      data: result.data!,
-    }) as any[];
+    try {
+      const decodedFunctionResult = viem.decodeFunctionResult({
+        abi: MulticallABI,
+        functionName: 'aggregate3Value',
+        data: result.data!,
+      }) as any[];
 
-    const decodedFunctionResult2 = viem.decodeFunctionResult({
-      abi: JSON.parse(
-        contract.interface.format(ethers.utils.FormatTypes.json).toString()
-      ),
-      functionName: fn,
-      data:
-        decodedFunctionResult[decodedFunctionResult.length - 1]?.returnData ||
-        '0x0000000000000000000000000000000000000000000000000000000000000000',
-    });
+      const decodedFunctionResult2 = viem.decodeFunctionResult({
+        abi: JSON.parse(
+          contract.interface.format(ethers.utils.FormatTypes.json).toString()
+        ),
+        functionName: fn,
+        data:
+          decodedFunctionResult[decodedFunctionResult.length - 1]?.returnData ||
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
+      });
 
-    return decodedFunctionResult2;
+      return decodedFunctionResult2;
+    } catch (error) {
+      const decodedFunctionResult = viem.decodeFunctionResult({
+        abi: abi,
+        functionName: fn,
+        data: result.data!,
+      }) as any[];
+
+      return decodedFunctionResult;
+    }
   } catch (error) {
     throw error;
   }

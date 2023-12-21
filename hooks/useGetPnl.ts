@@ -22,7 +22,8 @@ export const useGetPnl = (accountId: string | undefined) => {
   const { network } = useDefaultNetwork();
 
   const { data, isLoading } = useMulticallRead<bigint>(
-    synthetix.contract,
+    synthetix.abi,
+    synthetix.contract.address,
     'getPositionDebt',
     [accountId, poolId, sUSDC_address[network]]
   );
