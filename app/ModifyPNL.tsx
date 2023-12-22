@@ -1,11 +1,12 @@
-import { FC, useState } from 'react';
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { FC, useMemo, useState } from 'react';
+import { Box, Text } from '@chakra-ui/react';
 
 import Modify from './Modify';
 import { useGetPnl } from '../hooks/useGetPnl';
 import { formatUnits } from 'ethers/lib/utils.js';
 import { useModifyPnL } from '../hooks/useModifyPnL';
 import WithdrawAll from './WithdrawAll';
+import { parseEther } from 'viem';
 
 interface ModifyPNLProps {
   account: string;
@@ -14,7 +15,12 @@ interface ModifyPNLProps {
 export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
   const [amount, setAmount] = useState(0);
   const { data: pnl } = useGetPnl(account);
-  const { submit, isLoading } = useModifyPnL(account, amount);
+  const amountD18 = useMemo(
+    () => parseEther(String(amount || 0)).toString(),
+    [amount]
+  );
+
+  const { submit, isLoading } = useModifyPnL(account, amountD18);
 
   return pnl < 0 ? (
     <Box mb={2}>

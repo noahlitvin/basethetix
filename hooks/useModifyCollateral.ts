@@ -10,6 +10,7 @@ import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { GAS_PRICE } from '../constants/gasPrices';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -131,7 +132,7 @@ export const useModifyCollateral = (
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          gas: 1000000n,
+          gas: GAS_PRICE,
         });
 
         await waitForTransaction({ hash });
@@ -144,7 +145,7 @@ export const useModifyCollateral = (
             newCollateralAmountD18,
             parseEther('1'),
             {
-              gasLimit: 1000000,
+              gasLimit: GAS_PRICE,
             }
           ),
           await SPOT_MARKET.contract.populateTransaction.unwrap(
@@ -163,7 +164,7 @@ export const useModifyCollateral = (
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          gas: 1000000n,
+          gas: GAS_PRICE,
         });
 
         await waitForTransaction({ hash });

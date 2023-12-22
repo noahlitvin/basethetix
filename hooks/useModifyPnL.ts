@@ -9,6 +9,7 @@ import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { GAS_PRICE } from '../constants/gasPrices';
 
 export const useModifyPnL = (
   account: string | undefined,
@@ -45,33 +46,34 @@ export const useModifyPnL = (
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const amountD18 = useMemo(
-    () => parseEther(String(amount || 0)).toString(),
+  const { network } = useDefaultNetwork();
+
+  const amountWithSlippage = useMemo(
+    () => (BigInt(amount) * 11n) / 10n,
     [amount]
   );
-
-  const { network } = useDefaultNetwork();
 
   const usdcAmount = useMemo(
     () =>
       parseUnits(
-        String(amount || 0),
-        network === 'base-goerli' ? 18 : 6
+        String(amountWithSlippage || 0),
+        network === 'base-goerli' ? 0 : 12
       ).toString(),
-    [amount, network]
+    [amountWithSlippage, network]
   );
+
   const { approve: approveUSDC, requireApproval: USDCrequireApproval } =
     useApprove(USDC.address, usdcAmount, SPOT_MARKET.address);
 
   const { contract: sUSDC_Contract } = useApprove(
     sUSDC_address[network],
-    amountD18,
+    amount,
     SYNTHETIX.address
   );
 
   const { contract: sUSD_Contract } = useApprove(
     sUSD.address,
-    amountD18,
+    amount,
     SYNTHETIX.address
   );
 
@@ -96,7 +98,7 @@ export const useModifyPnL = (
             await SPOT_MARKET.contract.populateTransaction.wrap(
               USD_MarketId,
               usdcAmount,
-              amountD18
+              amountWithSlippage
             ),
           ];
 
@@ -105,7 +107,7 @@ export const useModifyPnL = (
           txs.push(
             await sUSDC_Contract.populateTransaction.approve(
               SPOT_MARKET.address,
-              amountD18
+              amountWithSlippage
             )
           );
 
@@ -113,8 +115,8 @@ export const useModifyPnL = (
           txs.push(
             await SPOT_MARKET.contract.populateTransaction.sell(
               USD_MarketId,
-              amountD18,
-              amountD18,
+              amountWithSlippage,
+              amount,
               zeroAddress
             )
           );
@@ -123,7 +125,7 @@ export const useModifyPnL = (
           txs.push(
             await sUSD_Contract.populateTransaction.approve(
               SYNTHETIX.address,
-              amountD18
+              amountWithSlippage
             )
           );
 
@@ -132,7 +134,7 @@ export const useModifyPnL = (
             await SYNTHETIX.contract.populateTransaction.deposit(
               account,
               sUSD_Contract.address,
-              amountD18
+              amountWithSlippage
             )
           );
 
@@ -140,8 +142,8 @@ export const useModifyPnL = (
             await SYNTHETIX.contract.populateTransaction.burnUsd(
               account,
               poolId,
-              sUSD_Contract.address,
-              amountD18
+              sUSDC_address[network],
+              amountWithSlippage
             )
           );
 
@@ -155,10 +157,8 @@ export const useModifyPnL = (
           });
 
           const hash = await walletClient.sendTransaction({
-            to: txn.to as Address,
-            data: txn.data,
-            value: txn.value,
-            gas: 1000000n,
+            ...txn,
+            gas: GAS_PRICE,
           });
 
           await waitForTransaction({
@@ -169,7 +169,7 @@ export const useModifyPnL = (
             abi: SYNTHETIX.abi,
             address: SYNTHETIX.address,
             functionName: 'mintUsd',
-            args: [account, poolId, sUSDC_Contract.address, amountD18],
+            args: [account, poolId, sUSDC_Contract.address, amount],
           });
           await waitForTransaction({
             hash,
@@ -183,20 +183,22 @@ export const useModifyPnL = (
     },
     [
       walletClient,
+      SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.address,
+      SYNTHETIX.abi,
+      account,
+      poolId,
+      network,
+      amountWithSlippage,
       USDCrequireApproval,
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
       usdcAmount,
-      amountD18,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
+      amount,
       sUSD_Contract.populateTransaction,
       sUSD_Contract.address,
-      SYNTHETIX.address,
-      SYNTHETIX.contract.populateTransaction,
-      SYNTHETIX.abi,
-      account,
-      poolId,
       makeMulticall,
       address,
       approveUSDC,

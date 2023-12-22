@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ethers } from 'ethers';
 import { TransactionRequest } from 'viem';
-import { Address } from 'wagmi';
+import { Address, useAccount, usePublicClient } from 'wagmi';
 import { useContract } from './useContract';
 import TrustedMulticallForwarderABI from '../deployments/system/trusted_multicall_forwarder/TrustedMulticallForwarder.json';
 
@@ -11,8 +11,11 @@ export const multicallInterface = new ethers.utils.Interface(
 
 export const useMulticall = () => {
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
+  const publicClient = usePublicClient();
+  const { address } = useAccount();
+
   const makeMulticall = useCallback(
-    (calls: TransactionRequest[], senderAddr: string) => {
+    async (calls: TransactionRequest[], senderAddr: string) => {
       const encodedData = multicallInterface.encodeFunctionData(
         'aggregate3Value',
         [
@@ -26,8 +29,20 @@ export const useMulticall = () => {
       );
 
       let totalValue = ethers.BigNumber.from(0);
+      let gasEstimate = 0n;
       for (const call of calls) {
         totalValue = totalValue.add(call.value || ethers.BigNumber.from(0));
+        try {
+          const estimate = await publicClient.estimateGas({
+            account: address as Address,
+            to: call.to,
+            data: call.data,
+            value: call.value,
+          });
+          gasEstimate += estimate;
+        } catch (error) {
+          gasEstimate += 10000n;
+        }
       }
 
       return {
@@ -35,9 +50,10 @@ export const useMulticall = () => {
         to: TrustedMulticallForwarder.address as Address,
         data: encodedData as Address,
         value: BigInt(totalValue.toString()),
+        gas: (gasEstimate * 11n) / 10n,
       } as TransactionRequest;
     },
-    [TrustedMulticallForwarder.address]
+    [TrustedMulticallForwarder.address, address, publicClient]
   );
 
   return {

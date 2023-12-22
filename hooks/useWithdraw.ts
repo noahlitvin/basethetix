@@ -9,6 +9,7 @@ import { TransactionRequest } from 'viem';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { GAS_PRICE } from '../constants/gasPrices';
 
 export const useWithdraw = (account: string | undefined) => {
   /*
@@ -47,7 +48,7 @@ export const useWithdraw = (account: string | undefined) => {
           sUSDC_address[network],
           parseUnits(withdrawable),
           {
-            gasLimit: 1000000,
+            gasLimit: GAS_PRICE,
           }
         ),
         await SPOT_MARKET.contract.populateTransaction.unwrap(
@@ -66,7 +67,7 @@ export const useWithdraw = (account: string | undefined) => {
         to: txn.to as Address,
         data: txn.data as Address,
         value: txn.value || 0n,
-        gas: 1000000n,
+        gas: GAS_PRICE,
       });
 
       waitForTransaction({
