@@ -1,4 +1,4 @@
-import { BigNumberish, Contract } from 'ethers';
+import { BigNumberish, Contract, ethers } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
 import {
   Address,
@@ -9,6 +9,7 @@ import {
   useWalletClient,
 } from 'wagmi';
 import { getContract, waitForTransaction } from 'wagmi/actions';
+import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useApprove = (
   contractAddress: string,
@@ -34,10 +35,17 @@ export const useApprove = (
     return allowance && allowance >= BigInt(amount.toString() || '0');
   }, [allowance, amount]);
 
-  const contract = useMemo(
-    () => new Contract(contractAddress, erc20ABI),
-    [contractAddress]
-  );
+  const { network } = useDefaultNetwork();
+
+  const contract = useMemo(() => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      network === 'base-goerli'
+        ? 'https://goerli.base.org'
+        : 'https://mainnet.base.org'
+    );
+
+    return new Contract(contractAddress, erc20ABI, provider);
+  }, [contractAddress, network]);
 
   const approve = useCallback(
     async (customAmount?: BigNumberish) => {

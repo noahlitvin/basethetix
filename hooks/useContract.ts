@@ -5,12 +5,18 @@ import { useDefaultNetwork } from './useDefaultNetwork';
 type ContractName = keyof (typeof contracts)['base-goerli'];
 
 export const useContract = (name: ContractName) => {
-  const network = useDefaultNetwork();
+  const { network } = useDefaultNetwork();
+
+  const provider = new ethers.providers.JsonRpcProvider(
+    network === 'base-goerli'
+      ? 'https://goerli.base.org'
+      : 'https://mainnet.base.org'
+  );
 
   if (name === 'chainId') {
     throw new Error('Cannot use "chainId" as a contract name');
   }
-  const contract = contracts[network.network][name];
+  const contract = contracts[network][name];
 
   if (!contract) {
     throw new Error(`Contract "${name}" not found on network "${network}"`);
@@ -19,7 +25,7 @@ export const useContract = (name: ContractName) => {
   return {
     address: contract.address as `0x${string}`,
     abi: contract.abi,
-    contract: new ethers.Contract(contract.address, contract.abi),
-    chainId: contracts[network.network].chainId,
+    contract: new ethers.Contract(contract.address, contract.abi, provider),
+    chainId: contracts[network].chainId,
   };
 };

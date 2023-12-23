@@ -6,7 +6,7 @@ import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
 import { Address, useAccount, useWalletClient } from 'wagmi';
-import { PopulatedTransaction } from 'ethers';
+import { BigNumber, PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
@@ -132,21 +132,39 @@ export const useModifyCollateral = (
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          gas: GAS_PRICE,
+          gas: txn.gas,
         });
 
         await waitForTransaction({ hash });
       } else {
+        console.log(newCollateralAmountD18);
+        const t =
+          await SYNTHETIX.contract.populateTransaction.delegateCollateral(
+            account,
+            poolId,
+            sUSDC_address[network],
+            newCollateralAmountD18,
+            parseEther('1')
+          );
+
+        await walletClient?.sendTransaction({
+          to: t.to as Address,
+          data: t.data,
+          value: t.value,
+          gas: t.gas,
+        });
+
+        if (t) {
+          return;
+        }
+
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
             account,
             poolId,
             sUSDC_address[network],
             newCollateralAmountD18,
-            parseEther('1'),
-            {
-              gasLimit: GAS_PRICE,
-            }
+            parseEther('1')
           ),
           await SPOT_MARKET.contract.populateTransaction.unwrap(
             USD_MarketId,
@@ -164,7 +182,7 @@ export const useModifyCollateral = (
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          gas: GAS_PRICE,
+          gas: txn.gas,
         });
 
         await waitForTransaction({ hash });
