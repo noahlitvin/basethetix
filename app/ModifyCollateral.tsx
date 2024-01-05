@@ -29,9 +29,13 @@ import { wei } from '@synthetixio/wei';
 
 interface ModifyCollateralProps {
   account: string;
+  onSuccess: () => void;
 }
 
-export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
+export const ModifyCollateral: FC<ModifyCollateralProps> = ({
+  account,
+  onSuccess,
+}) => {
   const [amount, setAmount] = useState(0);
   const { address } = useAccount();
   const [isAdding, setIsAdding] = useState(false);
@@ -41,10 +45,11 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
   const { submit, isLoading, newCollateralAmountD18 } = useModifyCollateral(
     account,
     amount,
-    isAdding
+    isAdding,
+    onSuccess
   );
 
-  const { data: pnl } = useGetPnl(account);
+  const { data: pnl, refetch } = useGetPnl(account);
 
   const { totalAssigned: collateral } = useGetCollateral(account);
   const { network } = useDefaultNetwork();
@@ -80,7 +85,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({ account }) => {
 
   return pnl < 0 ? (
     <Box mb={2}>
-      <WithdrawAll account={account} />
+      <WithdrawAll account={account} onSuccess={refetch} />
     </Box>
   ) : (
     <Box mb={2}>

@@ -8,13 +8,15 @@ import { formatUnits } from 'ethers/lib/utils.js';
 
 interface WithdrawAllProps {
   account: string;
+  onSuccess: () => void;
 }
 
-export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
+export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
   const { data: pnl } = useGetPnl(account);
   const { submit, isLoading } = useModifyPnL(
     account,
-    (pnl > 0n ? pnl : -1n * pnl).toString()
+    (pnl > 0n ? pnl : -1n * pnl).toString(),
+    onSuccess
   );
 
   return (
@@ -31,9 +33,8 @@ export const WithdrawAll: FC<WithdrawAllProps> = ({ account }) => {
         w='100%'
         my='4'
       >
-        Repay{' '}
-        <Amount value={wei(formatUnits(pnl.toString()) || '0')} suffix='USDC' />{' '}
-        USDC and withdraw Y USDC
+        Repay <Amount value={wei(formatUnits(pnl.toString()) || '0')} /> USDC
+        and withdraw
       </Button>
     </>
   );

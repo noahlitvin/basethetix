@@ -9,7 +9,13 @@ import { useEffect, useState, useRef } from 'react';
 import { filter } from 'lodash';
 import { useContract } from '../hooks/useContract';
 
-const CreateAccount: NextComponentType = () => {
+interface CreateAccountProps {
+  setSelectedAccount: (accountId: string | undefined) => void;
+}
+
+const CreateAccount: React.FC<CreateAccountProps> = ({
+  setSelectedAccount,
+}) => {
   const toast = useToast();
   const [hovered, setHovered] = useState(false);
   const [highlightedCharIndex, setHighlightedCharIndex] = useState(-1);
@@ -65,8 +71,9 @@ const CreateAccount: NextComponentType = () => {
         duration: 10000,
         isClosable: true,
       });
+      setSelectedAccount(undefined);
     }
-  }, [isSuccess, data?.hash, toast]);
+  }, [isSuccess, data?.hash, toast, setSelectedAccount]);
 
   const renderButtonText = () => {
     return [...buttonText].map((char, index) => (

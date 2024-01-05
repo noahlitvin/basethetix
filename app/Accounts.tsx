@@ -17,7 +17,7 @@ const Accounts: React.FC<AccountsProps> = ({
 
   useEffect(() => {
     if (!accounts.find((account) => selectedAccount === account.accountId)) {
-      setSelectedAccount(accounts[0]?.accountId);
+      setSelectedAccount(accounts[accounts.length - 1]?.accountId);
     }
   }, [accounts, selectedAccount, setSelectedAccount]);
 
@@ -45,7 +45,7 @@ const Accounts: React.FC<AccountsProps> = ({
         </Button>
       ))}
 
-      <CreateAccount />
+      <CreateAccount setSelectedAccount={setSelectedAccount} />
     </Box>
   );
 };

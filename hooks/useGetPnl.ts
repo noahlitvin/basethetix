@@ -21,7 +21,7 @@ export const useGetPnl = (accountId: string | undefined) => {
   const poolId = useGetPreferredPool();
   const { network } = useDefaultNetwork();
 
-  const { data, isLoading } = useMulticallRead<bigint>(
+  const { data, isLoading, refetch } = useMulticallRead<bigint>(
     synthetix.abi,
     synthetix.contract.address,
     'getPositionDebt',
@@ -39,5 +39,6 @@ export const useGetPnl = (accountId: string | undefined) => {
   return {
     data: result,
     isLoading,
+    refetch,
   };
 };

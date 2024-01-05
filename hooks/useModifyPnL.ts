@@ -2,18 +2,19 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, parseEther, parseUnits, zeroAddress } from 'viem';
+import { TransactionRequest, parseUnits, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
 import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
-import { GAS_PRICE } from '../constants/gasPrices';
+import { useToast } from '@chakra-ui/react';
 
 export const useModifyPnL = (
   account: string | undefined,
-  amount: number | string
+  amount: number | string,
+  onSuccess: () => void
 ) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
@@ -41,6 +42,7 @@ export const useModifyPnL = (
   const USDC = useContract('USDC');
   const sUSD = useContract('snxUSD');
   const poolId = useGetPreferredPool();
+  const toast = useToast();
 
   const { makeMulticall } = useMulticall();
 
@@ -158,11 +160,11 @@ export const useModifyPnL = (
 
           const hash = await walletClient.sendTransaction({
             ...txn,
-            gas: GAS_PRICE,
           });
 
           await waitForTransaction({
             hash,
+            confirmations: 2,
           });
         } else {
           const hash = await walletClient.writeContract({
@@ -173,8 +175,19 @@ export const useModifyPnL = (
           });
           await waitForTransaction({
             hash,
+            confirmations: 2,
           });
         }
+
+        onSuccess();
+
+        toast({
+          title: 'Success',
+          description: `Successfully done`,
+          status: 'success',
+          duration: 10000,
+          isClosable: true,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -183,22 +196,24 @@ export const useModifyPnL = (
     },
     [
       walletClient,
-      SYNTHETIX.contract.populateTransaction,
-      SYNTHETIX.address,
-      SYNTHETIX.abi,
-      account,
-      poolId,
-      network,
-      amountWithSlippage,
+      onSuccess,
+      toast,
       USDCrequireApproval,
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
       usdcAmount,
+      amountWithSlippage,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
       amount,
       sUSD_Contract.populateTransaction,
       sUSD_Contract.address,
+      SYNTHETIX.address,
+      SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.abi,
+      account,
+      poolId,
+      network,
       makeMulticall,
       address,
       approveUSDC,

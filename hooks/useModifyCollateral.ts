@@ -6,16 +6,17 @@ import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
 import { Address, useAccount, useWalletClient } from 'wagmi';
-import { BigNumber, PopulatedTransaction } from 'ethers';
+import { PopulatedTransaction } from 'ethers';
 import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
-import { GAS_PRICE } from '../constants/gasPrices';
+import { useToast } from '@chakra-ui/react';
 
 export const useModifyCollateral = (
   account: string | undefined,
   amount: number,
-  isAdding: boolean
+  isAdding: boolean,
+  onSuccess: () => void
 ) => {
   /*
     Because of token approvals, it occurs to me we might want a smart contract that composes the calls with the spot market and the core system?
@@ -39,6 +40,7 @@ export const useModifyCollateral = (
 
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
+  const toast = useToast();
 
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
@@ -135,29 +137,8 @@ export const useModifyCollateral = (
           gas: txn.gas,
         });
 
-        await waitForTransaction({ hash });
+        await waitForTransaction({ hash, confirmations: 2 });
       } else {
-        console.log(newCollateralAmountD18);
-        const t =
-          await SYNTHETIX.contract.populateTransaction.delegateCollateral(
-            account,
-            poolId,
-            sUSDC_address[network],
-            newCollateralAmountD18,
-            parseEther('1')
-          );
-
-        await walletClient?.sendTransaction({
-          to: t.to as Address,
-          data: t.data,
-          value: t.value,
-          gas: t.gas,
-        });
-
-        if (t) {
-          return;
-        }
-
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
             account,
@@ -185,8 +166,18 @@ export const useModifyCollateral = (
           gas: txn.gas,
         });
 
-        await waitForTransaction({ hash });
+        await waitForTransaction({ hash, confirmations: 2 });
       }
+
+      onSuccess();
+
+      toast({
+        title: 'Success',
+        description: `Successfully done`,
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -204,9 +195,11 @@ export const useModifyCollateral = (
     makeMulticall,
     network,
     newCollateralAmountD18,
+    onSuccess,
     poolId,
     requireApproval_sUSDC,
     sUSDC_Contract.populateTransaction,
+    toast,
     usdcAmount,
     walletClient,
   ]);

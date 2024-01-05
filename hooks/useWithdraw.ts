@@ -72,6 +72,7 @@ export const useWithdraw = (account: string | undefined) => {
 
       waitForTransaction({
         hash,
+        confirmations: 2,
       });
     } catch (error) {}
   }, [

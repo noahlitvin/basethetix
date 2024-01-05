@@ -10,21 +10,22 @@ import { parseEther } from 'viem';
 
 interface ModifyPNLProps {
   account: string;
+  onSuccess: () => void;
 }
 
-export const ModifyPNL: FC<ModifyPNLProps> = ({ account }) => {
+export const ModifyPNL: FC<ModifyPNLProps> = ({ account, onSuccess }) => {
   const [amount, setAmount] = useState(0);
-  const { data: pnl } = useGetPnl(account);
+  const { data: pnl, refetch } = useGetPnl(account);
   const amountD18 = useMemo(
     () => parseEther(String(amount || 0)).toString(),
     [amount]
   );
 
-  const { submit, isLoading } = useModifyPnL(account, amountD18);
+  const { submit, isLoading } = useModifyPnL(account, amountD18, onSuccess);
 
   return pnl < 0 ? (
     <Box mb={2}>
-      <WithdrawAll account={account} />
+      <WithdrawAll account={account} onSuccess={refetch} />
     </Box>
   ) : (
     <Box mb={2}>

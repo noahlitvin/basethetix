@@ -117,6 +117,7 @@ export const useTransact = () => {
 
         await waitForTransaction({
           hash,
+          confirmations: 2,
         });
         setIsLoading(false);
       } catch (error) {

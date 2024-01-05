@@ -34,7 +34,7 @@ import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 
 const Lp: NextComponentType = () => {
-  const { isConnected, connector } = useAccount();
+  const { isConnected } = useAccount();
 
   const {
     isOpen: isModifyCollateralOpen,
@@ -52,7 +52,7 @@ const Lp: NextComponentType = () => {
 
   const { totalAssigned: collateral } = useGetCollateral(selectedAccount);
 
-  const { data: pnl, isLoading } = useGetPnl(selectedAccount);
+  const { data: pnl, refetch, isLoading } = useGetPnl(selectedAccount);
 
   return (
     <>
@@ -124,7 +124,12 @@ const Lp: NextComponentType = () => {
                           security measure, you must wait 24 hours to finalize a
                           withdrawal.
                         </Text>
-                        <ModifyCollateral account={selectedAccount} />
+                        <ModifyCollateral
+                          account={selectedAccount}
+                          onSuccess={() => {
+                            onModifyCollateralClose();
+                          }}
+                        />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
@@ -162,7 +167,13 @@ const Lp: NextComponentType = () => {
                           from backing the markets. This can increase and
                           decrease over time based on market performance.
                         </Text>
-                        <ModifyPNL account={selectedAccount} />
+                        <ModifyPNL
+                          account={selectedAccount}
+                          onSuccess={() => {
+                            onModifyPnlClose();
+                            refetch();
+                          }}
+                        />
                       </ModalBody>
                     </ModalContent>
                   </Modal>
