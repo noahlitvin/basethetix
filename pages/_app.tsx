@@ -37,7 +37,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const { connectors } = getDefaultWallets({
   appName: 'Basethetix',
   chains,
-  projectId: '5075a2da602e17eec34aa77b40b321be',
+  projectId: '14f72ee1399549020ac5a3e39b29c4b2',
 });
 
 const config = createConfig({
