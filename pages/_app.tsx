@@ -25,7 +25,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
      * Tells wagmi to use the default RPC URL for each chain
      * for some dapps the higher rate limits of Alchemy may be required
      */
-    infuraProvider({ apiKey: '4791c1745a1f44ce831e94be7f9e8bd7' }),
+    infuraProvider({ apiKey: '9e5649bac0c04de4a91a75651384a04b' }),
     jsonRpcProvider({
       rpc: (chain) => {
         return { http: chain.rpcUrls.default.http[0] };
