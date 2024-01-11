@@ -1,9 +1,7 @@
-import { BigNumberish, Contract, ethers } from 'ethers';
-import { useAccount, useQuery } from 'wagmi';
+import { BigNumberish } from 'ethers';
+import { useAccount, usePublicClient, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
 import { useContract } from './useContract';
-import { useDefaultNetwork } from './useDefaultNetwork';
-import { getProvider } from '../constants/provider';
 
 export const useMulticallRead = <T = any>(
   abi: any,
@@ -20,9 +18,7 @@ export const useMulticallRead = <T = any>(
 
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
-  const { network } = useDefaultNetwork();
-
-  const provider = getProvider(network);
+  const publicClient = usePublicClient();
 
   return useQuery(
     [address, fn, ...args, TrustedMulticallForwarder.address],
@@ -34,7 +30,7 @@ export const useMulticallRead = <T = any>(
           address,
           fn,
           args,
-          provider,
+          publicClient,
           account.address,
           BigInt(0)
         )) as T;

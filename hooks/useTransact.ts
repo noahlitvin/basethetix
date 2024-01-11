@@ -7,8 +7,6 @@ import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
 import { GAS_PRICE } from '../constants/gasPrices';
-import { useDefaultNetwork } from './useDefaultNetwork';
-import { getProvider } from '../constants/provider';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -34,8 +32,6 @@ export async function generate7412CompatibleCall(
 export const useTransact = () => {
   const [isLoading, setIsLoading] = useState(false);
   const publicClient = usePublicClient();
-  const { network } = useDefaultNetwork();
-  const provider = getProvider(network);
   const { data: walletClient } = useWalletClient();
   const account = useAccount();
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
@@ -48,13 +44,6 @@ export const useTransact = () => {
 
       setIsLoading(true);
       try {
-        const viemClient = viem.createPublicClient({
-          transport: viem.custom({
-            request: ({ method, params }) =>
-              (provider as any).send(method, params),
-          }),
-        });
-
         const multicallFunc = function makeMulticallThroughCall(
           calls: TransactionRequest[]
         ): TransactionRequest {
@@ -85,7 +74,7 @@ export const useTransact = () => {
         };
 
         const txn = await generate7412CompatibleCall(
-          viemClient,
+          publicClient,
           multicallFunc,
           {
             account: account.address,
@@ -129,7 +118,6 @@ export const useTransact = () => {
       TrustedMulticallForwarder.abi,
       TrustedMulticallForwarder.address,
       account.address,
-      provider,
       publicClient,
       walletClient,
     ]

@@ -68,24 +68,13 @@ export const readMulticall = async (
   address: string,
   fn: string,
   args: Array<any>,
-  provider: any,
+  publicClient: any,
   account: `0x${string}` | undefined,
   value?: bigint | undefined
 ) => {
   try {
     const contract = new Contract(address, abi);
     const data = contract.interface.encodeFunctionData(fn, args);
-
-    const viemClient = viem.createPublicClient({
-      transport: viem.custom({
-        request: ({ method, params }) => (provider as any).send(method, params),
-      }),
-    });
-
-    // const viemClient = viem.createPublicClient({
-    //   chain: base,
-    //   transport: viem.http(),
-    // }) as viem.PublicClient;
 
     const multicallFunc = function makeMulticallCall(
       calls: TransactionRequest[]
@@ -116,14 +105,14 @@ export const readMulticall = async (
       };
     };
 
-    const txn = await generate7412CompatibleCall(viemClient, multicallFunc, {
+    const txn = await generate7412CompatibleCall(publicClient, multicallFunc, {
       account: account as Address,
       to: contract.address as Address,
       data: data as Address,
       value,
     });
 
-    const result = await viemClient.call({
+    const result = await publicClient.call({
       account: '0x4200000000000000000000000000000000000006', // simulate w/ wETH contract because it will have eth
       data: txn.data,
       to: txn.to,
