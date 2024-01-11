@@ -66,7 +66,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
 
   const minDelegationValidation = useMemo(() => {
     return (
-      BigInt(newCollateralAmountD18) >=
+      BigInt(newCollateralAmountD18 || '0') >=
       BigInt(
         (collateralConfiguration as any)?.minDelegationD18?.toString() || '0'
       )

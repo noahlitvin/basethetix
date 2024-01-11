@@ -10,7 +10,7 @@ export const useMulticallRead = <T = any>(
   address: string,
   fn: string,
   args: Array<any>,
-  value?: BigNumberish | undefined
+  defaultValue?: BigNumberish | undefined
 ): {
   data: T | undefined;
   isLoading: boolean;
@@ -42,6 +42,7 @@ export const useMulticallRead = <T = any>(
         console.log({
           error,
         });
+        return defaultValue;
       }
     },
     {
