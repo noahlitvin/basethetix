@@ -2,7 +2,7 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, parseUnits, zeroAddress } from 'viem';
+import { TransactionRequest, formatUnits, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
 import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
@@ -57,8 +57,8 @@ export const useModifyPnL = (
 
   const usdcAmount = useMemo(
     () =>
-      parseUnits(
-        String(amountWithSlippage || 0),
+      formatUnits(
+        amountWithSlippage || 0n,
         network === 'base-goerli' ? 0 : 12
       ).toString(),
     [amountWithSlippage, network]
