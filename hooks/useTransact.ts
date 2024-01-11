@@ -108,8 +108,8 @@ export const useTransact = () => {
         });
 
         setIsLoading(false);
-      } catch (error) {
-        console.log('error in useTransact!', error);
+      } catch (error: any) {
+        console.log('error in useTransact!', error?.data);
         setIsLoading(false);
         throw error;
       }

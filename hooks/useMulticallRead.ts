@@ -1,4 +1,3 @@
-import { BigNumberish } from 'ethers';
 import { useAccount, usePublicClient, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
 import { useContract } from './useContract';
@@ -8,7 +7,8 @@ export const useMulticallRead = <T = any>(
   address: string,
   fn: string,
   args: Array<any>,
-  defaultValue?: BigNumberish | undefined
+  defaultValue?: T | undefined,
+  enabled = true
 ): {
   data: T | undefined;
   isLoading: boolean;
@@ -43,6 +43,7 @@ export const useMulticallRead = <T = any>(
     },
     {
       staleTime: 50,
+      enabled,
     }
   );
 };
