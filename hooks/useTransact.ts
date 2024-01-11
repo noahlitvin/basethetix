@@ -6,6 +6,9 @@ import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
+import { GAS_PRICE } from '../constants/gasPrices';
+import { useDefaultNetwork } from './useDefaultNetwork';
+import { getProvider } from '../constants/provider';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -31,30 +34,24 @@ export async function generate7412CompatibleCall(
 export const useTransact = () => {
   const [isLoading, setIsLoading] = useState(false);
   const publicClient = usePublicClient();
+  const { network } = useDefaultNetwork();
+  const provider = getProvider(network);
   const { data: walletClient } = useWalletClient();
   const account = useAccount();
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
   const transact = useCallback(
-    async (
-      contract: Contract,
-      fn: string,
-      args: Array<any>,
-      value?: BigNumberish | undefined
-    ) => {
+    async (data: string, to: string, value?: BigNumberish | undefined) => {
       if (!walletClient) {
         return;
       }
 
       setIsLoading(true);
       try {
-        // const feeData = await provider.getFeeData();
-        const data = contract.interface.encodeFunctionData(fn, args);
-
         const viemClient = viem.createPublicClient({
           transport: viem.custom({
             request: ({ method, params }) =>
-              (publicClient as any).send(method, params),
+              (provider as any).send(method, params),
           }),
         });
 
@@ -92,33 +89,35 @@ export const useTransact = () => {
           multicallFunc,
           {
             account: account.address,
-            to: contract.address as Address,
+            to: to as Address,
             data: data as Address,
             value: value as bigint,
           }
         );
-        // const gas = await walletClient.({
-        //   to: txn.to as Address,
-        //   data: txn.data,
-        //   value: txn.value,
-        // });
-        // const gasLimit = (Number(gas) * 1.2).toFixed(0);
+
+        let gas = GAS_PRICE;
+        try {
+          gas = await publicClient.estimateGas({
+            account: account.address as Address,
+            to: txn.to,
+            data: txn.data as Address,
+            value: txn.value as bigint,
+          });
+        } catch (error) {}
+        gas = (gas * 11n) / 10n;
 
         const hash = await walletClient?.sendTransaction({
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          /*
-          maxFeePerGas: feeData.maxFeePerGas || undefined,
-          maxPriorityFeePerGas: feeData.maxPriorityFeePerGas || undefined,
-          type: 2,
-          */
+          gas,
         });
 
         await waitForTransaction({
           hash,
           confirmations: 2,
         });
+
         setIsLoading(false);
       } catch (error) {
         console.log('error in useTransact!', error);
@@ -130,6 +129,7 @@ export const useTransact = () => {
       TrustedMulticallForwarder.abi,
       TrustedMulticallForwarder.address,
       account.address,
+      provider,
       publicClient,
       walletClient,
     ]

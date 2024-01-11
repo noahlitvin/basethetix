@@ -1,5 +1,5 @@
 import { Button, Text } from '@chakra-ui/react';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { Amount } from '../components/Amount';
 import { wei } from '@synthetixio/wei';
 import { useModifyPnL } from '../hooks/useModifyPnL';
@@ -13,9 +13,14 @@ interface WithdrawAllProps {
 
 export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
   const { data: pnl } = useGetPnl(account);
+  const amountWithSlippage = useMemo(
+    () => (BigInt((pnl > 0n ? pnl : -1n * pnl).toString()) * 12n) / 10n,
+    [pnl]
+  );
+
   const { submit, isLoading } = useModifyPnL(
     account,
-    (pnl > 0n ? pnl : -1n * pnl).toString(),
+    amountWithSlippage.toString(),
     onSuccess
   );
 
@@ -34,7 +39,6 @@ export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
         my='4'
       >
         Repay <Amount value={wei(formatUnits(pnl.toString()) || '0')} /> USDC
-        and withdraw
       </Button>
     </>
   );

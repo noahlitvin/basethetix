@@ -11,6 +11,7 @@ import { useMulticall } from './useMulticall';
 import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
+import { useTransact } from './useTransact';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -78,11 +79,9 @@ export const useModifyCollateral = (
   const { requireApproval: requireApproval_sUSDC, contract: sUSDC_Contract } =
     useApprove(sUSDC_address[network], amountD18, SYNTHETIX.address);
 
+  const { transact } = useTransact();
+
   const submit = useCallback(async () => {
-    if (!walletClient) {
-      console.log('no singer');
-      return;
-    }
     try {
       setIsLoading(true);
       if (isAdding) {
@@ -130,14 +129,7 @@ export const useModifyCollateral = (
           address as Address
         );
 
-        const hash = await walletClient?.sendTransaction({
-          to: txn.to as Address,
-          data: txn.data,
-          value: txn.value,
-          gas: txn.gas,
-        });
-
-        await waitForTransaction({ hash, confirmations: 2 });
+        await transact(txn.data!, txn.to!, txn.value);
       } else {
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
@@ -159,14 +151,7 @@ export const useModifyCollateral = (
           address as Address
         );
 
-        const hash = await walletClient?.sendTransaction({
-          to: txn.to as Address,
-          data: txn.data,
-          value: txn.value,
-          gas: txn.gas,
-        });
-
-        await waitForTransaction({ hash, confirmations: 2 });
+        await transact(txn.data!, txn.to!, txn.value);
       }
 
       onSuccess();
@@ -200,8 +185,8 @@ export const useModifyCollateral = (
     requireApproval_sUSDC,
     sUSDC_Contract.populateTransaction,
     toast,
+    transact,
     usdcAmount,
-    walletClient,
   ]);
   return {
     submit,

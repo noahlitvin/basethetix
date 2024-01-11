@@ -2,14 +2,14 @@ import { useCallback } from 'react';
 import { useGetWithdrawable } from './useGetWithdrawable';
 import { PopulatedTransaction } from 'ethers';
 import { useContract } from './useContract';
-import { Address, useAccount, useWalletClient } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { parseUnits } from 'ethers/lib/utils.js';
 import { TransactionRequest } from 'viem';
 import { useMulticall } from './useMulticall';
-import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { GAS_PRICE } from '../constants/gasPrices';
+import { useTransact } from './useTransact';
 
 export const useWithdraw = (account: string | undefined) => {
   /*
@@ -27,7 +27,6 @@ export const useWithdraw = (account: string | undefined) => {
     unwrap(uint128 marketId,withdrawablesUSDC+withdrawablesUSD,withdrawablesUSDC+withdrawablesUSD) SPOT MARKET https://github.com/Synthetixio/synthetix-v3/blob/main/markets/spot-market/contracts/modules/WrapperModule.sol#L48
   */
 
-  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
@@ -36,11 +35,9 @@ export const useWithdraw = (account: string | undefined) => {
   const { makeMulticall } = useMulticall();
 
   const { network } = useDefaultNetwork();
+  const { transact } = useTransact();
 
   return useCallback(async () => {
-    if (!walletClient) {
-      return;
-    }
     try {
       const txs: PopulatedTransaction[] = [
         await SYNTHETIX.contract.populateTransaction.withdraw(
@@ -63,17 +60,7 @@ export const useWithdraw = (account: string | undefined) => {
         address as Address
       );
 
-      const hash = await walletClient?.sendTransaction({
-        to: txn.to as Address,
-        data: txn.data as Address,
-        value: txn.value || 0n,
-        gas: GAS_PRICE,
-      });
-
-      waitForTransaction({
-        hash,
-        confirmations: 2,
-      });
+      await transact(txn.data!, txn.to!, txn.value);
     } catch (error) {}
   }, [
     SPOT_MARKET.contract.populateTransaction,
@@ -82,7 +69,7 @@ export const useWithdraw = (account: string | undefined) => {
     address,
     makeMulticall,
     network,
-    walletClient,
+    transact,
     withdrawable,
   ]);
 };
