@@ -124,12 +124,12 @@ export const useModifyCollateral = (
           )
         );
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
+        // const txn = await makeMulticall(
+        //   txs as TransactionRequest[],
+        //   address as Address
+        // );
 
-        await transact(txn.data!, txn.to!, txn.value);
+        await transact(txs as TransactionRequest[]);
       } else {
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
@@ -146,12 +146,12 @@ export const useModifyCollateral = (
           ),
         ];
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
+        // const txn = await makeMulticall(
+        //   txs as TransactionRequest[],
+        //   address as Address
+        // );
 
-        await transact(txn.data!, txn.to!, txn.value);
+        await transact(txs as TransactionRequest[]);
       }
 
       onSuccess();
@@ -173,11 +173,9 @@ export const useModifyCollateral = (
     SYNTHETIX.contract.populateTransaction,
     USDCrequireApproval,
     account,
-    address,
     amountD18,
     approveUSDC,
     isAdding,
-    makeMulticall,
     network,
     newCollateralAmountD18,
     onSuccess,

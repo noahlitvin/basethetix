@@ -140,12 +140,12 @@ export const useModifyPnL = (
             )
           );
 
-          const txn = await makeMulticall(
-            txs as TransactionRequest[],
-            address as Address
-          );
+          // const txn = await makeMulticall(
+          //   txs as TransactionRequest[],
+          //   address as Address
+          // );
 
-          await transact(txn.data!, txn.to!, txn.value);
+          await transact(txs as TransactionRequest[]);
         } else {
           const txn = await SYNTHETIX.contract.populateTransaction.mintUsd(
             account,
@@ -153,7 +153,7 @@ export const useModifyPnL = (
             sUSDC_Contract.address,
             amount
           );
-          await transact(txn.data!, txn.to!, txn.value);
+          await transact([txn] as TransactionRequest[]);
         }
 
         onSuccess();
@@ -188,8 +188,6 @@ export const useModifyPnL = (
       account,
       poolId,
       network,
-      makeMulticall,
-      address,
       transact,
       approveUSDC,
     ]

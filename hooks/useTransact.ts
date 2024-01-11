@@ -7,6 +7,7 @@ import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
 import { GAS_PRICE } from '../constants/gasPrices';
+import { useMulticall } from './useMulticall';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -36,22 +37,33 @@ export const useTransact = () => {
   const account = useAccount();
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
+  const { makeMulticall } = useMulticall();
+
   const transact = useCallback(
-    async (data: string, to: string, value?: BigNumberish | undefined) => {
+    async (transactions: TransactionRequest[]) => {
       if (!walletClient) {
         return;
       }
 
+      const multicallTxn = await makeMulticall(
+        transactions as viem.TransactionRequest[],
+        account.address as Address
+      );
+
+      // data: string, to: string, value?: BigNumberish | undefined
       setIsLoading(true);
       try {
         const multicallFunc = function makeMulticallThroughCall(
           calls: TransactionRequest[]
         ): TransactionRequest {
+          console.log({ calls });
+          calls.pop();
+
           const multicallData = viem.encodeFunctionData({
             abi: TrustedMulticallForwarder.abi,
             functionName: 'aggregate3Value',
             args: [
-              calls.map((c) => ({
+              [...calls, ...transactions].map((c) => ({
                 target: c.to,
                 requireSuccess: true,
                 value: c.value || 0n,
@@ -78,9 +90,9 @@ export const useTransact = () => {
           multicallFunc,
           {
             account: account.address,
-            to: to as Address,
-            data: data as Address,
-            value: value as bigint,
+            to: multicallTxn.to as Address,
+            data: multicallTxn.data as Address,
+            value: multicallTxn.value as bigint,
           }
         );
 
@@ -118,6 +130,7 @@ export const useTransact = () => {
       TrustedMulticallForwarder.abi,
       TrustedMulticallForwarder.address,
       account.address,
+      makeMulticall,
       publicClient,
       walletClient,
     ]
