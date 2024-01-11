@@ -3,6 +3,7 @@ import { useAccount, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
 import { useContract } from './useContract';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { getProvider } from '../constants/provider';
 
 export const useMulticallRead = <T = any>(
   abi: any,
@@ -21,11 +22,7 @@ export const useMulticallRead = <T = any>(
 
   const { network } = useDefaultNetwork();
 
-  const provider = new ethers.providers.JsonRpcProvider(
-    network === 'base-goerli'
-      ? 'https://goerli.base.org'
-      : 'https://mainnet.base.org'
-  );
+  const provider = getProvider(network);
 
   return useQuery(
     [address, fn, ...args, TrustedMulticallForwarder.address],

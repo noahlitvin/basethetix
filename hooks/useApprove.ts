@@ -10,6 +10,7 @@ import {
 } from 'wagmi';
 import { getContract, waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { getProvider } from '../constants/provider';
 
 export const useApprove = (
   contractAddress: string,
@@ -38,11 +39,7 @@ export const useApprove = (
   const { network } = useDefaultNetwork();
 
   const contract = useMemo(() => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      network === 'base-goerli'
-        ? 'https://goerli.base.org'
-        : 'https://mainnet.base.org'
-    );
+    const provider = getProvider(network);
 
     return new Contract(contractAddress, erc20ABI, provider);
   }, [contractAddress, network]);

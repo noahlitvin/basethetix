@@ -15,17 +15,16 @@ import { useEffect, useState } from 'react';
 
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { publicProvider } from 'wagmi/providers/public';
+import { INFURA_WEB3_API_KEY } from '../constants/provider';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [base, baseGoerli],
   [
-    publicProvider(),
     /**
      * Tells wagmi to use the default RPC URL for each chain
      * for some dapps the higher rate limits of Alchemy may be required
      */
-    infuraProvider({ apiKey: '9e5649bac0c04de4a91a75651384a04b' }),
+    infuraProvider({ apiKey: INFURA_WEB3_API_KEY }),
     jsonRpcProvider({
       rpc: (chain) => {
         return { http: chain.rpcUrls.default.http[0] };

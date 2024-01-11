@@ -1,17 +1,14 @@
 import { ethers } from 'ethers';
 import { contracts } from '../constants/contracts';
 import { useDefaultNetwork } from './useDefaultNetwork';
+import { getProvider } from '../constants/provider';
 
 type ContractName = keyof (typeof contracts)['base-goerli'];
 
 export const useContract = (name: ContractName) => {
   const { network } = useDefaultNetwork();
 
-  const provider = new ethers.providers.JsonRpcProvider(
-    network === 'base-goerli'
-      ? 'https://goerli.base.org'
-      : 'https://mainnet.base.org'
-  );
+  const provider = getProvider(network);
 
   if (name === 'chainId') {
     throw new Error('Cannot use "chainId" as a contract name');
