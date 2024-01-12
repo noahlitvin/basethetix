@@ -1,13 +1,10 @@
-import { BigNumberish, Contract } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useAccount, Address, useWalletClient, usePublicClient } from 'wagmi';
-import { EIP7412 } from 'erc7412';
-import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
 import { GAS_PRICE } from '../constants/gasPrices';
-import { useMulticall } from './useMulticall';
+import { generate7412CompatibleCall } from '../utils/erc7412';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -16,20 +13,6 @@ export type TransactionRequest = {
   account?: Address | undefined;
 };
 
-export async function generate7412CompatibleCall(
-  client: viem.PublicClient,
-  multicallFunc: (txs: TransactionRequest[]) => TransactionRequest,
-  txn: TransactionRequest
-) {
-  const adapters = [];
-
-  // NOTE: add other providers here as needed
-  adapters.push(new PythAdapter('https://hermes.pyth.network/'));
-
-  const converter = new EIP7412(adapters, multicallFunc);
-  return await converter.enableERC7412(client as any, txn);
-}
-
 export const useTransact = () => {
   const [isLoading, setIsLoading] = useState(false);
   const publicClient = usePublicClient();
@@ -37,33 +20,22 @@ export const useTransact = () => {
   const account = useAccount();
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
-  const { makeMulticall } = useMulticall();
-
   const transact = useCallback(
     async (transactions: TransactionRequest[]) => {
       if (!walletClient) {
         return;
       }
 
-      const multicallTxn = await makeMulticall(
-        transactions as viem.TransactionRequest[],
-        account.address as Address
-      );
-
-      // data: string, to: string, value?: BigNumberish | undefined
       setIsLoading(true);
       try {
         const multicallFunc = function makeMulticallThroughCall(
           calls: TransactionRequest[]
         ): TransactionRequest {
-          console.log({ calls });
-          calls.pop();
-
           const multicallData = viem.encodeFunctionData({
             abi: TrustedMulticallForwarder.abi,
             functionName: 'aggregate3Value',
             args: [
-              [...calls, ...transactions].map((c) => ({
+              calls.map((c) => ({
                 target: c.to,
                 requireSuccess: true,
                 value: c.value || 0n,
@@ -88,12 +60,7 @@ export const useTransact = () => {
         const txn = await generate7412CompatibleCall(
           publicClient,
           multicallFunc,
-          {
-            account: account.address,
-            to: multicallTxn.to as Address,
-            data: multicallTxn.data as Address,
-            value: multicallTxn.value as bigint,
-          }
+          transactions
         );
 
         let gas = GAS_PRICE;
@@ -121,7 +88,7 @@ export const useTransact = () => {
 
         setIsLoading(false);
       } catch (error: any) {
-        console.log('error in useTransact!', error?.data);
+        console.log('error', error?.data);
         setIsLoading(false);
         throw error;
       }
@@ -130,7 +97,6 @@ export const useTransact = () => {
       TrustedMulticallForwarder.abi,
       TrustedMulticallForwarder.address,
       account.address,
-      makeMulticall,
       publicClient,
       walletClient,
     ]
