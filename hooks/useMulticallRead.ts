@@ -35,9 +35,6 @@ export const useMulticallRead = <T = any>(
           BigInt(0)
         )) as T;
       } catch (error) {
-        console.log({
-          error,
-        });
         return defaultValue;
       }
     },

@@ -55,19 +55,17 @@ export const useWithdraw = (account: string | undefined) => {
         ),
       ];
 
-      const txn = await makeMulticall(
-        txs as TransactionRequest[],
-        address as Address
-      );
+      // const txn = await makeMulticall(
+      //   txs as TransactionRequest[],
+      //   address as Address
+      // );
 
-      await transact(txn.data!, txn.to!, txn.value);
+      await transact(txs as TransactionRequest[]);
     } catch (error) {}
   }, [
     SPOT_MARKET.contract.populateTransaction,
     SYNTHETIX.contract.populateTransaction,
     account,
-    address,
-    makeMulticall,
     network,
     transact,
     withdrawable,

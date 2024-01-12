@@ -1,12 +1,10 @@
-import { BigNumberish, Contract } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useAccount, Address, useWalletClient, usePublicClient } from 'wagmi';
-import { EIP7412 } from 'erc7412';
-import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
 import { GAS_PRICE } from '../constants/gasPrices';
+import { generate7412CompatibleCall } from '../utils/erc7412';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -14,20 +12,6 @@ export type TransactionRequest = {
   value?: bigint | undefined;
   account?: Address | undefined;
 };
-
-export async function generate7412CompatibleCall(
-  client: viem.PublicClient,
-  multicallFunc: (txs: TransactionRequest[]) => TransactionRequest,
-  txn: TransactionRequest
-) {
-  const adapters = [];
-
-  // NOTE: add other providers here as needed
-  adapters.push(new PythAdapter('https://hermes.pyth.network/'));
-
-  const converter = new EIP7412(adapters, multicallFunc);
-  return await converter.enableERC7412(client as any, txn);
-}
 
 export const useTransact = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +21,7 @@ export const useTransact = () => {
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
   const transact = useCallback(
-    async (data: string, to: string, value?: BigNumberish | undefined) => {
+    async (transactions: TransactionRequest[]) => {
       if (!walletClient) {
         return;
       }
@@ -76,12 +60,7 @@ export const useTransact = () => {
         const txn = await generate7412CompatibleCall(
           publicClient,
           multicallFunc,
-          {
-            account: account.address,
-            to: to as Address,
-            data: data as Address,
-            value: value as bigint,
-          }
+          transactions
         );
 
         let gas = GAS_PRICE;
@@ -109,7 +88,7 @@ export const useTransact = () => {
 
         setIsLoading(false);
       } catch (error: any) {
-        console.log('error in useTransact!', error?.data);
+        console.log('error', error?.data);
         setIsLoading(false);
         throw error;
       }

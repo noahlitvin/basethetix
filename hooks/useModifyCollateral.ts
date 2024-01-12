@@ -5,10 +5,8 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
-import { Address, useAccount, useWalletClient } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
-import { useMulticall } from './useMulticall';
-import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
 import { useTransact } from './useTransact';
@@ -37,10 +35,7 @@ export const useModifyCollateral = (
   delegateCollateral(uint128 accountId, uint128 poolId, address sUsdcAddress, uint256 newCollateral, 1) CORE SYSTEM  https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/VaultModule.sol#L43
   */
   const { totalAssigned: currentCollateral } = useGetCollateral(account);
-  const { makeMulticall } = useMulticall();
 
-  const { data: walletClient } = useWalletClient();
-  const { address } = useAccount();
   const toast = useToast();
 
   const SPOT_MARKET = useContract('SPOT_MARKET');
@@ -124,12 +119,12 @@ export const useModifyCollateral = (
           )
         );
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
+        // const txn = await makeMulticall(
+        //   txs as TransactionRequest[],
+        //   address as Address
+        // );
 
-        await transact(txn.data!, txn.to!, txn.value);
+        await transact(txs as TransactionRequest[]);
       } else {
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
@@ -146,12 +141,12 @@ export const useModifyCollateral = (
           ),
         ];
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
+        // const txn = await makeMulticall(
+        //   txs as TransactionRequest[],
+        //   address as Address
+        // );
 
-        await transact(txn.data!, txn.to!, txn.value);
+        await transact(txs as TransactionRequest[]);
       }
 
       onSuccess();
@@ -173,11 +168,9 @@ export const useModifyCollateral = (
     SYNTHETIX.contract.populateTransaction,
     USDCrequireApproval,
     account,
-    address,
     amountD18,
     approveUSDC,
     isAdding,
-    makeMulticall,
     network,
     newCollateralAmountD18,
     onSuccess,
