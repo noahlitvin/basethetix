@@ -38,7 +38,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
 }) => {
   const [amount, setAmount] = useState(0);
   const { address } = useAccount();
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState(true);
 
   const USDC = useContract('USDC');
 
