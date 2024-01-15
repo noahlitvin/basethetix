@@ -21,25 +21,21 @@ export const useMulticallRead = <T = any>(
   const publicClient = usePublicClient();
 
   return useQuery(
-    [address, fn, ...args, TrustedMulticallForwarder.address],
+    [address, fn, args.join('-'), TrustedMulticallForwarder.address],
     async () => {
-      try {
-        return (await readMulticall(
-          TrustedMulticallForwarder.address,
-          abi,
-          address,
-          fn,
-          args,
-          publicClient,
-          account.address,
-          BigInt(0)
-        )) as T;
-      } catch (error) {
-        return defaultValue;
-      }
+      return (await readMulticall(
+        TrustedMulticallForwarder.address,
+        abi,
+        address,
+        fn,
+        args,
+        publicClient,
+        account.address,
+        BigInt(0)
+      )) as T;
     },
     {
-      staleTime: 50,
+      staleTime: 30000,
       enabled,
     }
   );

@@ -19,18 +19,18 @@ export const readMulticall = async (
     const contract = new Contract(address, abi);
     const data = contract.interface.encodeFunctionData(fn, args);
 
-    const multicallFunc = function makeMulticallCall(
+    const multicallFunc = function makeMulticallThroughCall(
       calls: TransactionRequest[]
     ): TransactionRequest {
-      const ret = viem.encodeFunctionData({
+      const multicallData = viem.encodeFunctionData({
         abi: BaseTrustedMulticallForwarder.abi,
         functionName: 'aggregate3Value',
         args: [
-          calls.map((call) => ({
-            target: call.to,
-            callData: call.data,
-            value: call.value || 0n,
+          calls.map((c) => ({
+            target: c.to,
             requireSuccess: true,
+            value: c.value || 0n,
+            callData: c.data,
           })),
         ],
       });
@@ -43,7 +43,7 @@ export const readMulticall = async (
       return {
         account: account,
         to: multiCallAddress as Address,
-        data: ret,
+        data: multicallData,
         value: totalValue,
       };
     };

@@ -2,14 +2,14 @@ import { useGetPreferredPool } from './useGetPreferredPool';
 import { useCallback, useMemo, useState } from 'react';
 import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
-import { TransactionRequest, formatUnits, zeroAddress } from 'viem';
+import { TransactionRequest, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
-import { Address, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
-import { useMulticall } from './useMulticall';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
 import { useTransact } from './useTransact';
+import { formatUnits } from 'ethers/lib/utils';
 
 export const useModifyPnL = (
   account: string | undefined,
@@ -43,8 +43,6 @@ export const useModifyPnL = (
   const poolId = useGetPreferredPool();
   const toast = useToast();
 
-  const { makeMulticall } = useMulticall();
-
   const [isLoading, setIsLoading] = useState(false);
 
   const { network } = useDefaultNetwork();
@@ -52,7 +50,7 @@ export const useModifyPnL = (
   const usdcAmount = useMemo(
     () =>
       formatUnits(
-        BigInt(amount || 0),
+        amount.toString() || '0',
         network === 'base-goerli' ? 0 : 12
       ).toString(),
     [amount, network]
