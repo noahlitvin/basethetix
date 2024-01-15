@@ -33,7 +33,10 @@ export const useApprove = (
   });
 
   const sufficientAllowance = useMemo(() => {
-    return allowance && allowance >= BigInt(amount.toString() || '0');
+    return (
+      allowance &&
+      Number(allowance.toString()) >= Number(amount.toString() || '0')
+    );
   }, [allowance, amount]);
 
   const { network } = useDefaultNetwork();
