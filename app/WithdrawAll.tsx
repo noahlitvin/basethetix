@@ -1,10 +1,10 @@
-import { Button, Text } from '@chakra-ui/react';
-import { FC, useMemo } from 'react';
-import { Amount } from '../components/Amount';
-import { wei } from '@synthetixio/wei';
-import { useModifyPnL } from '../hooks/useModifyPnL';
-import { useGetPnl } from '../hooks/useGetPnl';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { Button, Text } from "@chakra-ui/react";
+import { FC, useMemo } from "react";
+import { Amount } from "../components/Amount";
+import { wei } from "@synthetixio/wei";
+import { useModifyPnL } from "../hooks/useModifyPnL";
+import { useGetPnl } from "../hooks/useGetPnl";
+import { formatUnits } from "ethers/lib/utils.js";
 
 interface WithdrawAllProps {
   account: string;
@@ -33,12 +33,14 @@ export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
       <Button
         onClick={() => submit(true)}
         isLoading={isLoading}
-        colorScheme='blue'
-        borderRadius='full'
-        w='100%'
-        my='4'
+        colorScheme="blue"
+        borderRadius="full"
+        w="100%"
+        my="4"
       >
-        Repay <Amount value={wei(formatUnits(pnl.toString()) || '0')} /> USDC
+        Repay&nbsp;
+        <Amount value={wei(formatUnits((pnl * -1n).toString()) || "0")} />
+        &nbsp;USDC
       </Button>
     </>
   );
