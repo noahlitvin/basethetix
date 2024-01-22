@@ -26,6 +26,8 @@ export const useTransact = () => {
         return;
       }
 
+      transactions.forEach((tx) => (tx.account = account.address));
+
       setIsLoading(true);
       try {
         const multicallFunc = function makeMulticallThroughCall(

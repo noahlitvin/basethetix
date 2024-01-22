@@ -4,7 +4,6 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, zeroAddress } from 'viem';
 import { useApprove } from './useApprove';
-import { useAccount } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
@@ -35,7 +34,6 @@ export const useModifyPnL = (
     mintUsd(accountId, poolId, sUsdcAddress, currentPnL - newPnL) CORE SYSTEM https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/IssueUSDModule.sol#L52
   }
   */
-  const { address } = useAccount();
   const SPOT_MARKET = useContract('SPOT_MARKET');
   const SYNTHETIX = useContract('SYNTHETIX');
   const USDC = useContract('USDC');
@@ -138,11 +136,6 @@ export const useModifyPnL = (
             )
           );
 
-          // const txn = await makeMulticall(
-          //   txs as TransactionRequest[],
-          //   address as Address
-          // );
-
           await transact(txs as TransactionRequest[]);
         } else {
           const txn = await SYNTHETIX.contract.populateTransaction.mintUsd(
@@ -151,6 +144,7 @@ export const useModifyPnL = (
             sUSDC_Contract.address,
             amount
           );
+
           await transact([txn] as TransactionRequest[]);
         }
 
