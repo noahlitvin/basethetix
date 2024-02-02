@@ -134,17 +134,7 @@ export const useModifyCollateral = (
             newCollateralAmountD18,
             parseEther('1')
           ),
-          await SPOT_MARKET.contract.populateTransaction.unwrap(
-            USD_MarketId,
-            amountD18,
-            0
-          ),
         ];
-
-        // const txn = await makeMulticall(
-        //   txs as TransactionRequest[],
-        //   address as Address
-        // );
 
         await transact(txs as TransactionRequest[]);
       }
