@@ -81,7 +81,7 @@ export const useModifyCollateral = (
       if (isAdding) {
         if (USDCrequireApproval) {
           await approveUSDC();
-          console.log('approve USDC done!');
+          // console.log('approve USDC done!');
         }
 
         const txs: PopulatedTransaction[] = [
@@ -93,7 +93,7 @@ export const useModifyCollateral = (
         ];
 
         if (requireApproval_sUSDC) {
-          console.log('adding approval!');
+          // console.log('adding approval!');
 
           txs.push(
             await sUSDC_Contract.populateTransaction.approve(
