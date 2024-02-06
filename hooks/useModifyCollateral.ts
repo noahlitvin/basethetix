@@ -5,7 +5,6 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
-import { useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
@@ -119,12 +118,7 @@ export const useModifyCollateral = (
           )
         );
 
-        // const txn = await makeMulticall(
-        //   txs as TransactionRequest[],
-        //   address as Address
-        // );
-
-        await transact(txs as TransactionRequest[]);
+        await transact(txs as TransactionRequest[], SYNTHETIX.abi);
       } else {
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
@@ -136,7 +130,7 @@ export const useModifyCollateral = (
           ),
         ];
 
-        await transact(txs as TransactionRequest[]);
+        await transact(txs as TransactionRequest[], SYNTHETIX.abi);
       }
 
       onSuccess();
@@ -148,12 +142,11 @@ export const useModifyCollateral = (
         duration: 10000,
         isClosable: true,
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
     setIsLoading(false);
   }, [
     SPOT_MARKET.contract.populateTransaction,
+    SYNTHETIX.abi,
     SYNTHETIX.address,
     SYNTHETIX.contract.populateTransaction,
     USDCrequireApproval,

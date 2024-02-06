@@ -136,7 +136,7 @@ export const useModifyPnL = (
             )
           );
 
-          await transact(txs as TransactionRequest[]);
+          await transact(txs as TransactionRequest[], SYNTHETIX.abi);
         } else {
           const txn = await SYNTHETIX.contract.populateTransaction.mintUsd(
             account,
@@ -145,7 +145,7 @@ export const useModifyPnL = (
             amount
           );
 
-          await transact([txn] as TransactionRequest[]);
+          await transact([txn] as TransactionRequest[], SYNTHETIX.abi);
         }
 
         onSuccess();
@@ -158,7 +158,7 @@ export const useModifyPnL = (
           isClosable: true,
         });
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
 
       setIsLoading(false);
@@ -170,13 +170,14 @@ export const useModifyPnL = (
       SPOT_MARKET.contract.populateTransaction,
       SPOT_MARKET.address,
       usdcAmount,
+      amount,
       sUSDC_Contract.populateTransaction,
       sUSDC_Contract.address,
-      amount,
       sUSD_Contract.populateTransaction,
       sUSD_Contract.address,
       SYNTHETIX.address,
       SYNTHETIX.contract.populateTransaction,
+      SYNTHETIX.abi,
       account,
       poolId,
       network,

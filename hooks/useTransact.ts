@@ -5,6 +5,7 @@ import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
 import { GAS_PRICE } from '../constants/gasPrices';
 import { generate7412CompatibleCall } from '../utils/erc7412';
+import { parseError } from '../utils/parseError';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -21,7 +22,7 @@ export const useTransact = () => {
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
   const transact = useCallback(
-    async (transactions: TransactionRequest[]) => {
+    async (transactions: TransactionRequest[], abi?: any) => {
       if (!walletClient) {
         return;
       }
@@ -90,7 +91,16 @@ export const useTransact = () => {
 
         setIsLoading(false);
       } catch (error: any) {
-        console.log('error', error?.data);
+        const parsedError = parseError(error);
+        if (parsedError && abi) {
+          try {
+            const errorResult = viem.decodeErrorResult({
+              abi,
+              data: parsedError,
+            });
+            console.log('error: ', errorResult.errorName, errorResult.args);
+          } catch (_error) {}
+        }
         setIsLoading(false);
         throw error;
       }

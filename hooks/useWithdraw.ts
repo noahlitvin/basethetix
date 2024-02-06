@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useGetWithdrawable } from './useGetWithdrawable';
 import { PopulatedTransaction } from 'ethers';
 import { useContract } from './useContract';
-import { Address, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { parseUnits } from 'ethers/lib/utils.js';
 import { TransactionRequest } from 'viem';
@@ -55,15 +55,11 @@ export const useWithdraw = (account: string | undefined) => {
         ),
       ];
 
-      // const txn = await makeMulticall(
-      //   txs as TransactionRequest[],
-      //   address as Address
-      // );
-
-      await transact(txs as TransactionRequest[]);
+      await transact(txs as TransactionRequest[], SYNTHETIX.abi);
     } catch (error) {}
   }, [
     SPOT_MARKET.contract.populateTransaction,
+    SYNTHETIX.abi,
     SYNTHETIX.contract.populateTransaction,
     account,
     network,
