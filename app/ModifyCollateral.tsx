@@ -136,9 +136,9 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
             </FormControl>
           </Flex>
           <Button
-            // isDisabled={
-            //   amount == 0 || !minDelegationValidation || newAmount < 0
-            // }
+            isDisabled={
+              amount == 0 || !minDelegationValidation || newAmount < 0
+            }
             colorScheme='blue'
             borderRadius='full'
             w='100%'
