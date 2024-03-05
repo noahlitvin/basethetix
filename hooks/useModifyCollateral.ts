@@ -54,7 +54,7 @@ export const useModifyCollateral = (
     () =>
       parseUnits(
         String(amount || 0),
-        network === 'base-goerli' ? 18 : 6
+        (network === 'base-goerli' || network === 'base-sepolia') ? 18 : 6
       ).toString(),
     [amount, network]
   );
