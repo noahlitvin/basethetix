@@ -7,7 +7,7 @@ import {
 
 import type { AppProps } from 'next/app';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { base, baseGoerli } from 'wagmi/chains';
+import { base, baseGoerli, baseSepolia } from 'wagmi/chains';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import theme from '../theme';
 import { Analytics } from '@vercel/analytics/react';
@@ -18,7 +18,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { INFURA_WEB3_API_KEY } from '../constants/provider';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [base, baseGoerli],
+  [base, baseGoerli, baseSepolia],
   [
     /**
      * Tells wagmi to use the default RPC URL for each chain

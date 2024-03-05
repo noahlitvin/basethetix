@@ -10,8 +10,14 @@ export const baseGoerliProvider = new providers.JsonRpcProvider(
   `https://base-goerli.infura.io/v3/${INFURA_WEB3_API_KEY}`
 );
 
+export const baseSepoliaProvider = new providers.JsonRpcProvider(
+  `https://base-sepolia.infura.io/v3/${INFURA_WEB3_API_KEY}`
+);
+
 export const getProvider = (network: string) => {
-  if (network === 'base-goerli') {
+  if (network === 'base-sepolia') {
+    return baseSepoliaProvider;
+  } else if (network === 'base-goerli') {
     return baseGoerliProvider;
   } else if (network === 'base') {
     return baseProvider;

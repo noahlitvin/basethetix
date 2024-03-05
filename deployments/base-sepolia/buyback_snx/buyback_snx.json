@@ -1,0 +1,238 @@
+{
+  "address": "0x1Cd30a3CCd177F37Bd7199723B4497d31A7209e4",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_premium",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_snxFeeShare",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_oracleManager",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_snxNodeId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "_snxToken",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_usdToken",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "OverflowInt256ToUint256",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "snx",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "usd",
+          "type": "uint256"
+        }
+      ],
+      "name": "BuybackProcessed",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DEAD",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "oracleManager",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "premium",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "snxAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "processBuyback",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint128",
+          "name": "marketId",
+          "type": "uint128"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "quoteFees",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "snxFeeShare",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "snxNodeId",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "snxToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "usdToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "constructorArgs": [
+    "10000000000000000",
+    "500000000000000000",
+    "0x439e6cbAaF61C63f406687907022960088801EC0",
+    "0x32520a34b3e069c7c900a345f81436d79585ec1f3d9e402e904e79e829f7b2b9",
+    "0x2aa3cBB35161F33b113c849349D345d1807738de",
+    "0xa89163A087fe38022690C313b5D4BBF12574637f"
+  ],
+  "linkedLibraries": {},
+  "deployTxnHash": "0x1c204902e3e9f082058a01b83657384a2cd681e067792773b22233fd3cb16fbb",
+  "sourceName": "contracts/BuybackSnx.sol",
+  "contractName": "BuybackSnx",
+  "deployedOn": "contract.buyback_snx",
+  "gasUsed": 486472,
+  "gasCost": "16197872"
+}

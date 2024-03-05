@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "setup:base": "cannon inspect synthetix-omnibus:latest@andromeda --chain-id 8453 --write-deployments ./deployments/base",
-    "setup": "cannon inspect synthetix-omnibus:latest@andromeda --chain-id 84531 --write-deployments ./deployments/base-goerli"
+    "setup:base-sepolia": "cannon inspect synthetix-omnibus:latest@andromeda --chain-id 84532 --write-deployments ./deployments/base-sepolia",
+    "setup:base-goerli": "cannon inspect synthetix-omnibus:latest@andromeda --chain-id 84531 --write-deployments ./deployments/base-goerli"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",

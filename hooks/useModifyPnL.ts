@@ -49,7 +49,7 @@ export const useModifyPnL = (
     () =>
       formatUnits(
         amount.toString() || '0',
-        network === 'base-goerli' ? 0 : 12
+        (network === 'base-goerli' || network === 'base-sepolia') ? 0 : 12
       ).toString(),
     [amount, network]
   );
