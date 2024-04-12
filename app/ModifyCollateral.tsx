@@ -20,7 +20,7 @@ import WithdrawAll from './WithdrawAll';
 import { useGetCollateralConfiguration } from '../hooks/useGetCollateralConfiguration';
 import { sUSDC_address } from '../constants/markets';
 import { useDefaultNetwork } from '../hooks/useDefaultNetwork';
-import { Address, formatUnits } from 'viem';
+import { Address, formatUnits, parseEther } from 'viem';
 import { Amount } from '../components/Amount';
 import { useContract } from '../hooks/useContract';
 import { useAccount, useBalance } from 'wagmi';
@@ -38,7 +38,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
 }) => {
   const [amount, setAmount] = useState(0);
   const { address } = useAccount();
-  const [isAdding, setIsAdding] = useState(false);
+  const [isAdding, setIsAdding] = useState(true);
 
   const USDC = useContract('USDC');
 
@@ -66,7 +66,7 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
 
   const minDelegationValidation = useMemo(() => {
     return (
-      BigInt(newCollateralAmountD18) >=
+      BigInt(newCollateralAmountD18 || '0') >=
       BigInt(
         (collateralConfiguration as any)?.minDelegationD18?.toString() || '0'
       )
@@ -83,78 +83,86 @@ export const ModifyCollateral: FC<ModifyCollateralProps> = ({
     watch: true,
   });
 
-  return pnl < 0 ? (
+  if (pnl > 0n || Math.abs(Number(pnl.toString())) < parseEther('0.001')) {
+    return (
+      <Box mb={2}>
+        <>
+          <Flex mb={4} flex={1} alignItems='center'>
+            <FormControl>
+              <Amount value={wei(collateral || '0')} suffix='USDC' />
+              <FormHelperText top={7} whiteSpace='nowrap' position='absolute'>
+                <Flex
+                  alignItems='center'
+                  fontWeight='normal'
+                  fontSize='sm'
+                  gap={1}
+                >
+                  Wallet Balance:
+                  <Amount
+                    value={wei(USDCBalance?.formatted || '0')}
+                    suffix='USDC'
+                  />
+                </Flex>
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl>
+              <InputGroup>
+                <InputLeftElement>
+                  <IconButton
+                    size='xs'
+                    colorScheme='blue'
+                    aria-label='Add/Subtract'
+                    icon={isAdding ? <AddIcon /> : <MinusIcon />}
+                    onClick={() => setIsAdding(!isAdding)}
+                  />
+                </InputLeftElement>
+                <Input
+                  type='number'
+                  value={amount}
+                  onChange={(e: any) =>
+                    setAmount(Math.abs(e.target.value || 0))
+                  }
+                  min={0}
+                />
+              </InputGroup>
+            </FormControl>
+
+            <FormControl maxWidth='40px'>
+              <Input readOnly type='text' value='=' border='none' py={0} />
+            </FormControl>
+            <FormControl>
+              <Amount value={wei(newAmount || '0')} suffix='USDC' />
+            </FormControl>
+          </Flex>
+          <Button
+            isDisabled={
+              amount == 0 || !minDelegationValidation || newAmount < 0
+            }
+            colorScheme='blue'
+            borderRadius='full'
+            w='100%'
+            my='4'
+            onClick={() => submit()}
+            isLoading={isLoading}
+          >
+            {isAdding ? 'Add' : 'Remove'} {Math.abs(amount)} USDC
+          </Button>
+        </>
+
+        {!minDelegationValidation && (
+          <Alert status='error'>
+            <AlertIcon />
+            Min new delegation amount is {minDelegationD18} USDC
+          </Alert>
+        )}
+      </Box>
+    );
+  }
+
+  return (
     <Box mb={2}>
       <WithdrawAll account={account} onSuccess={refetch} />
-    </Box>
-  ) : (
-    <Box mb={2}>
-      <>
-        <Flex mb={4} flex={1} alignItems='center'>
-          <FormControl>
-            <Amount value={wei(collateral || '0')} suffix='USDC' />
-            <FormHelperText top={7} whiteSpace='nowrap' position='absolute'>
-              <Flex
-                alignItems='center'
-                fontWeight='normal'
-                fontSize='sm'
-                gap={1}
-              >
-                Wallet Balance:
-                <Amount
-                  value={wei(USDCBalance?.formatted || '0')}
-                  suffix='USDC'
-                />
-              </Flex>
-            </FormHelperText>
-          </FormControl>
-
-          <FormControl>
-            <InputGroup>
-              <InputLeftElement>
-                <IconButton
-                  size='xs'
-                  colorScheme='blue'
-                  aria-label='Add/Subtract'
-                  icon={isAdding ? <AddIcon /> : <MinusIcon />}
-                  onClick={() => setIsAdding(!isAdding)}
-                />
-              </InputLeftElement>
-              <Input
-                type='number'
-                value={amount}
-                onChange={(e: any) => setAmount(Math.abs(e.target.value || 0))}
-                min={0}
-              />
-            </InputGroup>
-          </FormControl>
-
-          <FormControl maxWidth='40px'>
-            <Input readOnly type='text' value='=' border='none' py={0} />
-          </FormControl>
-          <FormControl>
-            <Amount value={wei(newAmount || '0')} suffix='USDC' />
-          </FormControl>
-        </Flex>
-        <Button
-          isDisabled={amount == 0 || !minDelegationValidation || newAmount < 0}
-          colorScheme='blue'
-          borderRadius='full'
-          w='100%'
-          my='4'
-          onClick={() => submit()}
-          isLoading={isLoading}
-        >
-          {isAdding ? 'Add' : 'Remove'} {Math.abs(amount)} USDC
-        </Button>
-      </>
-
-      {!minDelegationValidation && (
-        <Alert status='error'>
-          <AlertIcon />
-          Min new delegation amount is {minDelegationD18} USDC
-        </Alert>
-      )}
     </Box>
   );
 };

@@ -80,5 +80,6 @@ export const useAccountTimeout = (accountId: string | undefined) => {
   return {
     accountTimeout,
     timerLabel,
+    refetch,
   };
 };

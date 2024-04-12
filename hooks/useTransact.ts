@@ -1,11 +1,11 @@
-import { BigNumberish, Contract } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useAccount, Address, useWalletClient, usePublicClient } from 'wagmi';
-import { EIP7412 } from 'erc7412';
-import { PythAdapter } from 'erc7412/dist/src/adapters/pyth';
 import * as viem from 'viem';
 import { useContract } from './useContract';
 import { waitForTransaction } from 'wagmi/actions';
+import { GAS_PRICE } from '../constants/gasPrices';
+import { generate7412CompatibleCall } from '../utils/erc7412';
+import { parseError } from '../utils/parseError';
 
 export type TransactionRequest = {
   to?: Address | null | undefined;
@@ -13,20 +13,6 @@ export type TransactionRequest = {
   value?: bigint | undefined;
   account?: Address | undefined;
 };
-
-export async function generate7412CompatibleCall(
-  client: viem.PublicClient,
-  multicallFunc: (txs: TransactionRequest[]) => TransactionRequest,
-  txn: TransactionRequest
-) {
-  const adapters = [];
-
-  // NOTE: add other providers here as needed
-  adapters.push(new PythAdapter('https://hermes.pyth.network/'));
-
-  const converter = new EIP7412(adapters, multicallFunc);
-  return await converter.enableERC7412(client as any, txn);
-}
 
 export const useTransact = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,28 +22,15 @@ export const useTransact = () => {
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
   const transact = useCallback(
-    async (
-      contract: Contract,
-      fn: string,
-      args: Array<any>,
-      value?: BigNumberish | undefined
-    ) => {
+    async (transactions: TransactionRequest[], abi?: any) => {
       if (!walletClient) {
         return;
       }
 
+      transactions.forEach((tx) => (tx.account = account.address));
+
       setIsLoading(true);
       try {
-        // const feeData = await provider.getFeeData();
-        const data = contract.interface.encodeFunctionData(fn, args);
-
-        const viemClient = viem.createPublicClient({
-          transport: viem.custom({
-            request: ({ method, params }) =>
-              (publicClient as any).send(method, params),
-          }),
-        });
-
         const multicallFunc = function makeMulticallThroughCall(
           calls: TransactionRequest[]
         ): TransactionRequest {
@@ -88,40 +61,46 @@ export const useTransact = () => {
         };
 
         const txn = await generate7412CompatibleCall(
-          viemClient,
+          publicClient,
           multicallFunc,
-          {
-            account: account.address,
-            to: contract.address as Address,
-            data: data as Address,
-            value: value as bigint,
-          }
+          transactions
         );
-        // const gas = await walletClient.({
-        //   to: txn.to as Address,
-        //   data: txn.data,
-        //   value: txn.value,
-        // });
-        // const gasLimit = (Number(gas) * 1.2).toFixed(0);
+
+        let gas = GAS_PRICE;
+        try {
+          gas = await publicClient.estimateGas({
+            account: account.address as Address,
+            to: txn.to,
+            data: txn.data as Address,
+            value: txn.value as bigint,
+          });
+        } catch (error) {}
+        gas = (gas * 11n) / 10n;
 
         const hash = await walletClient?.sendTransaction({
           to: txn.to as Address,
           data: txn.data,
           value: txn.value,
-          /*
-          maxFeePerGas: feeData.maxFeePerGas || undefined,
-          maxPriorityFeePerGas: feeData.maxPriorityFeePerGas || undefined,
-          type: 2,
-          */
+          gas,
         });
 
         await waitForTransaction({
           hash,
           confirmations: 2,
         });
+
         setIsLoading(false);
-      } catch (error) {
-        console.log('error in useTransact!', error);
+      } catch (error: any) {
+        const parsedError = parseError(error);
+        if (parsedError && abi) {
+          try {
+            const errorResult = viem.decodeErrorResult({
+              abi,
+              data: parsedError,
+            });
+            console.log('error: ', errorResult.errorName, errorResult.args);
+          } catch (_error) {}
+        }
         setIsLoading(false);
         throw error;
       }

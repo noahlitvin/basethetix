@@ -25,7 +25,9 @@ export const useGetPnl = (accountId: string | undefined) => {
     synthetix.abi,
     synthetix.contract.address,
     'getPositionDebt',
-    [accountId, poolId, sUSDC_address[network]]
+    [accountId, poolId, sUSDC_address[network]],
+    0n,
+    !!accountId
   );
 
   const result = useMemo(() => {

@@ -7,7 +7,7 @@ import {
 
 import type { AppProps } from 'next/app';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { base, baseGoerli } from 'wagmi/chains';
+import { base, baseGoerli, baseSepolia } from 'wagmi/chains';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import theme from '../theme';
 import { Analytics } from '@vercel/analytics/react';
@@ -15,17 +15,16 @@ import { useEffect, useState } from 'react';
 
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { publicProvider } from 'wagmi/providers/public';
+import { INFURA_WEB3_API_KEY } from '../constants/provider';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [base, baseGoerli],
+  [base, baseGoerli, baseSepolia],
   [
-    publicProvider(),
     /**
      * Tells wagmi to use the default RPC URL for each chain
      * for some dapps the higher rate limits of Alchemy may be required
      */
-    infuraProvider({ apiKey: '4791c1745a1f44ce831e94be7f9e8bd7' }),
+    infuraProvider({ apiKey: INFURA_WEB3_API_KEY }),
     jsonRpcProvider({
       rpc: (chain) => {
         return { http: chain.rpcUrls.default.http[0] };
@@ -37,13 +36,12 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 const { connectors } = getDefaultWallets({
   appName: 'Basethetix',
   chains,
-  projectId: '5075a2da602e17eec34aa77b40b321be',
+  projectId: '14f72ee1399549020ac5a3e39b29c4b2',
 });
 
 const config = createConfig({
   autoConnect: true,
   publicClient,
-  webSocketPublicClient,
   connectors,
 });
 

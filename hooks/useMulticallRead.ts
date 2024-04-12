@@ -1,15 +1,14 @@
-import { BigNumberish, Contract, ethers } from 'ethers';
-import { useAccount, useQuery } from 'wagmi';
+import { useAccount, usePublicClient, useQuery } from 'wagmi';
 import { readMulticall } from '../utils/readMulticall';
 import { useContract } from './useContract';
-import { useDefaultNetwork } from './useDefaultNetwork';
 
 export const useMulticallRead = <T = any>(
   abi: any,
   address: string,
   fn: string,
   args: Array<any>,
-  value?: BigNumberish | undefined
+  defaultValue?: T | undefined,
+  enabled = true
 ): {
   data: T | undefined;
   isLoading: boolean;
@@ -19,36 +18,25 @@ export const useMulticallRead = <T = any>(
 
   const TrustedMulticallForwarder = useContract('TrustedMulticallForwarder');
 
-  const { network } = useDefaultNetwork();
-
-  const provider = new ethers.providers.JsonRpcProvider(
-    network === 'base-goerli'
-      ? 'https://goerli.base.org'
-      : 'https://mainnet.base.org'
-  );
+  const publicClient = usePublicClient();
 
   return useQuery(
-    [address, fn, ...args, TrustedMulticallForwarder.address],
+    [address, fn, args.join('-'), TrustedMulticallForwarder.address],
     async () => {
-      try {
-        return (await readMulticall(
-          TrustedMulticallForwarder.address,
-          abi,
-          address,
-          fn,
-          args,
-          provider,
-          account.address,
-          BigInt(0)
-        )) as T;
-      } catch (error) {
-        console.log({
-          error,
-        });
-      }
+      return (await readMulticall(
+        TrustedMulticallForwarder.address,
+        abi,
+        address,
+        fn,
+        args,
+        publicClient,
+        account.address,
+        BigInt(0)
+      )) as T;
     },
     {
-      staleTime: 50,
+      staleTime: 30000,
+      enabled,
     }
   );
 };

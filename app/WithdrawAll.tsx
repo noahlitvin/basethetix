@@ -1,10 +1,10 @@
-import { Button, Text } from '@chakra-ui/react';
-import { FC } from 'react';
-import { Amount } from '../components/Amount';
-import { wei } from '@synthetixio/wei';
-import { useModifyPnL } from '../hooks/useModifyPnL';
-import { useGetPnl } from '../hooks/useGetPnl';
-import { formatUnits } from 'ethers/lib/utils.js';
+import { Button, Text } from "@chakra-ui/react";
+import { FC, useMemo } from "react";
+import { Amount } from "../components/Amount";
+import { wei } from "@synthetixio/wei";
+import { useModifyPnL } from "../hooks/useModifyPnL";
+import { useGetPnl } from "../hooks/useGetPnl";
+import { formatUnits } from "ethers/lib/utils.js";
 
 interface WithdrawAllProps {
   account: string;
@@ -13,9 +13,14 @@ interface WithdrawAllProps {
 
 export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
   const { data: pnl } = useGetPnl(account);
+  const amountWithSlippage = useMemo(
+    () => (BigInt((pnl > 0n ? pnl : -1n * pnl).toString()) * 12n) / 10n,
+    [pnl]
+  );
+
   const { submit, isLoading } = useModifyPnL(
     account,
-    (pnl > 0n ? pnl : -1n * pnl).toString(),
+    amountWithSlippage.toString(),
     onSuccess
   );
 
@@ -28,13 +33,14 @@ export const WithdrawAll: FC<WithdrawAllProps> = ({ account, onSuccess }) => {
       <Button
         onClick={() => submit(true)}
         isLoading={isLoading}
-        colorScheme='blue'
-        borderRadius='full'
-        w='100%'
-        my='4'
+        colorScheme="blue"
+        borderRadius="full"
+        w="100%"
+        my="4"
       >
-        Repay <Amount value={wei(formatUnits(pnl.toString()) || '0')} /> USDC
-        and withdraw
+        Repay&nbsp;
+        <Amount value={wei(formatUnits((pnl * -1n).toString()) || "0")} />
+        &nbsp;USDC
       </Button>
     </>
   );

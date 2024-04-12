@@ -5,12 +5,10 @@ import { useContract } from './useContract';
 import { USD_MarketId, sUSDC_address } from '../constants/markets';
 import { TransactionRequest, parseEther, parseUnits } from 'viem';
 import { useApprove } from './useApprove';
-import { Address, useAccount, useWalletClient } from 'wagmi';
 import { PopulatedTransaction } from 'ethers';
-import { useMulticall } from './useMulticall';
-import { waitForTransaction } from 'wagmi/actions';
 import { useDefaultNetwork } from './useDefaultNetwork';
 import { useToast } from '@chakra-ui/react';
+import { useTransact } from './useTransact';
 
 export const useModifyCollateral = (
   account: string | undefined,
@@ -36,10 +34,7 @@ export const useModifyCollateral = (
   delegateCollateral(uint128 accountId, uint128 poolId, address sUsdcAddress, uint256 newCollateral, 1) CORE SYSTEM  https://github.com/Synthetixio/synthetix-v3/blob/main/protocol/synthetix/contracts/modules/core/VaultModule.sol#L43
   */
   const { totalAssigned: currentCollateral } = useGetCollateral(account);
-  const { makeMulticall } = useMulticall();
 
-  const { data: walletClient } = useWalletClient();
-  const { address } = useAccount();
   const toast = useToast();
 
   const SPOT_MARKET = useContract('SPOT_MARKET');
@@ -78,17 +73,15 @@ export const useModifyCollateral = (
   const { requireApproval: requireApproval_sUSDC, contract: sUSDC_Contract } =
     useApprove(sUSDC_address[network], amountD18, SYNTHETIX.address);
 
+  const { transact } = useTransact();
+
   const submit = useCallback(async () => {
-    if (!walletClient) {
-      console.log('no singer');
-      return;
-    }
     try {
       setIsLoading(true);
       if (isAdding) {
         if (USDCrequireApproval) {
           await approveUSDC();
-          console.log('approve USDC done!');
+          // console.log('approve USDC done!');
         }
 
         const txs: PopulatedTransaction[] = [
@@ -100,7 +93,7 @@ export const useModifyCollateral = (
         ];
 
         if (requireApproval_sUSDC) {
-          console.log('adding approval!');
+          // console.log('adding approval!');
 
           txs.push(
             await sUSDC_Contract.populateTransaction.approve(
@@ -125,19 +118,7 @@ export const useModifyCollateral = (
           )
         );
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
-
-        const hash = await walletClient?.sendTransaction({
-          to: txn.to as Address,
-          data: txn.data,
-          value: txn.value,
-          gas: txn.gas,
-        });
-
-        await waitForTransaction({ hash, confirmations: 2 });
+        await transact(txs as TransactionRequest[], SYNTHETIX.abi);
       } else {
         const txs: PopulatedTransaction[] = [
           await SYNTHETIX.contract.populateTransaction.delegateCollateral(
@@ -147,26 +128,9 @@ export const useModifyCollateral = (
             newCollateralAmountD18,
             parseEther('1')
           ),
-          await SPOT_MARKET.contract.populateTransaction.unwrap(
-            USD_MarketId,
-            amountD18,
-            0
-          ),
         ];
 
-        const txn = await makeMulticall(
-          txs as TransactionRequest[],
-          address as Address
-        );
-
-        const hash = await walletClient?.sendTransaction({
-          to: txn.to as Address,
-          data: txn.data,
-          value: txn.value,
-          gas: txn.gas,
-        });
-
-        await waitForTransaction({ hash, confirmations: 2 });
+        await transact(txs as TransactionRequest[], SYNTHETIX.abi);
       }
 
       onSuccess();
@@ -178,21 +142,18 @@ export const useModifyCollateral = (
         duration: 10000,
         isClosable: true,
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
     setIsLoading(false);
   }, [
     SPOT_MARKET.contract.populateTransaction,
+    SYNTHETIX.abi,
     SYNTHETIX.address,
     SYNTHETIX.contract.populateTransaction,
     USDCrequireApproval,
     account,
-    address,
     amountD18,
     approveUSDC,
     isAdding,
-    makeMulticall,
     network,
     newCollateralAmountD18,
     onSuccess,
@@ -200,8 +161,8 @@ export const useModifyCollateral = (
     requireApproval_sUSDC,
     sUSDC_Contract.populateTransaction,
     toast,
+    transact,
     usdcAmount,
-    walletClient,
   ]);
   return {
     submit,

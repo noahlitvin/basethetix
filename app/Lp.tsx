@@ -18,8 +18,10 @@ import {
   Link,
   Image,
   Skeleton,
+  Button,
+  Heading,
 } from '@chakra-ui/react';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+//import { ConnectButton } from '@rainbow-me/rainbowkit';
 import type { NextComponentType } from 'next';
 import { useAccount } from 'wagmi';
 import Accounts from './Accounts';
@@ -54,10 +56,26 @@ const Lp: NextComponentType = () => {
 
   const { data: pnl, refetch, isLoading } = useGetPnl(selectedAccount);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <>
       <Flex mb={3} alignItems='center'>
-        <ConnectButton />
+        {/*<ConnectButton />*/}
+        <Button onClick={onOpen} _hover={{bg: 'blue.600'}} colorScheme="blue" fontFamily="Inter, Helvetica,arial" letterSpacing="0.02rem">Connect Wallet</Button>
+
+        <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent maxW='sm' p={6} m={2} textAlign="center">
+          <Heading size="md" mb={2}>This app is no longer maintained</Heading>
+          <Text>Visit <Link href="https://v3.synthetix.io" borderColor='#0a0b0c'>v3.synthetix.io</Link> to find apps that allow you to provide liquidity to the Synthetix protocol.</Text>
+        </ModalContent>
+      </Modal>
 
         <Flex ml='auto' alignItems='center'>
           <Image

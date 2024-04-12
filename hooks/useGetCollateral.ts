@@ -1,5 +1,4 @@
 import { useAccount, useContractRead } from 'wagmi';
-import { parseUnits } from '../utils/format';
 import { useMemo } from 'react';
 import { sUSDC_address } from '../constants/markets';
 import { formatUnits } from 'viem';
